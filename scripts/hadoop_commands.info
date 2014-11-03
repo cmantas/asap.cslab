@@ -1,0 +1,2 @@
+#create home directory
+hadoop/bin/hadoop fs -mkdir -p /user/root

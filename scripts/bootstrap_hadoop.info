@@ -1,0 +1,29 @@
+heapsize=1000
+JAVA_HOME="\/usr\/lib\/jvm\/java-7-oracle\/jre\/"
+#######################################################################
+sed -i  "s/export JAVA_HOME.*/export JAVA_HOME=$JAVA_HOME/g" hadoop/etc/hadoop/hadoop-env.sh
+sed -i "s/.*HADOOP_HEAPSIZE.*/export HADOOP_HEAPSIZE=${heapsize}/g" hadoop/etc/hadoop/hadoop-env.sh
+sed -i "s/#.*YARN_HEAPSIZE.*/YARN_HEAPSIZE=${heapsize}/g" hadoop/etc/hadoop/yarn-env.sh
+#parallel GC
+#   export HADOOP_NAMENODE_OPTS="-XX:+UseParallelGC ${HADOOP_NAMENODE_OPTS}"
+
+#format at master
+hadoop/bin/hdfs namenode -format asap
+
+#start namenodehadoop/sbin/hadoop-daemon.sh --script hdfs start namenode
+
+#start datanode
+hadoop/sbin/hadoop-daemon.sh --script hdfs start datanode
+
+#start YARN resource manager
+hadoop/sbin/yarn-daemon.sh start resourcemanager
+
+#start YARN node manager on slave nodes
+hadoop/sbin/yarn-daemon.sh start nodemanager
+
+#only add hadoop/bin to PATH if not already there
+HADOOP_HOME=/root/hadoop
+if [[ $(hadoop 2>&1 >/dev/null) =~ .*"not found".* ]]; then export PATH="$PATH:$HADOOP_HOME/bin"; fi
+echo PATH="$PATH" > /etc/environment
+
+
