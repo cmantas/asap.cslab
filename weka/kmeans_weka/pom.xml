@@ -25,7 +25,7 @@
       <configuration>                  
         <archive>
           <manifest>
-            <mainClass>gr.ntua.cslab.asap.Main</mainClass>
+            <mainClass>gr.ntua.cslab.asap.local.KMeans</mainClass>
           </manifest>
         </archive>
         <descriptorRefs>
