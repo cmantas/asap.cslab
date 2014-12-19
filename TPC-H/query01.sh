@@ -21,3 +21,5 @@ query="
 echo Executing query...	
 mytime="$(time(echo $query | psql -U asap ) 2>&1) "
 echo $mytime
+
+
