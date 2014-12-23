@@ -23,4 +23,6 @@
 *.tar.gz
 *.zip
 *.out
-*/tmp
+*/input
+*/output
+*tmp*
