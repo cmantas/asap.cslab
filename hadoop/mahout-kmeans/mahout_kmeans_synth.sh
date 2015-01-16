@@ -1,0 +1,55 @@
+if [[ $# != 2 ]]; then
+	echo Expected parameters: Input, K
+	exit
+fi
+
+
+input=$1
+K=$2
+max_iterations=5
+
+
+WORK_DIR=/tmp/my_mahout_synth
+PARSER_JAR=~/bin/lib/CSV2Seq.jar
+
+check (){
+  e=$( cat $1 | grep Exception)
+  t=$( echo $e | wc -c)
+  if [ "$e" != "" ]; then
+    echo $e
+    exit
+  fi
+}
+
+rm -rf $WORK_DIR; mkdir -p ${WORK_DIR}
+
+
+echo "[STEP 0/2] CSVs to Sequence File"
+hadoop jar ${PARSER_JAR} ${input} ${WORK_DIR}/my_synthetic_seq
+
+#DNK if it is needed but does not work
+# echo "[STEP   2/4] Sequence to Sparse"
+#  mahout seq2sparse \
+#     -i ${WORK_DIR}/synth_sequence_files \
+#     -o ${WORK_DIR}/synth_sparce_matrix --maxDFPercent 85 --namedVector 
+
+echo "[STEP 1/2] K-Means"
+  mahout kmeans \
+    -i ${WORK_DIR}/my_synthetic_seq \
+    -c ${WORK_DIR}/what_is_this \
+    -o ${WORK_DIR}/clustering_raw_output\
+    -dm org.apache.mahout.common.distance.CosineDistanceMeasure \
+    -x ${max_iterations} -k ${K} -ow --clustering  &>step3.out
+check step3.out
+
+echo "[STEP 2/2] Clusterdump"
+  mahout clusterdump \
+    -i ${WORK_DIR}/clustering_raw_output/clusters-*-final \
+    -o ${WORK_DIR}/clusterdump_result \
+    -dt sequencefile -b 100 -n 20 --evaluate -dm org.apache.mahout.common.distance.CosineDistanceMeasure -sp 0 \
+    --pointsDir ${WORK_DIR}/clustering_raw_output/clusteredPoints &>step4.out
+
+
+echo "[RESULT ]"
+
+head ${WORK_DIR}/clusterdump_result

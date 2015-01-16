@@ -4,6 +4,7 @@ query="
 	select
 		n_name,
 		sum(o_totalprice),
+		c_custkey,
 		date_part('month',o_orderdate)
 		from customer, orders, region, nation
 	where 	
@@ -19,7 +20,7 @@ query="
 
 #mytime="$(time ( ls ) 2>&1 1>/dev/null )"
 echo Executing query...	
-mytime="$(time(echo $query | psql -U asap ) 2>&1) "
+mytime="$(time(echo $query | psql -U asap tpch) 2>&1) "
 echo $mytime
 
 

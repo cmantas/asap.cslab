@@ -1,0 +1,326 @@
+[STEP 0/2] CSVs to Sequence File
+Exception in thread "main" java.io.FileNotFoundException: File does not exist: /user/cmantas/input/kmeans_input/1000_points_1_clusters.csv
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:64)
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:54)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsUpdateTimes(FSNamesystem.java:1795)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsInt(FSNamesystem.java:1738)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1718)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1690)
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getBlockLocations(NameNodeRpcServer.java:519)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getBlockLocations(ClientNamenodeProtocolServerSideTranslatorPB.java:337)
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:585)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:928)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2013)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2009)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1614)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2007)
+
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:526)
+	at org.apache.hadoop.ipc.RemoteException.instantiateException(RemoteException.java:106)
+	at org.apache.hadoop.ipc.RemoteException.unwrapRemoteException(RemoteException.java:73)
+	at org.apache.hadoop.hdfs.DFSClient.callGetBlockLocations(DFSClient.java:1167)
+	at org.apache.hadoop.hdfs.DFSClient.getLocatedBlocks(DFSClient.java:1155)
+	at org.apache.hadoop.hdfs.DFSClient.getLocatedBlocks(DFSClient.java:1145)
+	at org.apache.hadoop.hdfs.DFSInputStream.fetchLocatedBlocksAndGetLastBlockLength(DFSInputStream.java:268)
+	at org.apache.hadoop.hdfs.DFSInputStream.openInfo(DFSInputStream.java:235)
+	at org.apache.hadoop.hdfs.DFSInputStream.<init>(DFSInputStream.java:228)
+	at org.apache.hadoop.hdfs.DFSClient.open(DFSClient.java:1318)
+	at org.apache.hadoop.hdfs.DistributedFileSystem$3.doCall(DistributedFileSystem.java:293)
+	at org.apache.hadoop.hdfs.DistributedFileSystem$3.doCall(DistributedFileSystem.java:289)
+	at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+	at org.apache.hadoop.hdfs.DistributedFileSystem.open(DistributedFileSystem.java:289)
+	at org.apache.hadoop.fs.FileSystem.open(FileSystem.java:764)
+	at Parser.main(Parser.java:29)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:212)
+Caused by: org.apache.hadoop.ipc.RemoteException(java.io.FileNotFoundException): File does not exist: /user/cmantas/input/kmeans_input/1000_points_1_clusters.csv
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:64)
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:54)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsUpdateTimes(FSNamesystem.java:1795)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsInt(FSNamesystem.java:1738)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1718)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1690)
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getBlockLocations(NameNodeRpcServer.java:519)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getBlockLocations(ClientNamenodeProtocolServerSideTranslatorPB.java:337)
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:585)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:928)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2013)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2009)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1614)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2007)
+
+	at org.apache.hadoop.ipc.Client.call(Client.java:1411)
+	at org.apache.hadoop.ipc.Client.call(Client.java:1364)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:206)
+	at com.sun.proxy.$Proxy14.getBlockLocations(Unknown Source)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:187)
+	at org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:102)
+	at com.sun.proxy.$Proxy14.getBlockLocations(Unknown Source)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.getBlockLocations(ClientNamenodeProtocolTranslatorPB.java:225)
+	at org.apache.hadoop.hdfs.DFSClient.callGetBlockLocations(DFSClient.java:1165)
+	... 17 more
+[STEP 1/2] K-Means
+[STEP 0/2] CSVs to Sequence File
+Exception in thread "main" java.io.FileNotFoundException: File does not exist: /user/cmantas/input/kmeans_input/1000_points_1_clusters.csv
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:64)
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:54)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsUpdateTimes(FSNamesystem.java:1795)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsInt(FSNamesystem.java:1738)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1718)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1690)
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getBlockLocations(NameNodeRpcServer.java:519)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getBlockLocations(ClientNamenodeProtocolServerSideTranslatorPB.java:337)
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:585)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:928)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2013)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2009)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1614)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2007)
+
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:526)
+	at org.apache.hadoop.ipc.RemoteException.instantiateException(RemoteException.java:106)
+	at org.apache.hadoop.ipc.RemoteException.unwrapRemoteException(RemoteException.java:73)
+	at org.apache.hadoop.hdfs.DFSClient.callGetBlockLocations(DFSClient.java:1167)
+	at org.apache.hadoop.hdfs.DFSClient.getLocatedBlocks(DFSClient.java:1155)
+	at org.apache.hadoop.hdfs.DFSClient.getLocatedBlocks(DFSClient.java:1145)
+	at org.apache.hadoop.hdfs.DFSInputStream.fetchLocatedBlocksAndGetLastBlockLength(DFSInputStream.java:268)
+	at org.apache.hadoop.hdfs.DFSInputStream.openInfo(DFSInputStream.java:235)
+	at org.apache.hadoop.hdfs.DFSInputStream.<init>(DFSInputStream.java:228)
+	at org.apache.hadoop.hdfs.DFSClient.open(DFSClient.java:1318)
+	at org.apache.hadoop.hdfs.DistributedFileSystem$3.doCall(DistributedFileSystem.java:293)
+	at org.apache.hadoop.hdfs.DistributedFileSystem$3.doCall(DistributedFileSystem.java:289)
+	at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+	at org.apache.hadoop.hdfs.DistributedFileSystem.open(DistributedFileSystem.java:289)
+	at org.apache.hadoop.fs.FileSystem.open(FileSystem.java:764)
+	at Parser.main(Parser.java:29)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:212)
+Caused by: org.apache.hadoop.ipc.RemoteException(java.io.FileNotFoundException): File does not exist: /user/cmantas/input/kmeans_input/1000_points_1_clusters.csv
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:64)
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:54)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsUpdateTimes(FSNamesystem.java:1795)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsInt(FSNamesystem.java:1738)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1718)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1690)
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getBlockLocations(NameNodeRpcServer.java:519)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getBlockLocations(ClientNamenodeProtocolServerSideTranslatorPB.java:337)
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:585)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:928)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2013)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2009)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1614)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2007)
+
+	at org.apache.hadoop.ipc.Client.call(Client.java:1411)
+	at org.apache.hadoop.ipc.Client.call(Client.java:1364)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:206)
+	at com.sun.proxy.$Proxy14.getBlockLocations(Unknown Source)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:187)
+	at org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:102)
+	at com.sun.proxy.$Proxy14.getBlockLocations(Unknown Source)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.getBlockLocations(ClientNamenodeProtocolTranslatorPB.java:225)
+	at org.apache.hadoop.hdfs.DFSClient.callGetBlockLocations(DFSClient.java:1165)
+	... 17 more
+[STEP 1/2] K-Means
+[STEP 2/2] Clusterdump
+[STEP 0/2] CSVs to Sequence File
+Exception in thread "main" java.io.FileNotFoundException: File does not exist: /user/cmantas/input/kmeans_input/1000_points_1_clusters.csv
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:64)
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:54)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsUpdateTimes(FSNamesystem.java:1795)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsInt(FSNamesystem.java:1738)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1718)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1690)
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getBlockLocations(NameNodeRpcServer.java:519)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getBlockLocations(ClientNamenodeProtocolServerSideTranslatorPB.java:337)
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:585)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:928)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2013)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2009)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1614)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2007)
+
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:526)
+	at org.apache.hadoop.ipc.RemoteException.instantiateException(RemoteException.java:106)
+	at org.apache.hadoop.ipc.RemoteException.unwrapRemoteException(RemoteException.java:73)
+	at org.apache.hadoop.hdfs.DFSClient.callGetBlockLocations(DFSClient.java:1167)
+	at org.apache.hadoop.hdfs.DFSClient.getLocatedBlocks(DFSClient.java:1155)
+	at org.apache.hadoop.hdfs.DFSClient.getLocatedBlocks(DFSClient.java:1145)
+	at org.apache.hadoop.hdfs.DFSInputStream.fetchLocatedBlocksAndGetLastBlockLength(DFSInputStream.java:268)
+	at org.apache.hadoop.hdfs.DFSInputStream.openInfo(DFSInputStream.java:235)
+	at org.apache.hadoop.hdfs.DFSInputStream.<init>(DFSInputStream.java:228)
+	at org.apache.hadoop.hdfs.DFSClient.open(DFSClient.java:1318)
+	at org.apache.hadoop.hdfs.DistributedFileSystem$3.doCall(DistributedFileSystem.java:293)
+	at org.apache.hadoop.hdfs.DistributedFileSystem$3.doCall(DistributedFileSystem.java:289)
+	at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+	at org.apache.hadoop.hdfs.DistributedFileSystem.open(DistributedFileSystem.java:289)
+	at org.apache.hadoop.fs.FileSystem.open(FileSystem.java:764)
+	at Parser.main(Parser.java:29)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:212)
+Caused by: org.apache.hadoop.ipc.RemoteException(java.io.FileNotFoundException): File does not exist: /user/cmantas/input/kmeans_input/1000_points_1_clusters.csv
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:64)
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:54)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsUpdateTimes(FSNamesystem.java:1795)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsInt(FSNamesystem.java:1738)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1718)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1690)
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getBlockLocations(NameNodeRpcServer.java:519)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getBlockLocations(ClientNamenodeProtocolServerSideTranslatorPB.java:337)
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:585)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:928)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2013)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2009)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1614)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2007)
+
+	at org.apache.hadoop.ipc.Client.call(Client.java:1411)
+	at org.apache.hadoop.ipc.Client.call(Client.java:1364)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:206)
+	at com.sun.proxy.$Proxy14.getBlockLocations(Unknown Source)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:187)
+	at org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:102)
+	at com.sun.proxy.$Proxy14.getBlockLocations(Unknown Source)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.getBlockLocations(ClientNamenodeProtocolTranslatorPB.java:225)
+	at org.apache.hadoop.hdfs.DFSClient.callGetBlockLocations(DFSClient.java:1165)
+	... 17 more
+[STEP 1/2] K-Means
+[STEP 2/2] Clusterdump
+[STEP 0/2] CSVs to Sequence File
+[STEP 1/2] K-Means
+[STEP 2/2] Clusterdump
+[RESULT ]
+:VL-656{n=1001 c=[-6557112074467442700.000, -3156687511152212500.000] r=[1798438384953325570.000, 180
+	Weight : [props - optional]:  Point:
+	
+[STEP 0/2] CSVs to Sequence File
+[STEP 1/2] K-Means
+[STEP 2/2] Clusterdump
+[RESULT ]
+:VL-619{n=500 c=[4869440038116874200.000, -4301189993211496400.000] r=[3322879189487554000.000, 27669
+	Weight : [props - optional]:  Point:
+	
+:VL-926{n=500 c=[-8607012400284920800.000, 2460992632657156100.000] r=[3289798249090800600.000, 29388
+	Weight : [props - optional]:  Point:
+	
+[STEP 0/2] CSVs to Sequence File
+[STEP 1/2] K-Means
+[STEP 2/2] Clusterdump
+[RESULT ]
+:VL-609{n=332 c=[-3467371510267334700.000, 7608106738567001100.000] r=[1664048189334070530.000, 15148
+	Weight : [props - optional]:  Point:
+	
+:VL-80{n=334 c=[8419901340673335300.000, -1863197536058582780.000] r=[1566960624938127360.000, 146708
+	Weight : [props - optional]:  Point:
+	
+:VL-761{n=336 c=[4108932054512287700.000, 4680336645236279300.000] r=[1630323273464563710.000, 160516
+	Weight : [props - optional]:  Point:
+	
+[STEP 0/2] CSVs to Sequence File
+[STEP 1/2] K-Means
+[STEP 2/2] Clusterdump
+[RESULT ]
+:VL-1554{n=2001 c=[-8000121369020408800.000, 2561090862258135600.000] r=[1885009179689558020.000, 187
+	Weight : [props - optional]:  Point:
+	
+[STEP 0/2] CSVs to Sequence File
+[STEP 1/2] K-Means
+[STEP 2/2] Clusterdump
+[RESULT ]
+:VL-771{n=1027 c=[1107301138734690820.000, 7798358767231891500.000] r=[3183066719853774300.000, 31052
+	Weight : [props - optional]:  Point:
+	
+:VL-1562{n=975 c=[-7536276034193455100.000, -4549168572250722300.000] r=[2999833434066194900.000, 291
+	Weight : [props - optional]:  Point:
+	
+[STEP 0/2] CSVs to Sequence File
+[STEP 1/2] K-Means
+[STEP 2/2] Clusterdump
+[RESULT ]
+:VL-950{n=269 c=[-6483835861064969200.000, 6498734880743980000.000] r=[429536813980534590.000, 434059
+	Weight : [props - optional]:  Point:
+	
+:VL-671{n=244 c=[-1783026609452333570.000, 2957864406522076700.000] r=[6158890658364423200.000, 58648
+	Weight : [props - optional]:  Point:
+	
+:VL-796{n=1488 c=[-4200246952656869400.000, -597076638521395070.000] r=[5585707415901863900.000, 7474
+	Weight : [props - optional]:  Point:
+	
+[STEP 0/2] CSVs to Sequence File
+[STEP 1/2] K-Means
+[STEP 2/2] Clusterdump
+[RESULT ]
+:VL-2694{n=3001 c=[4471540565252055600.000, 378718601394990080.000] r=[1858947559406162690.000, 18712
+	Weight : [props - optional]:  Point:
+	
+[STEP 0/2] CSVs to Sequence File
+[STEP 1/2] K-Means
+[STEP 2/2] Clusterdump
+[RESULT ]
+:VL-435{n=2556 c=[-2335714377374648800.000, 5917355211850769400.000] r=[1108300403684998660.000, 4710
+	Weight : [props - optional]:  Point:
+	
+:VL-425{n=446 c=[-317365026497541380.000, 5903221921507385300.000] r=[241510506288027872.000, 4707360
+	Weight : [props - optional]:  Point:
+	
+[STEP 0/2] CSVs to Sequence File
+[STEP 1/2] K-Means
+[STEP 2/2] Clusterdump
+[RESULT ]
+:VL-622{n=1969 c=[1841858369110678270.000, -4339106474969592300.000] r=[1465990105053736450.000, 2470
+	Weight : [props - optional]:  Point:
+	
+:VL-1725{n=630 c=[-6823494342480866300.000, 2532469878084404700.000] r=[2044571179891353600.000, 1447
+	Weight : [props - optional]:  Point:
+	
+:VL-1498{n=404 c=[-6642717648357802000.000, -1286093455724030460.000] r=[2571639081939257900.000, 182
+	Weight : [props - optional]:  Point:
+	

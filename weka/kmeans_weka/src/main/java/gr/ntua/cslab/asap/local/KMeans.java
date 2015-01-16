@@ -56,7 +56,7 @@ public class KMeans {
         // print out the cluster centroids
         Instances centroids = kmeans.getClusterCentroids();
         for (int i = 0; i < K; i++) {
-            System.out.print("Cluser " + i + " size: " + kmeans.getClusterSizes()[i]);
+            System.out.print("Cluster " + i + " size: " + kmeans.getClusterSizes()[i]);
             System.out.println(" Centroid: " + centroids.instance(i));
         }
 

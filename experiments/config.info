@@ -1,0 +1,9 @@
+### Data Points ###
+min_points=1000 	#min number of data points
+max_points=3000		#max num of data points
+points_step=1000 	#step increasing the data points
+min_clusters=1		#min num of clusters
+max_clusters=3		#max num of clusters
+clusters_step=1		#step of increasing the clusters	
+synth_clusters_data_dir=~/Data/synth_clusters
+

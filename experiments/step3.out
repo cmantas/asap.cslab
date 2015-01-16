@@ -1,0 +1,182 @@
+Running on hadoop, using /etc/hadoop/bin/hadoop and HADOOP_CONF_DIR=
+MAHOUT-JOB: /etc/mahout-distribution-0.9/mahout-examples-0.9-job.jar
+15/01/16 18:01:12 INFO common.AbstractJob: Command line arguments: {--clustering=null, --clusters=[/tmp/my_mahout_synth/what_is_this], --convergenceDelta=[0.5], --distanceMeasure=[org.apache.mahout.common.distance.CosineDistanceMeasure], --endPhase=[2147483647], --input=[/tmp/my_mahout_synth/my_synthetic_seq], --maxIter=[5], --method=[mapreduce], --numClusters=[3], --output=[/tmp/my_mahout_synth/clustering_raw_output], --overwrite=null, --startPhase=[0], --tempDir=[temp]}
+15/01/16 18:01:13 INFO common.HadoopUtil: Deleting /tmp/my_mahout_synth/clustering_raw_output
+15/01/16 18:01:13 INFO common.HadoopUtil: Deleting /tmp/my_mahout_synth/what_is_this
+15/01/16 18:01:13 INFO zlib.ZlibFactory: Successfully loaded & initialized native-zlib library
+15/01/16 18:01:13 INFO compress.CodecPool: Got brand-new compressor [.deflate]
+15/01/16 18:01:13 INFO kmeans.RandomSeedGenerator: Wrote 3 Klusters to /tmp/my_mahout_synth/what_is_this/part-randomSeed
+15/01/16 18:01:13 INFO kmeans.KMeansDriver: Input: /tmp/my_mahout_synth/my_synthetic_seq Clusters In: /tmp/my_mahout_synth/what_is_this/part-randomSeed Out: /tmp/my_mahout_synth/clustering_raw_output
+15/01/16 18:01:13 INFO kmeans.KMeansDriver: convergence: 0.5 max Iterations: 5
+15/01/16 18:01:13 INFO compress.CodecPool: Got brand-new decompressor [.deflate]
+15/01/16 18:01:13 INFO Configuration.deprecation: session.id is deprecated. Instead, use dfs.metrics.session-id
+15/01/16 18:01:13 INFO jvm.JvmMetrics: Initializing JVM Metrics with processName=JobTracker, sessionId=
+15/01/16 18:01:14 INFO input.FileInputFormat: Total input paths to process : 1
+15/01/16 18:01:14 INFO mapreduce.JobSubmitter: number of splits:1
+15/01/16 18:01:14 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_local1759556072_0001
+15/01/16 18:01:14 WARN conf.Configuration: file:/etc/hadoop/data/temp_dir/mapred/staging/cmantas1759556072/.staging/job_local1759556072_0001/job.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+15/01/16 18:01:14 WARN conf.Configuration: file:/etc/hadoop/data/temp_dir/mapred/staging/cmantas1759556072/.staging/job_local1759556072_0001/job.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+15/01/16 18:01:14 WARN conf.Configuration: file:/etc/hadoop/data/temp_dir/mapred/local/localRunner/cmantas/job_local1759556072_0001/job_local1759556072_0001.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+15/01/16 18:01:14 WARN conf.Configuration: file:/etc/hadoop/data/temp_dir/mapred/local/localRunner/cmantas/job_local1759556072_0001/job_local1759556072_0001.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+15/01/16 18:01:14 INFO mapreduce.Job: The url to track the job: http://localhost:8080/
+15/01/16 18:01:14 INFO mapreduce.Job: Running job: job_local1759556072_0001
+15/01/16 18:01:14 INFO mapred.LocalJobRunner: OutputCommitter set in config null
+15/01/16 18:01:14 INFO mapred.LocalJobRunner: OutputCommitter is org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter
+15/01/16 18:01:14 INFO mapred.LocalJobRunner: Waiting for map tasks
+15/01/16 18:01:14 INFO mapred.LocalJobRunner: Starting task: attempt_local1759556072_0001_m_000000_0
+15/01/16 18:01:14 INFO mapred.Task:  Using ResourceCalculatorProcessTree : [ ]
+15/01/16 18:01:14 INFO mapred.MapTask: Processing split: hdfs://localhost:9000/tmp/my_mahout_synth/my_synthetic_seq:0+112178
+15/01/16 18:01:14 INFO mapred.MapTask: Map output collector class = org.apache.hadoop.mapred.MapTask$MapOutputBuffer
+15/01/16 18:01:14 INFO mapred.MapTask: (EQUATOR) 0 kvi 26214396(104857584)
+15/01/16 18:01:14 INFO mapred.MapTask: mapreduce.task.io.sort.mb: 100
+15/01/16 18:01:14 INFO mapred.MapTask: soft limit at 83886080
+15/01/16 18:01:14 INFO mapred.MapTask: bufstart = 0; bufvoid = 104857600
+15/01/16 18:01:14 INFO mapred.MapTask: kvstart = 26214396; length = 6553600
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: 
+15/01/16 18:01:15 INFO mapred.MapTask: Starting flush of map output
+15/01/16 18:01:15 INFO mapred.MapTask: Spilling map output
+15/01/16 18:01:15 INFO mapred.MapTask: bufstart = 0; bufend = 603; bufvoid = 104857600
+15/01/16 18:01:15 INFO mapred.MapTask: kvstart = 26214396(104857584); kvend = 26214388(104857552); length = 9/6553600
+15/01/16 18:01:15 INFO mapred.MapTask: Finished spill 0
+15/01/16 18:01:15 INFO mapred.Task: Task:attempt_local1759556072_0001_m_000000_0 is done. And is in the process of committing
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: map
+15/01/16 18:01:15 INFO mapred.Task: Task 'attempt_local1759556072_0001_m_000000_0' done.
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: Finishing task: attempt_local1759556072_0001_m_000000_0
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: map task executor complete.
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: Waiting for reduce tasks
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: Starting task: attempt_local1759556072_0001_r_000000_0
+15/01/16 18:01:15 INFO mapred.Task:  Using ResourceCalculatorProcessTree : [ ]
+15/01/16 18:01:15 INFO mapred.ReduceTask: Using ShuffleConsumerPlugin: org.apache.hadoop.mapreduce.task.reduce.Shuffle@1af1969a
+15/01/16 18:01:15 INFO reduce.MergeManagerImpl: MergerManager: memoryLimit=333971456, maxSingleShuffleLimit=83492864, mergeThreshold=220421168, ioSortFactor=10, memToMemMergeOutputsThreshold=10
+15/01/16 18:01:15 INFO reduce.EventFetcher: attempt_local1759556072_0001_r_000000_0 Thread started: EventFetcher for fetching Map Completion Events
+15/01/16 18:01:15 INFO reduce.LocalFetcher: localfetcher#1 about to shuffle output of map attempt_local1759556072_0001_m_000000_0 decomp: 614 len: 618 to MEMORY
+15/01/16 18:01:15 INFO reduce.InMemoryMapOutput: Read 614 bytes from map-output for attempt_local1759556072_0001_m_000000_0
+15/01/16 18:01:15 INFO reduce.MergeManagerImpl: closeInMemoryFile -> map-output of size: 614, inMemoryMapOutputs.size() -> 1, commitMemory -> 0, usedMemory ->614
+15/01/16 18:01:15 INFO reduce.EventFetcher: EventFetcher is interrupted.. Returning
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: 1 / 1 copied.
+15/01/16 18:01:15 INFO reduce.MergeManagerImpl: finalMerge called with 1 in-memory map-outputs and 0 on-disk map-outputs
+15/01/16 18:01:15 INFO mapred.Merger: Merging 1 sorted segments
+15/01/16 18:01:15 INFO mapred.Merger: Down to the last merge-pass, with 1 segments left of total size: 607 bytes
+15/01/16 18:01:15 INFO reduce.MergeManagerImpl: Merged 1 segments, 614 bytes to disk to satisfy reduce memory limit
+15/01/16 18:01:15 INFO reduce.MergeManagerImpl: Merging 1 files, 618 bytes from disk
+15/01/16 18:01:15 INFO reduce.MergeManagerImpl: Merging 0 segments, 0 bytes from memory into reduce
+15/01/16 18:01:15 INFO mapred.Merger: Merging 1 sorted segments
+15/01/16 18:01:15 INFO mapred.Merger: Down to the last merge-pass, with 1 segments left of total size: 607 bytes
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: 1 / 1 copied.
+15/01/16 18:01:15 INFO Configuration.deprecation: mapred.skip.on is deprecated. Instead, use mapreduce.job.skiprecords
+15/01/16 18:01:15 INFO mapreduce.Job: Job job_local1759556072_0001 running in uber mode : false
+15/01/16 18:01:15 INFO mapreduce.Job:  map 100% reduce 0%
+15/01/16 18:01:15 INFO mapred.Task: Task:attempt_local1759556072_0001_r_000000_0 is done. And is in the process of committing
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: 1 / 1 copied.
+15/01/16 18:01:15 INFO mapred.Task: Task attempt_local1759556072_0001_r_000000_0 is allowed to commit now
+15/01/16 18:01:15 INFO output.FileOutputCommitter: Saved output of task 'attempt_local1759556072_0001_r_000000_0' to hdfs://localhost:9000/tmp/my_mahout_synth/clustering_raw_output/clusters-1/_temporary/0/task_local1759556072_0001_r_000000
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: reduce > reduce
+15/01/16 18:01:15 INFO mapred.Task: Task 'attempt_local1759556072_0001_r_000000_0' done.
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: Finishing task: attempt_local1759556072_0001_r_000000_0
+15/01/16 18:01:15 INFO mapred.LocalJobRunner: reduce task executor complete.
+15/01/16 18:01:16 INFO mapreduce.Job:  map 100% reduce 100%
+15/01/16 18:01:16 INFO mapreduce.Job: Job job_local1759556072_0001 completed successfully
+15/01/16 18:01:16 INFO mapreduce.Job: Counters: 38
+	File System Counters
+		FILE: Number of bytes read=48358538
+		FILE: Number of bytes written=49219056
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=453792
+		HDFS: Number of bytes written=4218
+		HDFS: Number of read operations=66
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=20
+	Map-Reduce Framework
+		Map input records=3000
+		Map output records=3
+		Map output bytes=603
+		Map output materialized bytes=618
+		Input split bytes=123
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=3
+		Reduce shuffle bytes=618
+		Reduce input records=3
+		Reduce output records=3
+		Spilled Records=6
+		Shuffled Maps =1
+		Failed Shuffles=0
+		Merged Map outputs=1
+		GC time elapsed (ms)=0
+		CPU time spent (ms)=0
+		Physical memory (bytes) snapshot=0
+		Virtual memory (bytes) snapshot=0
+		Total committed heap usage (bytes)=630194176
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=112178
+	File Output Format Counters 
+		Bytes Written=686
+15/01/16 18:01:16 INFO kmeans.KMeansDriver: Clustering data
+15/01/16 18:01:16 INFO kmeans.KMeansDriver: Running Clustering
+15/01/16 18:01:16 INFO kmeans.KMeansDriver: Input: /tmp/my_mahout_synth/my_synthetic_seq Clusters In: /tmp/my_mahout_synth/clustering_raw_output Out: /tmp/my_mahout_synth/clustering_raw_output
+15/01/16 18:01:16 INFO jvm.JvmMetrics: Cannot initialize JVM Metrics with processName=JobTracker, sessionId= - already initialized
+15/01/16 18:01:16 INFO input.FileInputFormat: Total input paths to process : 1
+15/01/16 18:01:16 INFO mapreduce.JobSubmitter: number of splits:1
+15/01/16 18:01:16 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_local1910914091_0002
+15/01/16 18:01:16 WARN conf.Configuration: file:/etc/hadoop/data/temp_dir/mapred/staging/cmantas1910914091/.staging/job_local1910914091_0002/job.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+15/01/16 18:01:16 WARN conf.Configuration: file:/etc/hadoop/data/temp_dir/mapred/staging/cmantas1910914091/.staging/job_local1910914091_0002/job.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+15/01/16 18:01:16 WARN conf.Configuration: file:/etc/hadoop/data/temp_dir/mapred/local/localRunner/cmantas/job_local1910914091_0002/job_local1910914091_0002.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+15/01/16 18:01:16 WARN conf.Configuration: file:/etc/hadoop/data/temp_dir/mapred/local/localRunner/cmantas/job_local1910914091_0002/job_local1910914091_0002.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+15/01/16 18:01:16 INFO mapreduce.Job: The url to track the job: http://localhost:8080/
+15/01/16 18:01:16 INFO mapreduce.Job: Running job: job_local1910914091_0002
+15/01/16 18:01:16 INFO mapred.LocalJobRunner: OutputCommitter set in config null
+15/01/16 18:01:16 INFO mapred.LocalJobRunner: OutputCommitter is org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter
+15/01/16 18:01:16 INFO mapred.LocalJobRunner: Waiting for map tasks
+15/01/16 18:01:16 INFO mapred.LocalJobRunner: Starting task: attempt_local1910914091_0002_m_000000_0
+15/01/16 18:01:16 INFO mapred.Task:  Using ResourceCalculatorProcessTree : [ ]
+15/01/16 18:01:16 INFO mapred.MapTask: Processing split: hdfs://localhost:9000/tmp/my_mahout_synth/my_synthetic_seq:0+112178
+15/01/16 18:01:17 INFO mapred.LocalJobRunner: 
+15/01/16 18:01:17 INFO mapred.Task: Task:attempt_local1910914091_0002_m_000000_0 is done. And is in the process of committing
+15/01/16 18:01:17 INFO mapred.LocalJobRunner: 
+15/01/16 18:01:17 INFO mapred.Task: Task attempt_local1910914091_0002_m_000000_0 is allowed to commit now
+15/01/16 18:01:17 INFO output.FileOutputCommitter: Saved output of task 'attempt_local1910914091_0002_m_000000_0' to hdfs://localhost:9000/tmp/my_mahout_synth/clustering_raw_output/clusteredPoints/_temporary/0/task_local1910914091_0002_m_000000
+15/01/16 18:01:17 INFO mapred.LocalJobRunner: map
+15/01/16 18:01:17 INFO mapred.Task: Task 'attempt_local1910914091_0002_m_000000_0' done.
+15/01/16 18:01:17 INFO mapred.LocalJobRunner: Finishing task: attempt_local1910914091_0002_m_000000_0
+15/01/16 18:01:17 INFO mapred.LocalJobRunner: map task executor complete.
+15/01/16 18:01:17 INFO mapreduce.Job: Job job_local1910914091_0002 running in uber mode : false
+15/01/16 18:01:17 INFO mapreduce.Job:  map 100% reduce 0%
+15/01/16 18:01:17 INFO mapreduce.Job: Job job_local1910914091_0002 completed successfully
+15/01/16 18:01:17 INFO mapreduce.Job: Counters: 23
+	File System Counters
+		FILE: Number of bytes read=48358538
+		FILE: Number of bytes written=49217836
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=341220
+		HDFS: Number of bytes written=234257
+		HDFS: Number of read operations=62
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=20
+	Map-Reduce Framework
+		Map input records=3000
+		Map output records=3000
+		Input split bytes=123
+		Spilled Records=0
+		Failed Shuffles=0
+		Merged Map outputs=0
+		GC time elapsed (ms)=0
+		CPU time spent (ms)=0
+		Physical memory (bytes) snapshot=0
+		Virtual memory (bytes) snapshot=0
+		Total committed heap usage (bytes)=317718528
+	File Input Format Counters 
+		Bytes Read=112178
+	File Output Format Counters 
+		Bytes Written=231417
+15/01/16 18:01:17 INFO driver.MahoutDriver: Program took 5235 ms (Minutes: 0.08725)
