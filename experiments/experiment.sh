@@ -23,4 +23,15 @@ experiment () {
 }
 
 
+check (){
+  e=$( cat $1 | grep Exception)
+  t=$( echo $e | wc -c)
+  if [ "$e" != "" ]; then
+    echo $e
+    exit
+  fi
+}
+
+
+
 
