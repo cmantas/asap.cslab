@@ -22,6 +22,5 @@ log/
 # Data
 *.tbl
 *.csv
-*.results
 *.out
-experiments/input/*
+*.resuts
