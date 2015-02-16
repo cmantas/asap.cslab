@@ -23,7 +23,7 @@ sed -i "s/#.*YARN_HEAPSIZE.*/YARN_HEAPSIZE=${heapsize}/g" $yarn_env
 ############# PATH integration  ##########################
 if [[ $(hadoop 2>&1 >/dev/null) =~ .*"not found".* ]]; then 
 	export PATH="$PATH:$hadoop_dir/bin:$hadoop_dir/sbin";
-	echo PATH="$PATH" > ~/.bahsrc
+	echo PATH="$PATH" >> ~/.bahsrc
 fi
 
 ################ core-site.xml ###############################

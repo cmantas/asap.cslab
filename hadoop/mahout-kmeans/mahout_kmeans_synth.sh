@@ -1,12 +1,12 @@
-if [[ $# != 2 ]]; then
-	echo Expected parameters: Input, K
+if [[ $# != 3 ]]; then
+	echo Expected parameters: Input, K, iterations
 	exit
 fi
 
 
 input=$1
 K=$2
-max_iterations=5
+max_iterations=$3
 
 
 WORK_DIR=/tmp/my_mahout_synth
@@ -53,3 +53,6 @@ echo "[STEP 2/2] Clusterdump"
 echo "[RESULT ]"
 
 head ${WORK_DIR}/clusterdump_result
+
+rm -r ${WORK_DIR}
+rm step*.out

@@ -1,6 +1,0 @@
-#compile from hadoop and create jar
-bin/hadoop com.sun.tools.javac.Main WordCount.java 
-jar cf wc.jar WordCount*.class
-
-#run jar
-bin/hadoop jar wc.jar WordCount input_path output_path

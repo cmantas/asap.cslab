@@ -6,4 +6,4 @@ min_clusters=1		#min num of clusters
 max_clusters=3		#max num of clusters
 clusters_step=1		#step of increasing the clusters	
 synth_clusters_data_dir=~/Data/synth_clusters
-
+max_iterations=10
