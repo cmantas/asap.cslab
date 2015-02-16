@@ -5,5 +5,6 @@ all:
 
 sync:
 	git commit -am "sync"; git push; ssh imr_master "cd asap.cslab; git pull"
+	sync -r --delete /home/cmantas/bin/lib/* imr_master:/home/asap/bin/lib/
 
 	
