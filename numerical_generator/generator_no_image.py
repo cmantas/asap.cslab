@@ -12,17 +12,14 @@ from json import loads
 
 print argv
 
-min_points = argv[1]
-max_points = argv[2]
-points_step = argv[3]
-min_clusters = argv[4]
-max_clusters = argv[5]
-clusters_step = argv[6]
-out_dir = argv[7]
+min_points = int(argv[1])
+max_points = int(argv[2])
+points_step = int(argv[3])
+min_clusters = int(argv[4])
+max_clusters = int(argv[5])
+clusters_step = int(argv[6])
+out_dir = int(argv[7])
 
-config = loads(open("config.json", 'r').read())
-print config
-locals().update(config)
 
 #threshold for png construction
 image_threshold = 50000
