@@ -25,3 +25,4 @@ log/
 *.out
 *.resuts
 experiments/input/*
+experiments/tmp/*
