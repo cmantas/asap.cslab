@@ -20,10 +20,6 @@ max_clusters = argv[5]
 clusters_step = argv[6]
 out_dir = argv[7]
 
-config = loads(open("config.json", 'r').read())
-print config
-locals().update(config)
-
 #threshold for png construction
 image_threshold = 50000
 
