@@ -1,8 +1,0 @@
-if [[ $# != 3 ]]; then
-	echo Expected parameters: Input, Output, K
-	exit
-fi
-input=$1
-output$2
-K=$3
-echo $K

@@ -20,6 +20,7 @@ log/
 *.jar
 
 # Data
+*.tar.gz
 *.tbl
 *.csv
 *.out

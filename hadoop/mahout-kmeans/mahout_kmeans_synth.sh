@@ -39,7 +39,7 @@ echo "[STEP 1/2] K-Means"
     -c ${WORK_DIR}/what_is_this \
     -o ${WORK_DIR}/clustering_raw_output\
     -dm org.apache.mahout.common.distance.CosineDistanceMeasure \
-    -x ${max_iterations} -k ${K} -ow --clustering  &>step3.out
+    -x ${max_iterations} -k ${K} -ow --clustering  &>step1.out
 check step3.out
 
 echo "[STEP 2/2] Clusterdump"
@@ -47,7 +47,7 @@ echo "[STEP 2/2] Clusterdump"
     -i ${WORK_DIR}/clustering_raw_output/clusters-*-final \
     -o ${WORK_DIR}/clusterdump_result \
     -dt sequencefile -b 100 -n 20 --evaluate -dm org.apache.mahout.common.distance.CosineDistanceMeasure -sp 0 \
-    --pointsDir ${WORK_DIR}/clustering_raw_output/clusteredPoints &>step4.out
+    --pointsDir ${WORK_DIR}/clustering_raw_output/clusteredPoints &>step2.out
 
 
 echo "[RESULT ]"
