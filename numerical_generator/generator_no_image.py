@@ -18,7 +18,7 @@ points_step = int(argv[3])
 min_clusters = int(argv[4])
 max_clusters = int(argv[5])
 clusters_step = int(argv[6])
-out_dir = int(argv[7])
+out_dir = argv[7]
 
 
 #threshold for png construction
