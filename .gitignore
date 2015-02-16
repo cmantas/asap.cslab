@@ -24,3 +24,4 @@ log/
 *.csv
 *.out
 *.resuts
+experiments/input/*
