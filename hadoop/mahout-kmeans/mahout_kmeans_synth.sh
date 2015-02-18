@@ -1,27 +1,9 @@
-if [[ $# != 3 ]]; then
-	echo Expected parameters: Input, K, iterations
-	exit
-fi
 
+my_dir="$(dirname "$0")"
 
-input=$1
-K=$2
-max_iterations=$3
+source $my_dir/common.sh
 
-
-WORK_DIR=/tmp/my_mahout_synth
 PARSER_JAR=~/bin/lib/CSV2Seq.jar
-
-check (){
-  e=$( cat $1 | grep Exception)
-  t=$( echo $e | wc -c)
-  if [ "$e" != "" ]; then
-    echo $e
-    exit
-  fi
-}
-
-rm -rf $WORK_DIR; mkdir -p ${WORK_DIR}
 
 
 echo "[STEP 0/2] CSVs to Sequence File"

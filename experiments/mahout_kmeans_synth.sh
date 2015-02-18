@@ -1,7 +1,9 @@
 #!/bin/bash
 source config.info 	#loads the parameters
 source experiment.sh	#loads the experiment function
-results_file="mahout_synt_kmeans_experiments.results"
+results_file="mahout_kmeans_synth_experiments.results"
+
+echo  $0
 
 #first create the hdfs input directory
 hdfs dfs -mkdir -p ./input/kmeans_input
@@ -18,10 +20,11 @@ for ((points=min_points; points<=max_points; points+=points_step)); do
 		#put input files in hdfs (ignore failure)
 		#echo Putting $input to HDFS
 		hdfs dfs -put  ${input} ./input/kmeans_input &>/dev/null
-		EXPERIMENT_NAME="Mahout synth KMeans: $points points, K=$clusters"
-		OPERATOR_OUTPUT="mahout_synth_kmeans.out"
+		EXPERIMENT_NAME="mahout synth KMeans: $points points, K=$clusters"
+		OPERATOR_OUTPUT="mahout_kmeans_synth.out"
 		EXPERIMENT_OUTPUT=$results_file		
 		hadoop_input="./input/kmeans_input/$fname"
+		echo ../hadoop/mahout-kmeans/mahout_kmeans_synth.sh $hadoop_input $clusters $max_iterations
 		experiment ../hadoop/mahout-kmeans/mahout_kmeans_synth.sh $hadoop_input $clusters $max_iterations
 		check $OPERATOR_OUTPUT
 	done

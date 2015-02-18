@@ -11,7 +11,7 @@ WORK_DIR=tmp
 
 
 echo "creating work directory at ${WORK_DIR}"
-rm -rf $WORK_DIR; mkdir -p ${WORK_DIR}/reuters-sgm
+rm -rf $WORK_DIR; mkdir -p ${WORK_DIR}
 
 check (){
 	e=$( cat $1 | grep Exception)
