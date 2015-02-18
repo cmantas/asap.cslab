@@ -3,7 +3,6 @@ source config.info 	#loads the parameters
 source experiment.sh	#loads the experiment function
 results_file="mahout_kmeans_synth_experiments.results"
 
-echo  $0
 
 #first create the hdfs input directory
 hdfs dfs -mkdir -p ./input/kmeans_input

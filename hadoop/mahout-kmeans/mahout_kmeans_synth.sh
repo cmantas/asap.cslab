@@ -1,7 +1,4 @@
-
-my_dir="$(dirname "$0")"
-
-source $my_dir/common.sh
+source $(dirname $0)/common.sh
 
 PARSER_JAR=~/bin/lib/CSV2Seq.jar
 
