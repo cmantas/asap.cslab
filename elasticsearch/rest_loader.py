@@ -5,7 +5,8 @@ import requests, codecs
 from json import loads
 from threading import Thread
 from os import mkdir
-from sys import argv, stderr
+from sys import argv, stderr, stdout
+
 
 #default values
 total = 2
@@ -49,6 +50,11 @@ else:
     except: pass
 
 
+def myprint(*args):
+    for a in args:
+        stdout.write(str(a))
+    stdout.flush()
+
 def process_and_write(text):
     global windows_counter, docs_counter
     r_dict = loads(text)
@@ -69,6 +75,7 @@ def process_and_write(text):
         file.close()
     windows_counter += 1
 
+print "Will try to read {0} Total Documents with a window of {1}".format(total, window)
 
 ## Iterate and fetch the documents
 current = 0; writer_thread = None
@@ -76,9 +83,10 @@ while current<total:
     if window>(total-current): window=(total-current)
     payload = {'q': '*', 'pretty': "true", "size": window, "from": current}
     current += window
-
     r = requests.get("http://imr41.internetmemory.org:9200/europeannews/resource/_search",
                      params=payload, proxies=proxies)
+    myprint('.')
+
 
     ###################### async write to disk ######################
     #join the prev writer thread
@@ -91,4 +99,4 @@ while current<total:
 if writer_thread != None:writer_thread.join()
 
 #DONE
-stderr.write("DONE reading "+str(docs_counter)+" docs in "+str(windows_counter)+" iterations \n")
+stderr.write("\nDONE reading "+str(docs_counter)+" docs in "+str(windows_counter)+" iterations \n")
