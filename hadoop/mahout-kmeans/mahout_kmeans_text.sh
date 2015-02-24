@@ -23,9 +23,12 @@ echo "[STEP 3/4] K-Means"
     -ow --clustering  &>step3.out
 check step3.out
 
+#little hack - investigate further
+final_clusters=$(hdfs dfs -ls ${WORK_DIR}clustering_raw_output/ | grep final | awk '{print $8}')
+
 echo "[STEP 4/4] Clusterdump"
   mahout clusterdump \
-    -i ${WORK_DIR}/clustering_raw_output/clusters-*-final \
+    -i ${final_clusters} \
     -o ${WORK_DIR}/clusterdump_result \
     -d ${WORK_DIR}/sparce_matrix_files/dictionary.file-0 \
     -dt sequencefile -b 100 -n 20 --evaluate -dm org.apache.mahout.common.distance.CosineDistanceMeasure -sp 0 \
