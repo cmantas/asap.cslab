@@ -11,7 +11,7 @@ points_step=1000 	#step increasing the data points
 synth_clusters_data_dir=~/Data/synth_clusters
 
 ### TEXT ###
-proxy="proxy localhost:1234" #comment out for execution in IMR
+#proxy="proxy localhost:1234" #comment out for execution in IMR
 max_documents=200
 documents_step=50
 window=$documents_step
@@ -20,7 +20,7 @@ documents_data_dir=~/Data/ElasticSearch_text_docs
 
 ####check function####
 check (){
-        e=$( cat $1 | grep Exception)
+        e=$( cat $1 | grep -E "Exception|ERROR" )
         t=$( echo $e | wc -c)
         if [ "$e" != "" ]; then
 	        echo $e
