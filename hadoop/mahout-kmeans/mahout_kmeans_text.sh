@@ -2,7 +2,7 @@ source $(dirname $0)/common.sh
 
 
 echo "[STEP 1/4] Converting to Sequence Files from Directory"
-mahout seqdirectory -i ${input} -o ${WORK_DIR}/sequence_files -c UTF-8 -chunk 64 -xm sequential &>step1.out
+mahout seqdirectory -i ${input} -o ${WORK_DIR}/sequence_files -c UTF-8 -chunk 64 &>step1.out
 check step1.out
 
 
@@ -24,16 +24,17 @@ echo "[STEP 3/4] K-Means"
 check step3.out
 
 #little hack - investigate further
-final_clusters=$(hdfs dfs -ls ${WORK_DIR}clustering_raw_output/ | grep final | awk '{print $8}')
+final_clusters=$(hdfs dfs -ls ${WORK_DIR}/clustering_raw_output/ | grep final | awk '{print $8}')
 
 echo "[STEP 4/4] Clusterdump"
   mahout clusterdump \
     -i ${final_clusters} \
-    -o ${WORK_DIR}/clusterdump_result \
+    -o clusterdump_result \
     -d ${WORK_DIR}/sparce_matrix_files/dictionary.file-0 \
     -dt sequencefile -b 100 -n 20 --evaluate -dm org.apache.mahout.common.distance.CosineDistanceMeasure -sp 0 \
     --pointsDir ${WORK_DIR}/clustering_raw_output/clusteredPoints &>step4.out
 check step4.out
 
 echo "[RESULT  ]"
- head ${WORK_DIR}/clusterdump_result
+ head clusterdump_result
+ rm clusterdump_result
