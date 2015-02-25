@@ -1,11 +1,13 @@
-input=/mnt/DataDisk/Datasets/ElasticSearch_text_docs/
-output=""
-iterations=10
-clusters=5
+
+
+
+input=$1
+iterations=$3
+clusters=$2
 
 min_frequency=10
 
-WEKA=../weka.jar
+WEKA=~/bin/lib/weka.jar
 WD=/tmp/kmeans_text_weka
 mkdir -p $WD
 
@@ -27,19 +29,18 @@ java -cp ${WEKA} weka.filters.unsupervised.attribute.StringToWordVector \
 	     -i ${WD}/data.arff \
 	     -o ${WD}/tf_idf_data.arff
 
-echo "STEP 1/3: K-Means"
-if [ $output ];then
-	output=${ouput}/clusters.txt
-else
-	output=clusters.txt
-fi
+echo "STEP 3/3: K-Means"
 
 java -cp ${WEKA} weka.clusterers.SimpleKMeans \
 	     -N ${clusters} \
 	     -I ${iterations}  \
 	     -A "weka.core.EuclideanDistance -R first-last" \
 	     -t ${WD}/tf_idf_data.arff \
-	     > ${output}
+	     > clusters.txt
+head -n 30 clusters.txt
+rm clusters.txt	
+
+
 
 
 

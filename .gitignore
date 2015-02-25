@@ -24,6 +24,6 @@ log/
 *.tbl
 *.csv
 *.out
-*.resuts
+*.results
 experiments/input/*
 experiments/tmp/*
