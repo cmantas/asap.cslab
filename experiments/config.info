@@ -6,7 +6,7 @@ max_iterations=10
 
 ### SYNTHETIC ###
 min_points=1000 	#min number of data points
-max_points=1000		#max num of data points
+max_points=2000		#max num of data points
 points_step=1000 	#step increasing the data points
 synth_clusters_data_dir=~/Data/synth_clusters
 
@@ -21,7 +21,6 @@ documents_data_dir=~/Data/ElasticSearch_text_docs
 ####check function####
 check (){
         e=$( cat $1 | grep -E "Exception|ERROR" )
-        t=$( echo $e | wc -c)
         if [ "$e" != "" ]; then
 	        echo $e
 	        exit
