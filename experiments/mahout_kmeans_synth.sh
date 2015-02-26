@@ -23,7 +23,6 @@ for ((points=min_points; points<=max_points; points+=points_step)); do
 		OPERATOR_OUTPUT=$output_file
 		EXPERIMENT_OUTPUT=$results_file		
 		hadoop_input="./input/kmeans_input/$fname"
-		echo ../hadoop/mahout-kmeans/mahout_kmeans_synth.sh $hadoop_input $clusters $max_iterations
 		experiment ../hadoop/mahout-kmeans/mahout_kmeans_synth.sh $hadoop_input $clusters $max_iterations
 		check $output_file
 	done
