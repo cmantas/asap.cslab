@@ -4,19 +4,16 @@ from os import listdir
 from tokenize import generate_tokens
 
 
-def store_experiment:
-    
 
 def handle_line(line):
     tokens = generate_tokens(line)
     s = line.split(":")
     exp_name = s[0]
-    r = s[1].split(',')
-    size = r[0].split()[1]
-    k = r[1].split()[1]
-    time = r[2].split()[0]
-    print exp_name, size, k , time
-
+    data = s[1].split(',')
+    for r in data:
+        key = r.split()[0].strip()
+        value= r.split()[1].strip()
+        print key, value
 
 
 resultsdir = "../results"
