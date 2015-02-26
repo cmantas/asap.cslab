@@ -1,20 +1,20 @@
 ### KMEANS  ###
 min_clusters=1		#min num of clusters
-max_clusters=1		#max num of clusters
-clusters_step=1		#step of increasing the clusters	
-max_iterations=10
+max_clusters=10		#max num of clusters
+clusters_step=3		#step of increasing the clusters	
+max_iterations=100
 
 ### SYNTHETIC ###
-min_points=1000 	#min number of data points
-max_points=2000		#max num of data points
-points_step=1000 	#step increasing the data points
+min_points=20000 	#min number of data points
+max_points=200000		#max num of data points
+points_step=20000 	#step increasing the data points
 synth_clusters_data_dir=~/Data/synth_clusters
 
 ### TEXT ###
 #proxy="proxy localhost:1234" #comment out for execution in IMR
-max_documents=200
-documents_step=50
-window=$documents_step
+max_documents=100000
+documents_step=2000
+window=2000
 documents_data_dir=~/Data/ElasticSearch_text_docs
 
 

@@ -11,7 +11,6 @@ from os.path import isfile
 from os import makedirs
 from json import loads
 
-print argv
 
 min_points = argv[1]
 max_points = argv[2]

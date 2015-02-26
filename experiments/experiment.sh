@@ -12,7 +12,7 @@ experiment () {
 	date2=$(date +"%s")
        	diff=$(($date2-$date1))
 
-	echo $EXPERIMENT_NAME, $diff sec >>$EXPERIMENT_OUTPUT
+	echo $EXPERIMENT_NAME, time $diff >>$EXPERIMENT_OUTPUT
 	
 	#reset variables
 	EXPERIMENT_NAME=""

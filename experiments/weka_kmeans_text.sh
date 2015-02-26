@@ -1,7 +1,7 @@
 #!/bin/bash
 source  $(dirname $0)/config.info 	#loads the parameters
 source  $(dirname $0)/experiment.sh	#loads the experiment function
-results_file="weka_kmeans_text_experiments.results"
+results_file="results/weka_kmeans_text_experiments.results"
 operator_out="weka_kmeans_text.out"
 rm $operator_out &>/dev/null
 
@@ -18,7 +18,7 @@ for ((docs=documents_step; docs<=max_documents; docs+=documents_step)); do
 		
 		#link files to the virtual dir
 		ln -s $input_dir/$file $virtual_dir/text/$file
-		EXPERIMENT_NAME="weka text KMeans: $docs documents, K=$clusters"
+		EXPERIMENT_NAME="weka_kmeans_text: $docs documents, K=$clusters"
 		OPERATOR_OUTPUT=$operator_out
 		EXPERIMENT_OUTPUT=$results_file		
 		experiment  $(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $virtual_dir $clusters $max_iterations

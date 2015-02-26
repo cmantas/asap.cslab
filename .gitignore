@@ -27,3 +27,4 @@ log/
 *.results
 experiments/input/*
 experiments/tmp/*
+*.db
