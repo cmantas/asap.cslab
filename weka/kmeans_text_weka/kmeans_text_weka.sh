@@ -41,7 +41,4 @@ head -n 30 clusters.txt
 rm clusters.txt	
 
 
-
-
-
-#rm -r $WD
+rm -r $WD

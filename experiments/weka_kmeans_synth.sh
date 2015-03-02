@@ -12,5 +12,6 @@ for ((points=min_points; points<=max_points; points+=points_step)); do
 		OPERATOR_OUTPUT="weka_kmeans_synth.out"
 		EXPERIMENT_OUTPUT=$results_file
 		experiment java -jar ~/bin/lib/kmeans_weka.jar $input $clusters
+
 	done
 done
