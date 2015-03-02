@@ -9,23 +9,18 @@ from math import sqrt
 from sys import maxint, argv
 from os.path import isfile
 from os import makedirs
-from json import loads
+import argparse
 
+parser = argparse.ArgumentParser(description='generates a .csv file with 2d numerical points clustered'
+                                             ' around the centroids with a random distance of a gaussian distribution')
+parser.add_argument("-n","--number", help="how many points to plot",type=int, required=True)
+parser.add_argument("--centroids", '-c', type=int, help="the number of centroids", required=True)
+parser.add_argument("--outdir", '-o', help="the output directory", required=True)
+args = parser.parse_args()
 
-min_points = argv[1]
-max_points = argv[2]
-points_step = argv[3]
-min_clusters = argv[4]
-max_clusters = argv[5]
-clusters_step = argv[6]
-out_dir = argv[7]
-
-config = loads(open("config.json", 'r').read())
-print config
-locals().update(config)
 
 #threshold for png construction
-image_threshold = 50000
+image_threshold = 0
 
 #2d gauss generator
 def gauss_2d(mean, sd, points=1):
@@ -105,7 +100,6 @@ def generate_points(num_points, clusters, out_dir):
         text_file.write(info)
 
 
-for points in range(min_points, max_points+1, points_step):
-    for clusters in range(min_clusters, max_clusters+1, clusters_step):
-        print "Points: %d, clusters: %d" % (points, clusters)
-        generate_points(points, clusters, out_dir)
+
+
+generate_points(args.number, args.centroids, args.outdir)

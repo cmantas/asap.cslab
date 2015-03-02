@@ -13,18 +13,24 @@ rm -f results_file 2>/dev/null
 
 for ((points=min_points; points<=max_points; points+=points_step)); do   
 	for((clusters=min_clusters; clusters<=max_clusters; clusters+=clusters_step)); do
+		#generate the data (if not exists)              
+	        ../numerical_generator/generator.py -n $points -c $clusters -o ~/Data/synth_clusters
 		fname=${points}_points_${clusters}_clusters.csv
 		input=~/Data/synth_clusters/$fname
 		
 		#put input files in hdfs (ignore failure)
 		#echo Putting $input to HDFS
-		hdfs dfs -put  ${input} ./input/kmeans_input &>/dev/null
-		EXPERIMENT_NAME="mahout_kmeans_synth: points $points, K $clusters"
+		hdfs dfs -put  -f ${input} ./input/kmeans_input &>/dev/null
+		EXPERIMENT_NAME="mahout_kmeans_synth: points $points , K $clusters"
 		OPERATOR_OUTPUT=$output_file
 		EXPERIMENT_OUTPUT=$results_file		
 		hadoop_input="./input/kmeans_input/$fname"
 		experiment ../hadoop/mahout-kmeans/mahout_kmeans_synth.sh $hadoop_input $clusters $max_iterations
 		check $output_file
+                
+		#delete the data for the next run
+		rm $input
+
 	done
 done
 

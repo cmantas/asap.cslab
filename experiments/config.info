@@ -1,3 +1,6 @@
+## GENERIC ###
+runs=5 			#how many runs per experiment
+
 ### KMEANS  ###
 min_clusters=1		#min num of clusters
 max_clusters=21		#max num of clusters
@@ -5,9 +8,9 @@ clusters_step=5		#step of increasing the clusters
 max_iterations=50
 
 ### SYNTHETIC ###
-min_points=100000 	#min number of data points
-max_points=10000000		#max num of data points
-points_step=100000 	#step increasing the data points
+min_points=200000 	#min number of data points
+max_points=2000000		#max num of data points
+points_step=200000 	#step increasing the data points
 synth_clusters_data_dir=~/Data/synth_clusters
 
 ### TEXT ###
@@ -20,10 +23,21 @@ documents_data_dir=~/Data/ElasticSearch_text_docs
 
 ####check function####
 check (){
-        e=$( cat $1 | grep -E "Exception|ERROR" )
+        e=$( cat $1 | grep -E "Exception|ERROR:" )
         if [ "$e" != "" ]; then
 	        echo $e
 	        exit
 	fi
 }
 
+##### Create tables #######
+sqlite3 results.db <<EOF
+CREATE TABLE IF NOT EXISTS mahout_kmeans_text    
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, time INTEGER, date TIMESTAMP);
+CREATE TABLE IF NOT EXISTS weka_kmeans_text    
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, time INTEGER, date TIMESTAMP);
+CREATE TABLE IF NOT EXISTS mahout_kmeans_synth    
+(id INTEGER PRIMARY KEY AUTOINCREMENT, points INTEGER, k INTEGER, time INTEGER, date TIMESTAMP);
+CREATE TABLE IF NOT EXISTS weka_kmeans_synth    
+(id INTEGER PRIMARY KEY AUTOINCREMENT, points INTEGER, k INTEGER, time INTEGER, date TIMESTAMP);
+EOF

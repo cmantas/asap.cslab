@@ -8,10 +8,14 @@ def create_tables():
     query="CREATE TABLE IF NOT EXISTS {0}\
     (id INTEGER PRIMARY KEY AUTOINCREMENT, {1} INTEGER, {2} INTEGER, time INTEGER, date TIMESTAMP);"
 
-    c.execute(query.format("mahout_kmeans_text", "documents", "k"))
-    c.execute(query.format("weka_kmeans_text", "documents", "k"))
-    c.execute(query.format("mahout_kmeans_synth", "points", "k"))
-    c.execute(query.format("weka_kmeans_synth", "points", "k"))
+    q = query.format("mahout_kmeans_text", "documents", "k")
+    c.execute(q)
+    q = query.format("weka_kmeans_text", "documents", "k")
+    c.execute(q)
+    q = query.format("mahout_kmeans_synth", "points", "k")
+    c.execute(q)
+    q = query.format("weka_kmeans_synth", "points", "k")
+    c.execute(q)
     conn.commit()
 
 

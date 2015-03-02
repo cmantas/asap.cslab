@@ -1,5 +1,18 @@
+#!/usr/bin/env python
 __author__ = 'cmantas'
 import sqlite3
+import matplotlib.pyplot as plt
+import argparse
+
+parser = argparse.ArgumentParser(description='this is a description.')
+parser.add_argument("name", nargs='+', help="the name of the experiment to plot")
+parser.add_argument("-k", "-K", type=int, help="the K value of K-Means")
+args = parser.parse_args()
+
+exp_name = args.name
+k = args.k
+
+
 conn = sqlite3.connect('../results.db')
 c = conn.cursor()
 
@@ -19,7 +32,17 @@ def get_experiment(exp_name, k=None):
     else :
         query = "SELECT {0}, time FROM {1} WHERE k={2} ORDER BY {0}".format(data_name, exp_name,k)
     print query
+    points=[]; times=[]
     for row in c.execute(query):
-        print row
+        points.append(row[0])
+        times.append(row[1])
+    return points, times
 
-get_experiment("weka_kmeans_synth", 21)
+
+
+for exp_name in args.name:
+    points, times = get_experiment(exp_name, k)
+    plt.plot(points, times,  label=exp_name)
+
+plt.legend(loc=2);
+plt.show()
