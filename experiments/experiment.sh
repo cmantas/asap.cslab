@@ -12,7 +12,20 @@ experiment () {
 	date2=$(date +"%s")
        	diff=$(($date2-$date1))
 
+    #write to file
 	echo $EXPERIMENT_NAME, time $diff >>$EXPERIMENT_OUTPUT
+
+	# write to sqlite
+	table=$(echo $EXPERIMENT_NAME | awk '{ print $1}')
+	table=${table%":"}
+	data_name=$(echo $EXPERIMENT_NAME | awk '{ print $2}')
+	data_value=$(echo $EXPERIMENT_NAME | awk '{print $3}')
+	K=$(echo $EXPERIMENT_NAME | awk -vORS= '{ print $6}')
+	K=${K%","}
+
+	
+	sqlite3 results.db "INSERT INTO $table($data_name, K, time, date)
+	VALUES( $data_value, $K, $diff, CURRENT_TIMESTAMP);"
 	
 	#reset variables
 	EXPERIMENT_NAME=""

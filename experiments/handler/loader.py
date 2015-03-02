@@ -32,6 +32,8 @@ def handle_line(line):
     exp_name = s[0]
     data = {}
     for r in s[1].split(','):
+        if len(r.split())<2:
+            continue
         key = r.split()[0].strip()
         value = r.split()[1].strip()
         data[key] = value
@@ -54,8 +56,8 @@ for f in resultfiles:
 
 
 
-c.execute('SELECT * FROM mahout_kmeans_text')
-print c.fetchone()
+# c.execute('SELECT * FROM mahout_kmeans_synth')
+# print c.fetchone()
 
 
 
