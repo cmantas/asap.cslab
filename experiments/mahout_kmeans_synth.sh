@@ -29,6 +29,7 @@ for ((points=min_points; points<=max_points; points+=points_step)); do
 		check $output_file
                 
 		#delete the data for the next run
+		echo $input
 		rm $input
 
 	done

@@ -3,7 +3,7 @@
 __author__ = 'cmantas'
 
 from numpy.random import multivariate_normal, normal
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from random import randint
 from math import sqrt
 from sys import maxint, argv
