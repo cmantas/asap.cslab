@@ -29,13 +29,33 @@ def get_experiment(exp_name, k=None):
 
     if k is None:
         query = "SELECT {0}, AVG(time) FROM {1} GROUP BY {0}".format(data_name, exp_name)
-    else :
+    else:
         query = "SELECT {0}, time FROM {1} WHERE k={2} ORDER BY {0}".format(data_name, exp_name,k)
+        print query
     print query
     points=[]; times=[]
-    for row in c.execute(query):
-        points.append(row[0])
-        times.append(row[1])
+    rows = c.execute(query)
+    if k is None :
+        for row in rows:
+            points.append(row[0])
+            times.append(row[1])
+    else:
+        #find median value value for time
+        previous_point=0
+        current_times = []
+        for row in rows:
+            point = row[0]
+            print point
+            if point == previous_point:
+                current_times.append(row[1])
+            else:
+                if previous_point!=0:
+                    points.append(previous_point)
+                    current_times = sorted(current_times)
+                    times.append(current_times[len(current_times)/2] )
+                    current_times=[]
+                previous_point=point
+
     return points, times
 
 
