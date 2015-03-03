@@ -14,16 +14,25 @@ mkdir -p $virtual_dir/text
 for ((docs=documents_step; docs<=max_documents; docs+=documents_step)); do
         for((clusters=min_clusters; clusters<=max_clusters; clusters+=clusters_step)); do
 		file=$(((docs-documents_step)/documents_step))
-		
-		
+				
 		#link files to the virtual dir
 		ln -s $input_dir/$file $virtual_dir/text/$file 2>/dev/null
-		EXPERIMENT_NAME="weka_kmeans_text: documents $docs, K $clusters"
+
+		#convert to arff
+		$(dirname $0)/../weka/kmeans_text_weka/convert_text_weka.sh $virtual_dir >/dev/null
+
+		#tfidf
+		EXPERIMENT_NAME="weka_tfidf: documents $docs , K $clusters"
 		OPERATOR_OUTPUT=$operator_out
 		EXPERIMENT_OUTPUT=$results_file		
-		experiment  $(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $virtual_dir $clusters $max_iterations
-	
+		experiment $(dirname $0)/../weka/kmeans_text_weka/tfidf_text_weka.sh
 		check $operator_out
+
+		#kmeans
+		EXPERIMENT_NAME="weka_kmeans_text: documents $docs , K $clusters"
+		OPERATOR_OUTPUT=$operator_out
+		EXPERIMENT_OUTPUT=$results_file		
+		experiment $(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $clusters $max_iterations
 	done
 done
 

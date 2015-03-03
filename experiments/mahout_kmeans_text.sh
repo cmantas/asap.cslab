@@ -27,12 +27,21 @@ for ((docs=documents_step; docs<=max_documents; docs+=documents_step)); do
 		
 		#put input files in hdfs 
 		hdfs dfs -put  ${input_dir}/${file} $hadoop_input/text &>/dev/null
-					       
+
+		# Text to sequence
+		$(dirname $0)/../hadoop/mahout-kmeans/mahout_text2seq.sh $hadoop_input $clusters $max_iterations
+
+		# TF/IDF
+		EXPERIMENT_NAME="mahout_tfidf: documents $docs, K $clusters"
+		OPERATOR_OUTPUT=$operator_out
+		EXPERIMENT_OUTPUT=$results_file		
+		experiment  $(dirname $0)/../hadoop/mahout-kmeans/mahout_tfidf.sh $hadoop_input $clusters $max_iterations
+		check $operator_out
+
 		EXPERIMENT_NAME="mahout_kmeans_text: documents $docs, K $clusters"
 		OPERATOR_OUTPUT=$operator_out
 		EXPERIMENT_OUTPUT=$results_file		
 		experiment  $(dirname $0)/../hadoop/mahout-kmeans/mahout_kmeans_text.sh $hadoop_input $clusters $max_iterations
-		#$(dirname $0)/../hadoop/mahout-kmeans/mahout_kmeans_text.sh $hadoop_input $clusters $max_iterations
 		check $operator_out
 	done
 done

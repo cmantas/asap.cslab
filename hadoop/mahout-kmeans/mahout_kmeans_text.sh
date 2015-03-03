@@ -1,17 +1,5 @@
 source $(dirname $0)/common.sh
 
-
-echo "[STEP 1/4] Converting to Sequence Files from Directory"
-mahout seqdirectory -i ${input} -o ${WORK_DIR}/sequence_files -c UTF-8 -chunk 64 &>step1.out
-check step1.out
-
-
-echo "[STEP 2/4] Sequence to Sparse"
- mahout seq2sparse \
-    -i ${WORK_DIR}/sequence_files \
-    -o ${WORK_DIR}/sparce_matrix_files --maxDFPercent 85 --namedVector &>step2.out
-check step2.out
-
 echo "[STEP 3/4] K-Means"
   mahout kmeans \
     -i ${WORK_DIR}/sparce_matrix_files/tfidf-vectors/ \

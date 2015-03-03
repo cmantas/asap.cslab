@@ -84,14 +84,7 @@ def generate_points(num_points, clusters, out_dir):
         x,y = gauss_2d(centroids[i], sd, num_points)
         #write to file
         for d in range(len(x)): out_file.write("%d, %d\n" %(x[d],y[d]))
-        if gen_image:
-            plt.plot(x,y,'x')
-            plt.axis('equal')
-        info += str(centroids[i]) + ",\t "+str(int(sd))+"\n"
 
-    if gen_image:
-        plt.savefig(name+'.png')
-        plt.clf()
 
     out_file.close()
 
