@@ -22,6 +22,8 @@ def get_data_size_name(exp_name):
         return "documents"
     elif "synth" in exp_name:
         return "points"
+    elif "tfidf" in exp_name:
+        return "documents"
     else:
         raise Exception("Do not know the data point for '"+exp_name+"'")
 
@@ -46,16 +48,18 @@ def get_experiment(exp_name, k=None):
         current_times = []
         for row in rows:
             point = row[0]
-            print point
             if point == previous_point:
                 current_times.append(row[1])
             else:
                 if previous_point!=0:
                     points.append(previous_point)
                     current_times = sorted(current_times)
-                    times.append(current_times[len(current_times)/2] )
+                    times.append(current_times[len(current_times)/2])
                     current_times=[]
+                current_times.append(row[1])
                 previous_point=point
+        points.append(previous_point)
+        times.append(current_times[len(current_times)/2])
 
     return points, times
 

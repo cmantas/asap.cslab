@@ -1,5 +1,6 @@
 source $(dirname $0)/common.sh
 
+
 echo "[STEP 3/4] K-Means"
   mahout kmeans \
     -i ${WORK_DIR}/sparce_matrix_files/tfidf-vectors/ \

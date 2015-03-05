@@ -12,6 +12,3 @@ java -cp ${WEKA} weka.clusterers.SimpleKMeans \
 	     > clusters.txt
 head -n 30 clusters.txt
 rm clusters.txt	
-
-
-rm -r $WD
