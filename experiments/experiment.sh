@@ -3,7 +3,6 @@
 experiment () {
 	if [[ -z $EXPERIMENT_NAME ]]; then EXPERIMENT_NAME="Unnamed Experiment"; fi;
 	if [[ -z $OPERATOR_OUTPUT ]]; then OPERATOR_OUTPUT="/dev/null"; fi;
-	if [[ -z $EXPERIMENT_OUTPUT ]]; then EXPERIMENT_OUTPUT="experiment.results"; fi;
 	out=/dev/null  
 	
 	echo "[EXPERIMENT] $EXPERIMENT_NAME "
@@ -13,9 +12,6 @@ experiment () {
        	diff=$(($date2-$date1))
 	
 	check $OPERATOR_OUTPUT
-
-    	#write to file
-	echo $EXPERIMENT_NAME, time $diff >>$EXPERIMENT_OUTPUT
 
 	# write to sqlite
 	table=$(echo $EXPERIMENT_NAME | awk '{ print $1}')
@@ -31,7 +27,6 @@ experiment () {
 	#reset variables
 	EXPERIMENT_NAME=""
 	OPERATOR_OUTPUT=""
-	EXPERIMENT_OUTPUT=""
 
 
 }

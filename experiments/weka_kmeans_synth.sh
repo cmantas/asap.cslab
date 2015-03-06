@@ -2,7 +2,6 @@
 source config.info 	#loads the parameters
 source experiment.sh	#loads the experiment function
 
-results_file="results/weka_kmeans_synth_experiments_.results"
 
 rm weka_kmeans_synth.out
 for ((points=min_points; points<=max_points; points+=points_step)); do   
@@ -13,7 +12,6 @@ for ((points=min_points; points<=max_points; points+=points_step)); do
 			input=~/Data/synth_clusters/${points}_points_${clusters}_clusters.csv
 			EXPERIMENT_NAME="weka_kmeans_synth: points $points , K $clusters"
 			OPERATOR_OUTPUT="weka_kmeans_synth.out"
-			EXPERIMENT_OUTPUT=$results_file
 			experiment java -jar ~/bin/lib/kmeans_weka.jar $input $clusters
 			#delete the data for the next run
 			rm ~/Data/synth_clusters/*

@@ -1,7 +1,6 @@
 #!/bin/bash
 source  $(dirname $0)/config.info 	#loads the parameters
 source  $(dirname $0)/experiment.sh	#loads the experiment function
-results_file="results/mahout_kmeans_text_experiments.results"
 output_file="mahout_kmeans_text.out"
 operator_out="mahout_kmeans_text.out"
 rm $operator_out &>/dev/null
@@ -10,8 +9,6 @@ rm $operator_out &>/dev/null
 #first create the hdfs input directory
 #hdfs dfs -mkdir -p ./input/kmeans_input
 
-#delete results  output file
-rm -f results_file 2>/dev/null
 
 
 input_dir=~/Data/ElasticSearch_text_docs
@@ -42,8 +39,7 @@ for ((docs=documents_step; docs<=max_documents; docs+=documents_step)); do
 
 		# TF/IDF
 		EXPERIMENT_NAME="mahout_tfidf: documents $docs , K 0"
-		OPERATOR_OUTPUT=$operator_out
-		EXPERIMENT_OUTPUT=$results_file		
+		OPERATOR_OUTPUT=$operator_out	
 		experiment  $(dirname $0)/../hadoop/mahout-kmeans/mahout_tfidf.sh
 		check $operator_out
 
@@ -51,7 +47,6 @@ for ((docs=documents_step; docs<=max_documents; docs+=documents_step)); do
         for((clusters=min_clusters; clusters<=max_clusters; clusters+=clusters_step)); do
 			EXPERIMENT_NAME="mahout_kmeans_text: documents $docs , K $clusters"
 			OPERATOR_OUTPUT=$operator_out
-			EXPERIMENT_OUTPUT=$results_file		
 			experiment  $(dirname $0)/../hadoop/mahout-kmeans/mahout_kmeans_text.sh $hadoop_input $clusters $max_iterations
 			check $operator_out
 	done

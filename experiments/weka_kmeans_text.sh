@@ -1,7 +1,6 @@
 #!/bin/bash
 source  $(dirname $0)/config.info 	#loads the parameters
 source  $(dirname $0)/experiment.sh	#loads the experiment function
-results_file="results/weka_kmeans_text_experiments.results"
 operator_out="weka_kmeans_text.out"
 rm $operator_out &>/dev/null
 
@@ -27,7 +26,6 @@ for ((docs=documents_step; docs<=max_documents; docs+=documents_step)); do
 	#tfidf
 	EXPERIMENT_NAME="weka_tfidf: documents $docs , K 0"
 	OPERATOR_OUTPUT=$operator_out
-	EXPERIMENT_OUTPUT=$results_file		
 	experiment $(dirname $0)/../weka/kmeans_text_weka/tfidf_text_weka.sh
 	check $operator_out
 
@@ -35,8 +33,7 @@ for ((docs=documents_step; docs<=max_documents; docs+=documents_step)); do
 
 		#kmeans
 		EXPERIMENT_NAME="weka_kmeans_text: documents $docs , K $clusters"
-		OPERATOR_OUTPUT=$operator_out
-		EXPERIMENT_OUTPUT=$results_file		
+		OPERATOR_OUTPUT=$operator_out	
 		experiment $(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $clusters $max_iterations
 		check $operator_out
 	done
