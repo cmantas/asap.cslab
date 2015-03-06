@@ -12,12 +12,12 @@ public class KMeans {
   static int K = 1;
   static File inFile;
   private static PrintStream err=null;
-  final static int maxIteration = 1000;
+  static int maxIteration = 1000;
   final static int maxK = 1000;
   
 
   static void readParams(String args[]) throws Exception{
-      if(args.length!=2) throw new Exception("WRONG ARGUMENTS\n"+USAGE);
+      if(args.length!=3) throw new Exception("WRONG ARGUMENTS\n"+USAGE);
       K = Integer.parseInt(args[1]);
       if(K<0 || K>maxK) throw new Exception("Invalid K. should be positive, <"+maxK);
       String filePath = args[0];
@@ -25,6 +25,7 @@ public class KMeans {
       if (!inFile.exists()) throw new Exception("Input file does not exist: "+filePath);
       System.out.println("K-means on file: "+filePath);
       System.out.println("For K: "+K);
+      maxIteration=Integer.parseInt(args[2]);
       //hack to avoid some weka error  messages
       err= System.err;
       System.setErr(new PrintStream(new java.io.OutputStream() { public void write(int b) {}}));
