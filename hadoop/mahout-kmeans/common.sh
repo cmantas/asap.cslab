@@ -4,6 +4,8 @@
 input=$1
 K=$2
 max_iterations=$3
+
+chunk=30
 WORK_DIR="/tmp/mahout_kmeans"
 
 check (){

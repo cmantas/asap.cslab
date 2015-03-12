@@ -21,7 +21,7 @@ hadoop_input=./input/kmeans_text
 doc_count=0
 file=0
 
-for ((docs=documents_step; docs<=max_documents; docs+=documents_step)); do
+for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		echo "[PREP] putting text files to HDFS"
 		#put the necessary input files to hdfs
 		while ((doc_count<docs)); do
