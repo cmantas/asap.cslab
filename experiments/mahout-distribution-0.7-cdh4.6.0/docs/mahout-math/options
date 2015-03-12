@@ -1,0 +1,24 @@
+-classpath
+'/var/lib/jenkins/cdh/build/cdh4/mahout/0.7-cdh4.6.0/source/math/target/classes:/var/lib/jenkins/.m2/repository/org/uncommons/maths/uncommons-maths/1.2.2/uncommons-maths-1.2.2.jar:/var/lib/jenkins/.m2/repository/com/google/guava/guava/r09/guava-r09.jar:/var/lib/jenkins/.m2/repository/org/apache/commons/commons-math/2.2/commons-math-2.2.jar:/var/lib/jenkins/.m2/repository/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/var/lib/jenkins/cdh/build/cdh4/mahout/0.7-cdh4.6.0/source/math/src/main/java:/var/lib/jenkins/cdh/build/cdh4/mahout/0.7-cdh4.6.0/source/math/target/generated-sources'
+-author
+-bottom
+'Copyright &#169; 2008-2014 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/var/lib/jenkins/cdh/build/cdh4/mahout/0.7-cdh4.6.0/source/math/target/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Mahout Math 0.7-cdh4.6.0 API'
+-linkoffline
+'http://download.oracle.com/javase/6/docs/api' '/var/lib/jenkins/cdh/build/cdh4/mahout/0.7-cdh4.6.0/source/math/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'Mahout Math 0.7-cdh4.6.0 API'
