@@ -10,8 +10,21 @@ virtual_dir=~/Data/docs_virt_dir
 rm -rf $virtual_dir 2>/dev/null
 mkdir -p $virtual_dir/text
 
-for ((docs=documents_step; docs<=max_documents; docs+=documents_step)); do
+doc_count=0
+file=0
 
+echo "linking min docs"
+while ((doc_count<min_documents)); do
+        ((file+=1))
+        ((doc_count+=window))
+        #link files to the virtual dir
+        ln -s $input_dir/$file $virtual_dir/text/$file
+done
+
+
+for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
+
+echo "linking docs"
 	#put the necessary input files to hdfs
 	while ((doc_count<docs)); do
 		((file+=1))
@@ -19,6 +32,7 @@ for ((docs=documents_step; docs<=max_documents; docs+=documents_step)); do
 		#link files to the virtual dir
 		ln -s $input_dir/$file $virtual_dir/text/$file
 	done
+echo "converting to arff"
 
 	#convert to arff
 	$(dirname $0)/../weka/kmeans_text_weka/convert_text_weka.sh $virtual_dir >/dev/null

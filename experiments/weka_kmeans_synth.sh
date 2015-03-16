@@ -12,7 +12,7 @@ for ((points=min_points; points<=max_points; points+=points_step)); do
 			input=~/Data/synth_clusters/${points}_points_${clusters}_clusters.csv
 			EXPERIMENT_NAME="weka_kmeans_synth: points $points , K $clusters"
 			OPERATOR_OUTPUT="weka_kmeans_synth.out"
-			experiment java -jar ~/bin/lib/kmeans_weka.jar $input $clusters $max_iterations 
+			experiment java -Xmx15g -jar ~/bin/lib/kmeans_weka.jar $input $clusters $max_iterations 
 			#delete the data for the next run
 			rm ~/Data/synth_clusters/*
 		done

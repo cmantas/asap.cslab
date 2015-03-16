@@ -4,7 +4,7 @@ clusters=$1
 
 echo "STEP 3/3: K-Means"
 
-java -cp ${WEKA} weka.clusterers.SimpleKMeans \
+java -Xmx15g -cp ${WEKA} weka.clusterers.SimpleKMeans \
 	     -N ${clusters} \
 	     -I ${iterations}  \
 	     -A "weka.core.EuclideanDistance -R first-last" \

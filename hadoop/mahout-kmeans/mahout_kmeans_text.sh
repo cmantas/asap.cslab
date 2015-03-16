@@ -9,7 +9,7 @@ echo "[STEP 3/4] K-Means"
     -dm org.apache.mahout.common.distance.CosineDistanceMeasure \
     -x ${max_iterations} \
     -k ${K} \
-    -ow --clustering  
+    -ow --clustering \ 
     -Dmapred.child.ulimit=15728640 -Dmapred.child.java.opts=-Xmx5g \
     -Dmapred.map.tasks=4 -Dmapred.max.split.size=$((chunk*1024*1024)) \
 	&>step3.out

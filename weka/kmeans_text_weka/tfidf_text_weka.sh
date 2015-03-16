@@ -3,7 +3,7 @@ min_frequency=50
 
 
 echo "STEP 2/3: TF/IDF"
-java -cp ${WEKA} weka.filters.unsupervised.attribute.StringToWordVector \
+java -Xmx15g -cp ${WEKA} weka.filters.unsupervised.attribute.StringToWordVector \
 	     -R first-last -C -L -N 0 \
 	     -W 99999999 \
 	     -prune-rate -1.0 \
