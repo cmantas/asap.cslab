@@ -1,18 +1,21 @@
 source $(dirname $0)/common.sh
 
+input=$1 #FIXME: use this as input
+K=$2
+max_iterations=$3
 
 echo "[STEP 3/4] K-Means"
-  mahout kmeans \
-    -i ${WORK_DIR}/sparce_matrix_files/tfidf-vectors/ \
-    -c ${WORK_DIR}/what_is_this \
-    -o ${WORK_DIR}/clustering_raw_output\
-    -dm org.apache.mahout.common.distance.CosineDistanceMeasure \
-    -x ${max_iterations} \
-    -k ${K} \
-    -ow --clustering \ 
-    -Dmapred.child.ulimit=15728640 -Dmapred.child.java.opts=-Xmx5g \
-    -Dmapred.map.tasks=4 -Dmapred.max.split.size=$((chunk*1024*1024)) \
-	&>step3.out
+mahout kmeans \
+	-i ${WORK_DIR}/sparce_matrix_files/tfidf-vectors/ \
+	-c ${WORK_DIR}/what_is_this -o ${WORK_DIR}/clustering_raw_output \
+	-dm org.apache.mahout.common.distance.CosineDistanceMeasure \
+	-x ${max_iterations} \
+	-k ${K}\
+	-ow --clustering \
+	-Dmapred.child.ulimit=15728640 -Dmapred.child.java.opts=-Xmx5g \
+	-Dmapred.map.tasks=4 -Dmapred.max.split.size=$((chunk*1024*1024)) \
+	&>step3.out 
+
 check step3.out
 
 #little hack - investigate further
