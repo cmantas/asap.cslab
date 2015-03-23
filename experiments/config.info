@@ -23,6 +23,8 @@ window=1000
 documents_data_dir=~/Data/ElasticSearch_text_docs
 
 
+rm *.out
+
 ####check function####
 check (){
         e=$( cat $1 | grep -E "Exception|ERROR:" )

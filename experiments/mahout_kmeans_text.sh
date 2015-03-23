@@ -13,23 +13,26 @@ rm $operator_out &>/dev/null
 
 input_dir=~/Data/ElasticSearch_text_docs
 
-#echo Putting $input to HDFS
+#create HDFS files
 hadoop_input=./input/kmeans_text
-#hdfs dfs -mkdir -p $hadoop_input/text/
+hdfs dfs -rm -r $hadoop_input
+hdfs dfs -mkdir -p $hadoop_input
 
 #helper vars for the input files
 doc_count=0
 file=0
 
 for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
-		echo "[PREP] putting text files to HDFS"
+		echo -n "[PREP] putting text files to HDFS: "
 		#put the necessary input files to hdfs
 		while ((doc_count<docs)); do
 			((file+=1))
 			((doc_count+=window))
 			#put input files in hdfs 
+			echo -n "$file, "
 			hdfs dfs -put  ${input_dir}/${file} $hadoop_input &>/dev/null
 		done
+		echo ""
 
 		### we need to run text to sequence file and tf/idf only once for the given doc count ###
 

@@ -3,17 +3,22 @@ source $(dirname $0)/common.sh
 input=$1 #FIXME: use this as input
 K=$2
 max_iterations=$3
+output=${WORK_DIR}/clustering_raw_output
+
+#remove anything in output
+hdfs dfs -rm $output/*
 
 echo "[STEP 3/4] K-Means"
 mahout kmeans \
+	-Dmapred.child.ulimit=15728640 -Dmapred.child.java.opts=-Xmx6g \
+	-Dmapred.map.tasks=4 -Dmapred.max.split.size=$((chunk*1024*1024/4)) \
 	-i ${WORK_DIR}/sparce_matrix_files/tfidf-vectors/ \
-	-c ${WORK_DIR}/what_is_this -o ${WORK_DIR}/clustering_raw_output \
+	-o ${output} \
+	-c ${WORK_DIR}/what_is_this \
 	-dm org.apache.mahout.common.distance.CosineDistanceMeasure \
 	-x ${max_iterations} \
 	-k ${K}\
 	-ow --clustering \
-	-Dmapred.child.ulimit=15728640 -Dmapred.child.java.opts=-Xmx5g \
-	-Dmapred.map.tasks=4 -Dmapred.max.split.size=$((chunk*1024*1024)) \
 	&>step3.out 
 
 check step3.out
@@ -23,6 +28,8 @@ final_clusters=$(hdfs dfs -ls ${WORK_DIR}/clustering_raw_output/ | grep final | 
 
 echo "[STEP 4/4] Clusterdump"
   mahout clusterdump \
+	-Dmapred.child.ulimit=15728640 -Dmapred.child.java.opts=-Xmx6g \
+	-Dmapred.map.tasks=4 -Dmapred.max.split.size=$((chunk*1024*1024)) \
     -i ${final_clusters} \
     -o clusterdump_result \
     -d ${WORK_DIR}/sparce_matrix_files/dictionary.file-0 \
