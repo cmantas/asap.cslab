@@ -91,14 +91,9 @@ public class WikiPageLinksMapper extends Mapper<LongWritable, Text, Text, Text> 
         
         titleAndText[0] = Text.decode(value.getBytes(), start, end-start);
 
-//        start = value.find("<text");
-//        start = value.find(">", start);
-//        end = value.find("</text>", start);
-//        start += 1;
-        
-        start = value.find("<id");
+        start = value.find("<text");
         start = value.find(">", start);
-        end = value.find("</id>", start);
+        end = value.find("</text>", start);
         start += 1;
         
         if(start == -1 || end == -1) {
