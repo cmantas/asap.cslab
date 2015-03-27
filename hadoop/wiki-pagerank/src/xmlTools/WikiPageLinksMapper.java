@@ -6,6 +6,8 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
+import static java.util.Arrays.asList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,13 +15,12 @@ import java.util.regex.Pattern;
 public class WikiPageLinksMapper extends Mapper<LongWritable, Text, Text, Text> {
     
     private static final Pattern wikiLinksPattern = Pattern.compile("\\[.+?\\]");
+    private static int MAX_LINK_LENGTH= 100;
 
     @Override
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         
-        // Returns  String[0] = <title>[TITLE]</title>
-        //          String[1] = <text>[CONTENT]</text>
-        // !! without the <tags>.
+        //get {title, text}
         String[] titleAndText = parseTitleAndText(value);
         
         String pageString = titleAndText[0];
@@ -90,9 +91,14 @@ public class WikiPageLinksMapper extends Mapper<LongWritable, Text, Text, Text> 
         
         titleAndText[0] = Text.decode(value.getBytes(), start, end-start);
 
-        start = value.find("<text");
+//        start = value.find("<text");
+//        start = value.find(">", start);
+//        end = value.find("</text>", start);
+//        start += 1;
+        
+        start = value.find("<id");
         start = value.find(">", start);
-        end = value.find("</text>", start);
+        end = value.find("</id>", start);
         start += 1;
         
         if(start == -1 || end == -1) {
@@ -105,21 +111,23 @@ public class WikiPageLinksMapper extends Mapper<LongWritable, Text, Text, Text> 
     }
 
     private boolean isNotWikiLink(String aLink) {
+                
         int start = 1;
         if(aLink.startsWith("[[")){
             start = 2;
         }
         
-        if( aLink.length() < start+2 || aLink.length() > 100) return true;
-        char firstChar = aLink.charAt(start);
+        // a link starting with any of those chars is not allowed
+        List startChars = asList(new Character[]{'#', ',', '.', '&', '\'','-','{'});
         
-        if( firstChar == '#') return true;
-        if( firstChar == ',') return true;
-        if( firstChar == '.') return true;
-        if( firstChar == '&') return true;
-        if( firstChar == '\'') return true;
-        if( firstChar == '-') return true;
-        if( firstChar == '{') return true;
+        //not permited length
+        if( aLink.length() < start+2 || aLink.length() > MAX_LINK_LENGTH) return true;
+        
+        // first char of link
+        char firstChar = aLink.charAt(start);        
+        
+        // not permited start char
+        if (startChars.contains(firstChar)) return true;
         
         if( aLink.contains(":")) return true; // Matches: external links and translations links
         if( aLink.contains(",")) return true; // Matches: external links and translations links

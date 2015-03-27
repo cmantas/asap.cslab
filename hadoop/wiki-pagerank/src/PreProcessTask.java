@@ -6,14 +6,14 @@ import xmlTools.XmlInputFormat;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
-public class PreProcess extends BasicTask{
+public class PreProcessTask extends BasicTask{
         
     
-    public PreProcess(String args[]) throws IOException {
+    public PreProcessTask(String args[]) throws IOException {
         super(args);
     }
 
-    PreProcess(String input, String output) throws IOException {
+    PreProcessTask(String input, String output) throws IOException {
         super(input, output);
     }
    
@@ -22,14 +22,22 @@ public class PreProcess extends BasicTask{
     @Override
     public void JobConfig() {
         
-        // Input / Mapper
+        // Input 
         job.setInputFormatClass(XmlInputFormat.class);
-        job.setMapperClass(WikiPageLinksMapper.class);
-        job.setMapOutputKeyClass(Text.class);        
-        job.setOutputFormatClass(TextOutputFormat.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
+        
+        // Mapper/Reducer
+        job.setMapperClass(         WikiPageLinksMapper.class   );
         job.setReducerClass(WikiLinksReducer.class);
+        
+        // Intermediate keys
+        job.setMapOutputKeyClass(   Text.class                  );
+        // Output format
+        job.setOutputFormatClass(   TextOutputFormat.class      );
+        // Output Keys
+        job.setOutputKeyClass(      Text.class                  );
+        // Outut Values
+        job.setOutputValueClass(    Text.class                  );
+        
     }
 
     @Override
@@ -44,7 +52,7 @@ public class PreProcess extends BasicTask{
     }
 
     public static void main(String args[]) throws Exception {
-        PreProcess job = new PreProcess(args);
+        PreProcessTask job = new PreProcessTask(args);
         System.exit( job.run()?0:-1);
     }
 

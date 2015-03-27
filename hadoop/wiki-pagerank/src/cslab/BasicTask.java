@@ -12,7 +12,6 @@ public abstract class BasicTask {
 
   public Job job;
   public Configuration conf;
-  
   String input, output;
   
   private void init(String input, String output) throws IOException{
