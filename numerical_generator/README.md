@@ -1,4 +1,4 @@
-# Mahout K-Means on Synthetic Data
+#  Numerical Generator for 2-d clustered data
 
 ```bash
 	$ ./numerical_generator/generator.py -n <points> -c <clusters> -o <out_dir>
