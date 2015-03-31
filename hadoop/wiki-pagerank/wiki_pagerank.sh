@@ -14,7 +14,7 @@ do
 	echo PR prerocess for $mb MB
        	hdfs dfs -rm -r /tmp/wiki_pagerank &>/dev/null
 	date1=$(date +"%s")
-	hadoop jar $home/target/*.jar PreProcessTask $hdfs_input $initial 2> PR_preproc.out
+	hadoop jar $home/target/*.jar PreProcessTask $f $initial 2> PR_preproc.out
 	date2=$(date +"%s")
         diff=$(($date2-$date1))
 	echo "* Took $diff seconds"
