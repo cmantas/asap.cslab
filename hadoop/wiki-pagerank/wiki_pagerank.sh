@@ -8,6 +8,7 @@ for f in $files
 do
 	echo File: $f
 	##### 	PR PreProcess
+	hdfs dfs -rm $hdfs_output
 	bytes=$(hls $f | awk '{print $5}')
 	mb=$(( bytes/1024/1024 ))
 	echo PR prerocess for $mb MB

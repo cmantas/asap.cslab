@@ -52,8 +52,8 @@ public class PreProcessTask extends BasicTask{
     }
 
     public static void main(String args[]) throws Exception {
-        PreProcessTask job = new PreProcessTask(args);
-        System.exit( job.run()?0:-1);
+        PreProcessTask task = new PreProcessTask(args);
+        System.exit( task.run()?0:-1);
     }
 
 }

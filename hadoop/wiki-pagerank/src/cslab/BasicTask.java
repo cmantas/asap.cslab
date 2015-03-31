@@ -22,6 +22,7 @@ public abstract class BasicTask {
       job = Job.getInstance(conf, getJobName());
       JobConfig();
       FileInputFormat.addInputPath(job, new Path(input));
+      job.setJarByClass(this.getClass());
   }
   
   public BasicTask(String input, String output) throws IOException{
