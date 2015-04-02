@@ -43,7 +43,7 @@ do
         diff=$(($date2-$date1))
 	echo "* Took $diff seconds"
 	echo "*" $(cat PR_ordering.out | grep Launched| awk '{print $6 $7 }')
-	hdfs dfs -rm -r $unordered >/dev/null
+	hdfs dfs -rm -r $unordered &>/dev/null
 	
 
  done

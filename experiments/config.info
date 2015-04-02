@@ -8,9 +8,9 @@ clusters_step=5		#step of increasing the clusters
 max_iterations=50
 
 ### SYNTHETIC ###
-min_points=200000 	#min number of data points
+min_points=20000 	#min number of data points
 max_points=2000000	#max num of data points
-points_step=200000 	#step increasing the data points
+points_step=20000 	#step increasing the data points
 synth_clusters_data_dir=~/Data/synth_clusters
 
 ### TEXT ###
