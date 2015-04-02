@@ -1,17 +1,22 @@
 ## GENERIC ###
-runs=5 			#how many runs per experiment
+runs=1 			#how many runs per experiment
 
 ### KMEANS  ###
-min_clusters=1		#min num of clusters
-max_clusters=21		#max num of clusters
-clusters_step=5		#step of increasing the clusters	
+min_k=1		#min num of clusters
+max_k=21		#max num of clusters
+k_step=5		#step of increasing the clusters	
 max_iterations=50
 
 ### SYNTHETIC ###
 min_points=200000 	#min number of data points
 max_points=2000000	#max num of data points
 points_step=200000 	#step increasing the data points
+min_dimensions=2
+max_dimensions=5002
+dimensions_step=500  	# 10 measurements
+
 synth_clusters_data_dir=~/Data/synth_clusters
+
 
 ### TEXT ###
 #proxy="proxy localhost:1234" #comment out for execution in IMR
@@ -35,19 +40,3 @@ check (){
 }
 
 ##### Create tables #######
-sqlite3 results.db <<EOF
-CREATE TABLE IF NOT EXISTS mahout_kmeans_text    
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, time INTEGER, date TIMESTAMP);
-CREATE TABLE IF NOT EXISTS weka_kmeans_text    
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, time INTEGER, date TIMESTAMP);
-CREATE TABLE IF NOT EXISTS mahout_kmeans_synth    
-(id INTEGER PRIMARY KEY AUTOINCREMENT, points INTEGER, k INTEGER, time INTEGER, date TIMESTAMP);
-CREATE TABLE IF NOT EXISTS weka_kmeans_synth    
-(id INTEGER PRIMARY KEY AUTOINCREMENT, points INTEGER, k INTEGER, time INTEGER, date TIMESTAMP);
-CREATE TABLE IF NOT EXISTS weka_tfidf    
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, time INTEGER, date TIMESTAMP);
-CREATE TABLE IF NOT EXISTS mahout_tfidf    
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, time INTEGER, date TIMESTAMP);
-CREATE TABLE IF NOT EXISTS pr_preproc    
-(id INTEGER PRIMARY KEY AUTOINCREMENT, size INTEGER, time INTEGER, date TIMESTAMP);
-EOF

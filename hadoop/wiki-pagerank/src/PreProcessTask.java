@@ -27,6 +27,7 @@ public class PreProcessTask extends BasicTask{
         
         // Mapper/Reducer
         job.setMapperClass(         WikiPageLinksMapper.class   );
+        job.setCombinerClass(WikiLinksReducer.class);
         job.setReducerClass(WikiLinksReducer.class);
         
         // Intermediate keys

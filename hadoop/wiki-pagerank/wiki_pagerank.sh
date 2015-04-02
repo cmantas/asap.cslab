@@ -19,8 +19,8 @@ do
         diff=$(($date2-$date1))
 	echo "* Took $diff seconds"
 	echo "*" $(cat PR_preproc.out | grep Launched| awk '{print $6 $7 }')
-	#sqlite3 results.db "INSERT INTO pr_preproc(size, time, date) VALUES ($mb, $diff, '$(date)')"
-	
+	hdfs dfs -rm $f
+
 	###### 	PageRank Iteration ########
 	bytes=$(hls $initial/part* | awk '{print $5}')
 	mb=$(( bytes/1024/1024 ))
@@ -31,7 +31,7 @@ do
         diff=$(($date2-$date1))
 	echo "* Took $diff seconds"
 	echo "*" $(cat PR_iteration.out | grep Launched| awk '{print $6 $7 }')
-	hdfs dfs -rm -r $initial >/dev/null
+	hdfs dfs -rm -r $initial &>/dev/null
 	
 	###### 	Ordering Output ########
 	bytes=$(hls $unordered/part* | awk '{print $5}')
@@ -43,7 +43,7 @@ do
         diff=$(($date2-$date1))
 	echo "* Took $diff seconds"
 	echo "*" $(cat PR_ordering.out | grep Launched| awk '{print $6 $7 }')
-	hdfs dfs -rm -r $unordered >/dev/null
+	hdfs dfs -rm -r $unordered &>/dev/null
 	
 
  done
