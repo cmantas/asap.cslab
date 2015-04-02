@@ -8,9 +8,10 @@ k_step=5		#step of increasing the clusters
 max_iterations=50
 
 ### SYNTHETIC ###
-min_points=200000 	#min number of data points
-max_points=2000000	#max num of data points
-points_step=200000 	#step increasing the data points
+min_points=100 	#min number of data points
+max_points=30100	#max num of data points
+points_step=1000	#30 measurements
+
 min_dimensions=2
 max_dimensions=5002
 dimensions_step=500  	# 10 measurements
@@ -38,5 +39,3 @@ check (){
 	        exit
 	fi
 }
-
-##### Create tables #######
