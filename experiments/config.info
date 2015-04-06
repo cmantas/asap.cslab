@@ -21,7 +21,7 @@ synth_clusters_data_dir=~/Data/synth_clusters
 
 ### TEXT ###
 proxy="proxy localhost:1234" #comment out for execution in IMR
-max_documents=10
+max_documents=20
 min_documents=10
 documents_step=10
 window=1

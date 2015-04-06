@@ -1,11 +1,14 @@
 source $(dirname $0)/common.sh
-min_frequency=10
+min_frequency=1
 
+max_features=$1
+
+echo Hellooooo $max_features
 
 echo "STEP 2/3: TF/IDF"
 java -Xmx15g -cp ${WEKA} weka.filters.unsupervised.attribute.StringToWordVector \
 	     -N 0 \
-	     -W 100 \
+	     -W $max_features \
 	     -prune-rate -1.0 \
 	     -stemmer weka.core.stemmers.NullStemmer \
 	     -M ${min_frequency} \
