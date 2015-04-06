@@ -31,7 +31,7 @@ except: pass
 f = open(fname, "w")
 
 for i in range(count):
-    list = np.random.randint(maxint, size=dimension).tolist()
+    list = np.random.randint(-maxint, maxint, size=dimension).tolist()
     f.write(",".join("{0}".format(n) for n in list) + "\n")
 
 f.close()

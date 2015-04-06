@@ -1,4 +1,6 @@
 #!/bin/bash
+echo FIX PARSER JAR
+exit
 source config.info 	#loads the parameters
 source experiment.sh	#loads the experiment function
 output_file="mahout_kmeans_synth.out"

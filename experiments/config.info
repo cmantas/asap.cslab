@@ -20,11 +20,11 @@ synth_clusters_data_dir=~/Data/synth_clusters
 
 
 ### TEXT ###
-#proxy="proxy localhost:1234" #comment out for execution in IMR
-max_documents=500000
-min_documents=20000
-documents_step=10000
-window=1000
+proxy="proxy localhost:1234" #comment out for execution in IMR
+max_documents=10
+min_documents=10
+documents_step=10
+window=1
 
 documents_data_dir=~/Data/ElasticSearch_text_docs
 
@@ -33,7 +33,7 @@ rm *.out
 
 ####check function####
 check (){
-        e=$( cat $1 | grep -E "Exception|ERROR:" )
+        e=$( cat $1 | grep -E "Exception|ERROR:|failed" )
         if [ "$e" != "" ]; then
 	        echo $e
 	        exit

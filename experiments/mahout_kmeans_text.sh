@@ -1,17 +1,13 @@
 #!/bin/bash
 source  $(dirname $0)/config.info 	#loads the parameters
-source  $(dirname $0)/experiment.sh	#loads the experiment function
 output_file="mahout_kmeans_text.out"
 operator_out="mahout_kmeans_text.out"
 rm $operator_out &>/dev/null
 
 
-#first create the hdfs input directory
-#hdfs dfs -mkdir -p ./input/kmeans_input
-
-
-
 input_dir=~/Data/ElasticSearch_text_docs
+TOOLS_JAR=~/bin/lib/asapTools.jar
+
 
 #create HDFS files
 hadoop_input=./input/kmeans_text
@@ -41,11 +37,11 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		$(dirname $0)/../hadoop/mahout-kmeans/mahout_text2seq.sh $hadoop_input
 
 		# TF/IDF
-		EXPERIMENT_NAME="mahout_tfidf: documents $docs , K 0"
-		OPERATOR_OUTPUT=$operator_out	
-		experiment  $(dirname $0)/../hadoop/mahout-kmeans/mahout_tfidf.sh
+		$(dirname $0)/../hadoop/mahout-kmeans/mahout_tfidf.sh >$operator_out
 		check $operator_out
-
+		dimensions=$(hadoop jar ${TOOLS_JAR}  SequenceInfo  /tmp/mahout_kmeans/sparce_matrix_files/dictionary.file-0 | grep Lenght: | awk '{ print $2 }')
+		echo Dimensions= $dimensions
+		exit
 		### For each of value of K run KMeans ###
         for((clusters=min_clusters; clusters<=max_clusters; clusters+=clusters_step)); do
 			EXPERIMENT_NAME="mahout_kmeans_text: documents $docs , K $clusters"

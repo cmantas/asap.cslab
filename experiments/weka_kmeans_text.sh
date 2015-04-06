@@ -10,15 +10,22 @@ virtual_dir=~/Data/docs_virt_dir
 rm -rf $virtual_dir 2>/dev/null
 mkdir -p $virtual_dir/text
 
+
+sqlite3 results.db "CREATE TABLE IF NOT EXISTS weka_tfidf 
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, percentage INTEGER, time INTEGER, dimensions INTEGER, date TIMESTAMP);"
+sqlite3 results.db "CREATE TABLE IF NOT EXISTS weka_kmeans_text 
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, dimensions INTEGER, time INTEGER, date TIMESTAMP);"
+
+
 doc_count=0
 file=0
 
 echo "linking min docs"
 while ((doc_count<min_documents)); do
-        ((file+=1))
-        ((doc_count+=window))
         #link files to the virtual dir
         ln -s $input_dir/$file $virtual_dir/text/$file
+        ((file+=1))
+        ((doc_count+=window))
 done
 
 
@@ -35,21 +42,30 @@ echo "linking docs"
 echo "converting to arff"
 
 	#convert to arff
-	$(dirname $0)/../weka/kmeans_text_weka/convert_text_weka.sh $virtual_dir >/dev/null
-
-	#tfidf
-	EXPERIMENT_NAME="weka_tfidf: documents $docs , K 0"
-	OPERATOR_OUTPUT=$operator_out
-	experiment $(dirname $0)/../weka/kmeans_text_weka/tfidf_text_weka.sh
+	$(dirname $0)/../weka/kmeans_text_weka/convert_text_weka.sh $virtual_dir &>$operator_out
 	check $operator_out
 
-    for((clusters=min_clusters; clusters<=max_clusters; clusters+=clusters_step)); do
+	echo EXPERIMENT: weka tf-idf for $docs documents
+	#tfidf
+	start=$(date +"%s")
+	$(dirname $0)/../weka/kmeans_text_weka/tfidf_text_weka.sh &>weka_kmeans_text.out
+	features_no=$(tail weka_kmeans_text.out -n 1)
+	echo $features_no
+	time=$(( $(date +"%s")-start))
+       	sqlite3 results.db "INSERT INTO weka_tfidf(documents, percentage, time, date)
+            VALUES( $docs,  $features_no, $time, CURRENT_TIMESTAMP);"
+																		
 
+    for((k=min_k; k<=max_k; k+=k_step)); do
+		echo "EXPERIMENT:  weka_kmeans_text for k=$k, $docs documents"
 		#kmeans
-		EXPERIMENT_NAME="weka_kmeans_text: documents $docs , K $clusters"
-		OPERATOR_OUTPUT=$operator_out	
-		experiment $(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $clusters $max_iterations
+    		start=$(date +"%s")
+		$(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $k $max_iterations &>$operator_out
 		check $operator_out
+        	time=$(( $(date +"%s")-start))
+       		sqlite3 results.db "INSERT INTO weka_kmeans_text(documents, k, time, date, dimensions)
+            		VALUES( $docs,  $k, $time, CURRENT_TIMESTAMP, $features_no);"
+																		
 	done
 done
 

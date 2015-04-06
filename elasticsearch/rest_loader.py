@@ -70,7 +70,8 @@ def process_and_write(text):
         print text.encode("utf-8")
         pass
     else:
-        file = codecs.open(output_dir+"/"+str(windows_counter), "w+", "utf-8")
+        fname = "{0:09d}".format(windows_counter)
+        file = codecs.open(output_dir+"/"+str(fname), "w+", "utf-8")
         file.write(text)
         file.close()
     windows_counter += 1
@@ -81,7 +82,7 @@ print "Will try to read {0} Total Documents with a window of {1}".format(total, 
 current = 0; writer_thread = None
 while current<total:
     if window>(total-current): window=(total-current)
-    payload = {'q': '*', 'pretty': "true", "size": window, "from": current}
+    payload = {'q': '*', 'pretty': "false", "size": window, "from": current}
     current += window
     r = requests.get("http://imr41.internetmemory.org:9200/europeannews/resource/_search",
                      params=payload, proxies=proxies)
