@@ -1,0 +1,23 @@
+from pyspark import SparkContext
+from pyspark.mllib.feature import HashingTF
+from pyspark.mllib.feature import IDF
+
+
+sc = SparkContext()
+
+# Load documents (one per line).
+documents = sc.textFile("/home/cmantas/Data/ElasticSearch_text_docs/0").map(lambda line: line.split(" "))
+
+# TF
+hashingTF = HashingTF()
+tf = hashingTF.transform(documents)
+
+
+# IDF
+tf.cache()
+idf = IDF(minDocFreq=2).fit(tf)
+tfidf = idf.transform(tf)
+
+
+from pyspark.mllib.clustering import KMeans
+clusters = KMeans.train(tf, 3, maxIterations=10, runs=10, initializationMode="random")

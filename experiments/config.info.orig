@@ -1,0 +1,46 @@
+## GENERIC ###
+runs=1 			#how many runs per experiment
+
+### KMEANS  ###
+min_k=1		#min num of clusters
+max_k=21		#max num of clusters
+k_step=5		#step of increasing the clusters	
+max_iterations=50
+
+### SYNTHETIC ###
+min_points=20000 	#min number of data points
+max_points=2000000	#max num of data points
+<<<<<<< HEAD
+points_step=200000 	#step increasing the data points
+min_dimensions=2
+max_dimensions=5002
+dimensions_step=500  	# 10 measurements
+
+=======
+points_step=20000 	#step increasing the data points
+>>>>>>> 5794b9a02067c80c5cb8c9b772e38859645411fd
+synth_clusters_data_dir=~/Data/synth_clusters
+
+
+### TEXT ###
+#proxy="proxy localhost:1234" #comment out for execution in IMR
+max_documents=500000
+min_documents=20000
+documents_step=10000
+window=1000
+
+documents_data_dir=~/Data/ElasticSearch_text_docs
+
+
+rm *.out
+
+####check function####
+check (){
+        e=$( cat $1 | grep -E "Exception|ERROR:" )
+        if [ "$e" != "" ]; then
+	        echo $e
+	        exit
+	fi
+}
+
+##### Create tables #######
