@@ -21,7 +21,7 @@ public class Main {
                 CSVLoader.main(newArgs);
                 break;
             default:
-                System.err.println("I do not know command: "+command);
+                System.err.println("ERROR: I do not know command: "+command);
         }
     }
 }

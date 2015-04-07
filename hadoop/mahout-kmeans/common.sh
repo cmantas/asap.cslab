@@ -1,5 +1,5 @@
 chunk=30
-WORK_DIR="/tmp/mahout_kmeans"
+TOOLS_JAR="/home/$USER/bin/lib/asapTools.jar"
 
 check (){
         e=$( cat $1 | grep -E "Exception|ERROR: " )

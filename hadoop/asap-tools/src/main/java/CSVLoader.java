@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
@@ -27,9 +27,9 @@ public class CSVLoader {
 
         try (
                 BufferedReader reader =  new BufferedReader(new InputStreamReader(fs.open(new Path(input))));
-                SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, new Path(output), LongWritable.class, VectorWritable.class)) {
+                SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, new Path(output), IntWritable.class, VectorWritable.class)) {
             String line;
-            long counter = 0;
+            int counter = 0;
             while ((line = reader.readLine()) != null) {
                 String[] c = line.split(",");
                 if (c.length > 1) {
@@ -42,7 +42,7 @@ public class CSVLoader {
 
                     VectorWritable writable = new VectorWritable();
                     writable.set(vec);
-                    writer.append(new LongWritable(counter++), writable);
+                    writer.append(new IntWritable(counter++), writable);
                 }
             }
             writer.close();
