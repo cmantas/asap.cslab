@@ -14,7 +14,7 @@ import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
 ;
 
-public class Parser {
+public class CSVLoader {
 
     public static void main(String args[]) throws FileNotFoundException, IOException {
 

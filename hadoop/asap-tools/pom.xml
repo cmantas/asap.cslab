@@ -43,12 +43,12 @@
      <build>
       <plugins>      
         <plugin>
-        <!-- Package all in jar-->
+      <!-- Package all in jar-->
       <artifactId>maven-assembly-plugin</artifactId>
       <configuration>                  
         <archive>
           <manifest>
-            <mainClass>Parser</mainClass>
+            <mainClass>Main</mainClass>
           </manifest>
         </archive>
         <descriptorRefs>
