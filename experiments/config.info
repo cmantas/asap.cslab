@@ -24,7 +24,7 @@ echo HELLOOO
 max_documents=100000
 min_documents=10
 documents_step=500
-window=100
+window=500
 min_maxDFpercent=15
 max_maxDFpercent=95
 maxDFpercent_step=20
