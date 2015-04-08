@@ -65,15 +65,15 @@ def process_and_write(text):
         docs_counter += 1
         title = d['_source']['textTitle']
         content = d['_source']["textContent"]
-        text += "%s\n%s\n" % (title, content)
-    if stream:
-        print text.encode("utf-8")
-        pass
-    else:
-        fname = "{0:09d}".format(windows_counter)
-        file = codecs.open(output_dir+"/"+str(fname), "w+", "utf-8")
-        file.write(text)
-        file.close()
+        text = "%s\n%s\n" % (title, content)
+        if stream:
+            print text.encode("utf-8")
+            pass
+        else:
+            fname = "{0:09d}".format(docs_counter)
+            file = codecs.open(output_dir+"/"+str(fname), "w+", "utf-8")
+            file.write(text)
+            file.close()
     windows_counter += 1
 
 print "Will try to read {0} Total Documents with a window of {1}".format(total, window)
