@@ -1,4 +1,6 @@
 #!/bin/bash
+source  $(dirname $0)/config.info 	#loads the parameters
+
 output_file="mahout_kmeans_text.out"
 operator_out="mahout_kmeans_text.out"
 rm $operator_out &>/dev/null
@@ -24,13 +26,13 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 	#re-load the parameters on each iteration for live re-configuration
 	source  $(dirname $0)/config.info 	#loads the parameters
 
-	echo "[PREP] Loading text files"
-	$(dirname $0)/../hadoop/mahout-kmeans/myText2seq.sh $input_dir $hadoop_input $docs
+	echo "[PREP] Loading $docs text files"
+	$(dirname $0)/../hadoop/mahout-kmeans/myText2seq.sh $input_dir $hadoop_input $docs >/dev/null
 	
 	for ((dfp=min_maxDFpercent; dfp<max_maxDFpercent; dfp+=maxDFpercent_step)); do
+		
 		# TF/IDF
 		echo "[EXPERIMENT] TF-IDF on $docs documents with a $dfp maxDFpercentage"
-
 		tstart
 		$(dirname $0)/../hadoop/mahout-kmeans/mahout_tfidf.sh $hadoop_input $tfidf_dir $dfp &> $operator_out
 		time=$(ttime)
