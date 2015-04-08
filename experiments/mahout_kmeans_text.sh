@@ -1,5 +1,4 @@
 #!/bin/bash
-source  $(dirname $0)/config.info 	#loads the parameters
 output_file="mahout_kmeans_text.out"
 operator_out="mahout_kmeans_text.out"
 rm $operator_out &>/dev/null
@@ -22,10 +21,13 @@ sqlite3 results.db "CREATE TABLE IF NOT EXISTS mahout_kmeans_text
 (id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, terms INTEGER, max_df INTEGER, time INTEGER, date TIMESTAMP);"
 
 for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
+	#re-load the parameters on each iteration for live re-configuration
+	source  $(dirname $0)/config.info 	#loads the parameters
+
+	echo "[PREP] Loading text files"
+	$(dirname $0)/../hadoop/mahout-kmeans/myText2seq.sh $input_dir $hadoop_input $docs
+	
 	for ((dfp=min_maxDFpercent; dfp<max_maxDFpercent; dfp+=maxDFpercent_step)); do
-		echo "[PREP] Loading text files"
-		$(dirname $0)/../hadoop/mahout-kmeans/text2seq.sh $input_dir $hadoop_input $docs
-		
 		# TF/IDF
 		echo "[EXPERIMENT] TF-IDF on $docs documents with a $dfp maxDFpercentage"
 

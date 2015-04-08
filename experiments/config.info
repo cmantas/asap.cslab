@@ -20,10 +20,10 @@ synth_clusters_data_dir=~/Data/synth_clusters
 
 
 ### TEXT ###
-proxy="proxy localhost:1234" #comment out for execution in IMR
-max_documents=30100
-min_documents=100
-documents_step=1000
+#proxy="proxy localhost:1234" #comment out for execution in IMR
+max_documents=100000
+min_documents=500
+documents_step=500
 window=1
 min_maxDFpercent=15
 max_maxDFpercent=95
