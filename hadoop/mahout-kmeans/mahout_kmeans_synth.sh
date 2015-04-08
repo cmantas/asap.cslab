@@ -1,16 +1,5 @@
 source $(dirname $0)/common.sh
 
-PARSER_JAR=~/bin/lib/CSV2Seq.jar
-
-
-echo "[STEP 0/2] CSVs to Sequence File"
-hadoop jar ${PARSER_JAR} ${input} ${WORK_DIR}/my_synthetic_seq
-
-#DNK if it is needed but does not work
-# echo "[STEP   2/4] Sequence to Sparse"
-#  mahout seq2sparse \
-#     -i ${WORK_DIR}/synth_sequence_files \
-#     -o ${WORK_DIR}/synth_sparce_matrix --maxDFPercent 85 --namedVector 
 
 echo "[STEP 1/2] K-Means"
   mahout kmeans \

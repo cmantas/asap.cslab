@@ -1,8 +1,11 @@
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -20,13 +23,22 @@ public class CSVLoader {
 
         String input = args[0];
         String output = args[1];
-
         Configuration conf;
         conf = new Configuration();
         FileSystem fs = FileSystem.get(conf);
+        InputStream is = null;
+        
+        if (args.length>2 && args[2].equals("localInput")){
+            System.out.println("Using local file "+input);
+            is=(new FileInputStream( new File(input)));
+        }            
+        else{
+            System.out.println("Using HDFS file "+input);
+            is=fs.open(new Path(input));
+        }
 
         try (
-                BufferedReader reader =  new BufferedReader(new InputStreamReader(fs.open(new Path(input))));
+                BufferedReader reader =  new BufferedReader(new InputStreamReader(is));
                 SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, new Path(output), IntWritable.class, VectorWritable.class)) {
             String line;
             int counter = 0;

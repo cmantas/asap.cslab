@@ -18,7 +18,6 @@ dimensions_step=500  	# 10 measurements
 
 synth_clusters_data_dir=~/Data/synth_clusters
 
-echo HELLOOO
 ### TEXT ###
 #proxy="proxy localhost:1234" #comment out for execution in IMR
 max_documents=100000

@@ -1,37 +1,33 @@
 #!/bin/bash
-echo FIX PARSER JAR
-exit
 source config.info 	#loads the parameters
 source experiment.sh	#loads the experiment function
+PARSER_JAR=~/bin/lib/asapTools.jar
+
 output_file="mahout_kmeans_synth.out"
 
-#first create the hdfs input directory
-hdfs dfs -mkdir -p ./input/kmeans_input
-
-#delete operator output file
-rm -f results_file 2>/dev/null
-
+sqlite3 results.db "CREATE TABLE IF NOT EXISTS mahout_kmeans_synth (id INTEGER PRIMARY KEY AUTOINCREMENT, points INTEGER, k INTEGER, dimensions INTEGER, time INTEGER, date TIMESTAMP);"
 
 for ((points=min_points; points<=max_points; points+=points_step)); do   
-	for((clusters=min_clusters; clusters<=max_clusters; clusters+=clusters_step)); do
-		#generate the data (if not exists)              
-	        ../numerical_generator/generator.py -n $points -c $clusters -o ~/Data/synth_clusters
-		fname=${points}_points_${clusters}_clusters.csv
-		input=~/Data/synth_clusters/$fname
-		
-		#put input files in hdfs (ignore failure)
-		#echo Putting $input to HDFS
-		hdfs dfs -put  -f ${input} ./input/kmeans_input &>/dev/null
-		EXPERIMENT_NAME="mahout_kmeans_synth: points $points , K $clusters"
-		OPERATOR_OUTPUT=$output_file
-		hadoop_input="./input/kmeans_input/$fname"
-		experiment ../hadoop/mahout-kmeans/mahout_kmeans_synth.sh $hadoop_input $clusters $max_iterations
-		check $output_file
-                
-		#delete the data for the next run
-		echo $input
-		rm $input
+	for((dimensions=min_dimensions; dimensions<=max_dimensions; dimensions+=dimensions_step)); do
+			for((k=min_k; k<=max_k; k+=k_step)); do
+				
+				#generate data (the output of the generator is the filename)
+				input=$(../numerical_generator/generator_simple.py -n $points -d $dimensions -o ~/Data/synth_clusters 2>/dev/null)
 
+				echo "[PREP] CSVs to Sequence File"
+				hadoop jar ${PARSER_JAR} loadCSV ${input} synthetic_seq localInput >/dev/null
+				
+				tstart
+				echo "[EXPERIMENT] mahout K-Means for $points points, $dimensions dimensions, K=$k"
+				../hadoop/mahout-kmeans/mahout_kmeans_synth.sh synthetic_seq $clusters $max_iterations &> $output_file
+				time=$(ttime)
+				check $output_file
+				sqlite3 results.db "INSERT INTO mahout_kmeans_synth(points, k, dimensions, time, date)
+						        VALUES( $points, $k, $dimensions, $time, CURRENT_TIMESTAMP);"
+                		
+				#delete the data for the next run
+				rm $input
+			done
 	done
 done
 
