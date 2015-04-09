@@ -29,7 +29,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 	echo "[PREP] Loading $docs text files"
 	$(dirname $0)/../hadoop/mahout-kmeans/myText2seq.sh $input_dir $hadoop_input $docs >/dev/null
 	
-	for ((dfp=min_maxDFpercent; dfp<max_maxDFpercent; dfp+=maxDFpercent_step)); do
+	for ((dfp=min_maxDFpercent; dfp<=max_maxDFpercent; dfp+=maxDFpercent_step)); do
 		
 		# TF/IDF
 		echo "[EXPERIMENT] TF-IDF on $docs documents with a $dfp maxDFpercentage"
