@@ -26,7 +26,7 @@ documents_step=10000
 window=500
 min_maxDFpercent=35
 max_maxDFpercent=95
-maxDFpercent_step=20
+maxDFpercent_step=30
 
 documents_data_dir=~/Data/ElasticSearch_text_docs
 
