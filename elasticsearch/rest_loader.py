@@ -63,6 +63,8 @@ def process_and_write(text):
     #get contents
     for d in hits:
         docs_counter += 1
+        if "textTitle" not in d['_source'] or "textContent" not in d['_source']:
+            continue
         title = d['_source']['textTitle']
         content = d['_source']["textContent"]
         text = "%s\n%s\n" % (title, content)
