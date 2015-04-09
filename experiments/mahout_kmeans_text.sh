@@ -42,7 +42,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		dimensions=$(hadoop jar ${TOOLS_JAR}  seqInfo  $tfidf_dir/dictionary.file-0 | grep Lenght: | awk '{ print $2 }')
 
 		sqlite3 results.db "INSERT INTO mahout_tfidf(documents, max_df, terms, time, date )
-		                    VALUES( $docs,  $dimensions,  $dfp, $time, CURRENT_TIMESTAMP);"
+		                    VALUES( $docs, $dfp, $dimensions, $time, CURRENT_TIMESTAMP);"
 	
 		for((k=min_k; k<=max_k; k+=k_step)); do
 			echo "[EXPERIMENT] mahout K-means with K=$k"
