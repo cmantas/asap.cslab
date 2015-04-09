@@ -113,13 +113,21 @@ def myplot(*args, **kwargs):
 # plt.show()
 
 
-############## mahout kmeans text ######\
+############# mahout kmeans text ######\
 figure()
 docs, times = query2lists("select documents, avg(time) from mahout_kmeans_text where k=11 GROUP by documents")
 times = [ float(t)/1000 for t in times]
-myplot(docs,times, label="mahout k=11", title="Mahout K-means", xlabel="#docs", ylabel="time(sec)")
-docs, times = query2lists("select documents, avg(time) from weka_kmeans_text where k=11 GROUP by documents")
+myplot(docs,times, label="k=11", title="Mahout K-means", xlabel="#docs", ylabel="time(sec)")
+docs, times = query2lists("select documents, avg(time) from mahout_kmeans_text where k=21 GROUP by documents")
 times = [ float(t)/1000 for t in times]
-myplot(docs,times, label="weka k=11",)
+myplot(docs,times, label="k=21",)
 show()
 
+figure()
+docs, times = query2lists("select documents, avg(time) from weka_kmeans_text where k=11 GROUP by documents")
+times = [ float(t)/1000 for t in times]
+myplot(docs,times, label="k=11", title="weka K-means", xlabel="#docs", ylabel="time(sec)")
+docs, times = query2lists("select documents, time from weka_kmeans_text where k=21 GROUP by documents")
+times = [ float(t)/1000 for t in times]
+myplot(docs,times, label="k=21",)
+show()

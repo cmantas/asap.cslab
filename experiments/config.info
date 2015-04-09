@@ -13,8 +13,8 @@ max_points=30100	#max num of data points
 points_step=1000	#30 measurements
 
 min_dimensions=2
-max_dimensions=5002
-dimensions_step=1000  	# 5 measurements
+max_dimensions=6002
+dimensions_step=2000  	# 5 measurements
 
 synth_clusters_data_dir=~/Data/synth_clusters
 
