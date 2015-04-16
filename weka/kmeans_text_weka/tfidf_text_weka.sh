@@ -10,12 +10,12 @@ java -Xmx15g -cp ${WEKA} weka.filters.unsupervised.attribute.StringToWordVector 
 	     -N 0 \
 	     -W $max_features \
 	     -prune-rate -1.0 \
-	     -stemmer weka.core.stemmers.NullStemmer \
+	     -stemmer weka.core.stemmers.IteratedLovinsStemmer \
 	     -M ${min_frequency} \
-	     -tokenizer "weka.core.tokenizers.WordTokenizer \
-	     -delimiters \" \\r\\n\\t.,;:\\\'\\\"()?\!\"" \
+             -tokenizer "weka.core.tokenizers.WordTokenizer \
+	                  -delimiters \" \\r\\n\\t.,;:\\\'\\\"()?\!\$#-0123456789/*%<>@[]+\`~_=&^   \"" \
 	     -i ${WD}/data.arff \
-	     -S -C\
+	     -L -S -C\
 	     -o ${WD}/tf_idf_data.arff
 
 fvl=$(cat ${WD}/tf_idf_data.arff | grep @attribute | wc -l)
