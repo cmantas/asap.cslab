@@ -12,6 +12,7 @@ for ((points=min_points; points<=max_points; points+=points_step)); do
 			for((k=min_k; k<=max_k; k+=k_step)); do
 				
 				#generate data (the output of the generator is the filename)
+				echo "[PREP] Generate"
 				input=$(../numerical_generator/generator_simple.py -n $points -d $dimensions -o ~/Data/synth_clusters 2>/dev/null)
 
 				echo "[PREP] CSVs to Sequence File"

@@ -16,18 +16,21 @@ mahout kmeans \
 	-i ${input}/tfidf-vectors/ \
 	-o ${raw_output} \
 	-dm org.apache.mahout.common.distance.CosineDistanceMeasure \
-	-c /tmp/mahout_rand_clusters \
 	-x ${max_iterations} \
 	-k ${K}\
 	-ow --clustering \
+	-c /tmp/mahout_rand_clusters \
 	&>step3.out 
 
 check step3.out
+
+
 
 #little hack - investigate further
 final_clusters=$(hdfs dfs -ls $raw_output | grep final | awk '{print $8}')
 echo $final_clusters
 
+mahout seqdumper -i $final_clusters >final_clusters_dump
 echo "[STEP 4/4] Clusterdump"
   mahout clusterdump \
     -i ${final_clusters} \

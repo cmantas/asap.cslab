@@ -15,7 +15,7 @@ java -Xmx15g -cp ${WEKA} weka.filters.unsupervised.attribute.StringToWordVector 
 	     -tokenizer "weka.core.tokenizers.WordTokenizer \
 	     -delimiters \" \\r\\n\\t.,;:\\\'\\\"()?\!\"" \
 	     -i ${WD}/data.arff \
-	     -S -L -C\
+	     -S -C\
 	     -o ${WD}/tf_idf_data.arff
 
 fvl=$(cat ${WD}/tf_idf_data.arff | grep @attribute | wc -l)

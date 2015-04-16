@@ -42,7 +42,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		echo EXPERIMENT: weka tf-idf for $docs documents, up to $asked_features features
 		#tfidf
 		tstart
-		$(dirname $0)/../weka/kmeans_text_weka/tfidf_text_weka.sh  $asked_features &>weka_tfidf.out
+		$(dirname $0)/../weka/kmeans_text_weka/tfidf_text_weka.sh  $asked_features &>>weka_tfidf.out
 		features_no=$(tail weka_tfidf.out -n 1)
 		time=$(ttime)
 	       	sqlite3 results.db "INSERT INTO weka_tfidf(documents,dimensions, max_dimensions, time, date )
@@ -52,7 +52,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 			echo "EXPERIMENT:  weka_kmeans_text for k=$k, $docs documents"
 			#kmeans
 			tstart
-			$(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $k $max_iterations &>$operator_out
+			$(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $k $max_iterations &>>$operator_out
 			check $operator_out
 	        	time=$(ttime)
 	       		sqlite3 results.db "INSERT INTO weka_kmeans_text(documents, k, time, date, dimensions)
