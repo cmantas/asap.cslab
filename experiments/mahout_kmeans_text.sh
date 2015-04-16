@@ -40,7 +40,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		
 		# find the dimensions of the output
 		dimensions=$(hadoop jar ${TOOLS_JAR}  seqInfo  $tfidf_dir/dictionary.file-0 | grep Lenght: | awk '{ print $2 }')
-		echo $dimensions features, $time sec
+		echo $dimensions features, $((time/1000)) sec
 		sqlite3 results.db "INSERT INTO mahout_tfidf(documents, minDF, terms, time, date )
 		                    VALUES( $docs, $minDF, $dimensions, $time, CURRENT_TIMESTAMP);"
 	
@@ -50,7 +50,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 			$(dirname $0)/../hadoop/mahout-kmeans/mahout_kmeans_text.sh $tfidf_dir $k $max_iterations &>> $operator_out
 			time=$(ttime)
 			check $operator_out
-			echo $time sec
+			echo $((time/1000)) sec
 			sqlite3 results.db "INSERT INTO mahout_kmeans_text(documents, k, dimensions, time, date )
 			                    VALUES( $docs,  $k, $dimensions,  $time, CURRENT_TIMESTAMP);"
 		done
