@@ -18,7 +18,6 @@ sqlite3 results.db "CREATE TABLE IF NOT EXISTS weka_kmeans_text
 
 
 for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
-	for (( minDF=max_minDF; minDF>=min_minDF; minDF-=minDF_step)); do
 		############### creating virt dir  ###################
 		rm $virtual_dir/text/*
 		echo -n  "[PREP] linking $docs documents: "
@@ -40,6 +39,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		$(dirname $0)/../weka/kmeans_text_weka/convert_text_weka.sh $virtual_dir &>$operator_out
 		check $operator_out
 	
+	for (( minDF=max_minDF; minDF>=min_minDF; minDF-=minDF_step)); do
 		echo -n "[EXPERIMENT] weka tf-idf for $docs documents, minDF=$minDF:  "
 		#tfidf
 		tstart
