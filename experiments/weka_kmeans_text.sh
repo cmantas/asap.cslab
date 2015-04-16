@@ -11,14 +11,14 @@ mkdir -p $virtual_dir/text &>/dev/null
 
 
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS weka_tfidf 
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, time INTEGER, max_dimensions INTEGER, dimensions INTEGER, date TIMESTAMP);"
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, time INTEGER, minDF INTEGER, dimensions INTEGER, date TIMESTAMP);"
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS weka_kmeans_text 
 (id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, dimensions INTEGER, time INTEGER, date TIMESTAMP);"
 
 
 
 for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
-	for (( asked_features=min_dimensions; asked_features<=max_dimensions; asked_features+=dimensions_step)); do
+	for (( minDF=max_minDF; minDF>=min_minDF; minDF-=minDF_step)); do
 		############### creating virt dir  ###################
 		rm $virtual_dir/text/*
 		echo -n  "[PREP] linking $docs documents: "
@@ -40,15 +40,15 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		$(dirname $0)/../weka/kmeans_text_weka/convert_text_weka.sh $virtual_dir &>$operator_out
 		check $operator_out
 	
-		echo -n "[EXPERIMENT] weka tf-idf for $docs documents, up to $asked_features features:  "
+		echo -n "[EXPERIMENT] weka tf-idf for $docs documents, minDF=$minDF:  "
 		#tfidf
 		tstart
-		$(dirname $0)/../weka/kmeans_text_weka/tfidf_text_weka.sh  $asked_features $minDF &>>weka_tfidf.out
+		$(dirname $0)/../weka/kmeans_text_weka/tfidf_text_weka.sh  9999999 $minDF &>>weka_tfidf.out
 		features_no=$(tail weka_tfidf.out -n 1)
 		time=$(ttime)
 		echo $features_no features, $(($time/1000)) secs
-	       	sqlite3 results.db "INSERT INTO weka_tfidf(documents,dimensions, max_dimensions, time, date )
-	            VALUES( $docs,  $features_no,  $asked_features, $time, CURRENT_TIMESTAMP);"
+	       	sqlite3 results.db "INSERT INTO weka_tfidf(documents,dimensions, minDF, time, date )
+	            VALUES( $docs,  $features_no,  $minDF, $time, CURRENT_TIMESTAMP);"
 																			
 	    	for((k=min_k; k<=max_k; k+=k_step)); do
 			echo -n "[EXPERIMENT] weka_kmeans_text for k=$k, $docs documents: "

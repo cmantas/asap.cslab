@@ -51,12 +51,12 @@ def myplot(*args, **kwargs):
 #
 
 
-figure()
-docs, terms = query2lists("select documents, terms from mahout_tfidf group by documents;")
-myplot(docs,terms, label="mahout", title="Documents vs Terms", xlabel="#docs", ylabel="#terms")
-docs, terms = query2lists("select documents, dimensions from weka_tfidf group by documents;")
-myplot(docs,terms, label="weka")
-show()
+# figure()
+# docs, terms = query2lists("select documents, terms from mahout_tfidf group by documents;")
+# myplot(docs,terms, label="mahout", title="Documents vs Terms", xlabel="#docs", ylabel="#terms")
+# docs, terms = query2lists("select documents, dimensions from weka_tfidf group by documents;")
+# myplot(docs,terms, label="weka")
+# show()
 
 
 ############# mahout kmeans text ######\
@@ -79,15 +79,15 @@ show()
 # show()
 
 #
-# figure()
-# docs, times = query2lists("select documents, time from weka_kmeans_text where k=6 GROUP by documents")
-# times = [ float(t)/1000 for t in times]
-# myplot(docs,times, label="k=6", title="weka K-means", xlabel="#docs", ylabel="time(sec)")
-# docs, times = query2lists("select documents, time from weka_kmeans_text where k=21 GROUP by documents")
-# docs, times = query2lists("select documents, time from weka_kmeans_text where k=11 GROUP by documents")
-# times = [ float(t)/1000 for t in times]
-# myplot(docs,times, label="k=11", title="weka K-means", xlabel="#docs", ylabel="time(sec)")
-# docs, times = query2lists("select documents, time from weka_kmeans_text where k=21 GROUP by documents")
-# times = [ float(t)/1000 for t in times]
-# myplot(docs,times, label="k=21",)
-# show()
+figure()
+docs, times = query2lists("select documents, time from weka_kmeans_text where k=6 GROUP by documents")
+times = [ float(t)/1000 for t in times]
+myplot(docs,times, label="k=6", title="weka K-means", xlabel="#docs", ylabel="time(sec)")
+docs, times = query2lists("select documents, time from weka_kmeans_text where k=21 GROUP by documents")
+docs, times = query2lists("select documents, time from weka_kmeans_text where k=11 GROUP by documents")
+times = [ float(t)/1000 for t in times]
+myplot(docs,times, label="k=11", title="weka K-means", xlabel="#docs", ylabel="time(sec)")
+docs, times = query2lists("select documents, time from weka_kmeans_text where k=21 GROUP by documents")
+times = [ float(t)/1000 for t in times]
+myplot(docs,times, label="k=21",)
+show()

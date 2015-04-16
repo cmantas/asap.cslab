@@ -20,15 +20,14 @@ synth_clusters_data_dir=~/Data/synth_clusters
 
 ### TEXT ###
 #proxy="proxy localhost:1234" #comment out for execution in IMR
-max_documents=200000
+max_documents=100000
 min_documents=1000
-documents_step=2000
+documents_step=5000
 
-minDF=100
+min_minDF=10
+max_minDF=310
+minDF_step=100
 
-min_maxDFpercent=35
-max_maxDFpercent=95
-maxDFpercent_step=30
 
 window=500
 documents_data_dir=~/Data/ElasticSearch_text_docs
