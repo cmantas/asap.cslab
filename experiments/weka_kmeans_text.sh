@@ -21,6 +21,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 	for (( asked_features=min_dimensions; asked_features<=max_dimensions; asked_features+=dimensions_step)); do
 		############### creating virt dir  ###################
 		rm $virtual_dir/text/*
+		echo -n  "[PREP] linking $docs documents: "
 		doc_count=0
 		for f in $input_dir/*; do
 			bn=$(basename $f)
@@ -29,7 +30,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 			if ((doc_count>=docs)); then break;fi
 		
 		done
-		echo "[PREP] linked $doc_count documents"
+		echo "OK ($doc_count) "
 		if ((doc_count<docs)); then
 			echo could not find enough docs \(found $doc_count of $docs\). exiting
 			exit
@@ -39,10 +40,10 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		$(dirname $0)/../weka/kmeans_text_weka/convert_text_weka.sh $virtual_dir &>$operator_out
 		check $operator_out
 	
-		echo -n "EXPERIMENT: weka tf-idf for $docs documents, up to $asked_features features:  "
+		echo -n "[EXPERIMENT] weka tf-idf for $docs documents, up to $asked_features features:  "
 		#tfidf
 		tstart
-		$(dirname $0)/../weka/kmeans_text_weka/tfidf_text_weka.sh  $asked_features &>>weka_tfidf.out
+		$(dirname $0)/../weka/kmeans_text_weka/tfidf_text_weka.sh  $asked_features $minDF &>>weka_tfidf.out
 		features_no=$(tail weka_tfidf.out -n 1)
 		time=$(ttime)
 		echo $features_no features, $(($time/1000)) secs
@@ -50,7 +51,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 	            VALUES( $docs,  $features_no,  $asked_features, $time, CURRENT_TIMESTAMP);"
 																			
 	    	for((k=min_k; k<=max_k; k+=k_step)); do
-			echo -n "EXPERIMENT:  weka_kmeans_text for k=$k, $docs documents: "
+			echo -n "[EXPERIMENT] weka_kmeans_text for k=$k, $docs documents: "
 			#kmeans
 			tstart
 			$(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $k $max_iterations &>>$operator_out

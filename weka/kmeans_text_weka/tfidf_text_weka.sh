@@ -1,5 +1,5 @@
 source $(dirname $0)/common.sh
-min_frequency=1
+min_frequency=$2
 
 max_features=$1
 

@@ -12,8 +12,8 @@ min_points=100 	#min number of data points
 max_points=30100	#max num of data points
 points_step=1000	#30 measurements
 
-min_dimensions=2
-max_dimensions=6002
+min_dimensions=9999999
+max_dimensions=9999999
 dimensions_step=2000  	# 5 measurements
 
 synth_clusters_data_dir=~/Data/synth_clusters
@@ -21,13 +21,16 @@ synth_clusters_data_dir=~/Data/synth_clusters
 ### TEXT ###
 #proxy="proxy localhost:1234" #comment out for execution in IMR
 max_documents=200000
-min_documents=10000
-documents_step=10000
-window=500
+min_documents=1000
+documents_step=2000
+
+minDF=100
+
 min_maxDFpercent=35
 max_maxDFpercent=95
 maxDFpercent_step=30
 
+window=500
 documents_data_dir=~/Data/ElasticSearch_text_docs
 
 

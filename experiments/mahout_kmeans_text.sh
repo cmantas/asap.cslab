@@ -34,7 +34,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		# TF/IDF
 		echo "[EXPERIMENT] TF-IDF on $docs documents with a $dfp maxDFpercentage"
 		tstart
-		$(dirname $0)/../hadoop/mahout-kmeans/mahout_tfidf.sh $hadoop_input $tfidf_dir $dfp &> $operator_out
+		$(dirname $0)/../hadoop/mahout-kmeans/mahout_tfidf.sh $hadoop_input $tfidf_dir $dfp  $minDF &> $operator_out
 		time=$(ttime)
 		check $operator_out
 		

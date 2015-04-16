@@ -1,6 +1,6 @@
 source $(dirname $0)/common.sh
 
-minTF=20
+minTF=$3
 
 input=$1
 output=$2
