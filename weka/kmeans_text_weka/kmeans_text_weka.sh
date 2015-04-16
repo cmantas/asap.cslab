@@ -11,4 +11,5 @@ java -Xmx15g -cp ${WEKA} weka.clusterers.SimpleKMeans \
 	     -t ${WD}/tf_idf_data.arff \
 	     > clusters.txt
 head -n 30 clusters.txt
+echo DONE KMEANS
 rm clusters.txt	

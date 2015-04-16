@@ -18,7 +18,6 @@ sqlite3 results.db "CREATE TABLE IF NOT EXISTS weka_kmeans_text
 
 
 for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
-	for (( asked_features=min_dimensions; asked_features<=max_dimensions; asked_features+=dimensions_step)); do
 		############### creating virt dir  ###################
 		rm $virtual_dir/text/*
 		doc_count=0
@@ -36,9 +35,10 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		fi
 		echo "[PREP]: Converting to arff"
 		#convert to arff
-		$(dirname $0)/../weka/kmeans_text_weka/convert_text_weka.sh $virtual_dir &>$operator_out
+		$(dirname $0)/../weka/kmeans_text_weka/convert_text_weka.sh $virtual_dir &>>$operator_out
 		check $operator_out
 	
+		asked_features=9999999
 		echo EXPERIMENT: weka tf-idf for $docs documents, up to $asked_features features
 		#tfidf
 		tstart
@@ -52,7 +52,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 			echo "EXPERIMENT:  weka_kmeans_text for k=$k, $docs documents"
 			#kmeans
 			tstart
-			$(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $k $max_iterations &>$operator_out
+			$(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $k $max_iterations &>>$operator_out
 			check $operator_out
 	        	time=$(ttime)
 	       		sqlite3 results.db "INSERT INTO weka_kmeans_text(documents, k, time, date, dimensions)
@@ -60,12 +60,6 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 																			
 		done #K parameter loop
 		
-		# if we got less features than we asked we need not ask for more
-		if ((features_no<asked_features));then
-			echo No need to add more dimensions, continuing
-			break
-		fi
-	done #asked dimensions loop
 done #documents count loop
 
 exit
