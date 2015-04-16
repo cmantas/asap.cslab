@@ -5,7 +5,7 @@ minTF=$3
 input=$1
 output=$2
 
-echo "[STEP 2/4] Sequence to Sparse KOKOKOO $input, $output"
+echo "[STEP 2/4] Sequence to Sparse $input, $output, minTF=$minTF"
  mahout seq2sparse \
     -i $input --chunkSize $chunk\
     -o $output --maxDFSigma 3.0 --namedVector --minSupport $minTF\

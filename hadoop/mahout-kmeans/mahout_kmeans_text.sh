@@ -30,7 +30,6 @@ check step3.out
 final_clusters=$(hdfs dfs -ls $raw_output | grep final | awk '{print $8}')
 echo $final_clusters
 
-mahout seqdumper -i $final_clusters >final_clusters_dump
 echo "[STEP 4/4] Clusterdump"
   mahout clusterdump \
     -i ${final_clusters} \
@@ -42,4 +41,4 @@ check step4.out
 
 echo "[RESULT  ]"
  head clusterdump_result
-#rm clusterdump_result
+rm clusterdump_result

@@ -34,7 +34,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		# TF/IDF
 		echo -n "[EXPERIMENT] TF-IDF on $docs documents, minDF=$minDF: "
 		tstart
-		$(dirname $0)/../hadoop/mahout-kmeans/mahout_tfidf.sh $hadoop_input $tfidf_dir $minDF &> $operator_out
+		$(dirname $0)/../hadoop/mahout-kmeans/mahout_tfidf.sh $hadoop_input $tfidf_dir $minDF &>> $operator_out
 		time=$(ttime)
 		check $operator_out
 		
@@ -47,7 +47,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		for((k=min_k; k<=max_k; k+=k_step)); do
 			echo -n "[EXPERIMENT] mahout K-means with K=$k: "
 			tstart
-			$(dirname $0)/../hadoop/mahout-kmeans/mahout_kmeans_text.sh $tfidf_dir $k $max_iterations &>$operator_out
+			$(dirname $0)/../hadoop/mahout-kmeans/mahout_kmeans_text.sh $tfidf_dir $k $max_iterations &>> $operator_out
 			time=$(ttime)
 			check $operator_out
 			echo $time sec
