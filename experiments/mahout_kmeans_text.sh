@@ -18,7 +18,7 @@ hdfs dfs -mkdir -p $hadoop_input
 tfidf_dir=/tmp/mahout_tfidf
 
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS mahout_tfidf 
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, time INTEGER, minDF INTEGER, terms INTEGER, date TIMESTAMP);"
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, time INTEGER, minDF INTEGER, dimensions INTEGER, date TIMESTAMP);"
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS mahout_kmeans_text 
 (id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, dimensions INTEGER, time INTEGER, date TIMESTAMP);"
 
@@ -41,7 +41,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		# find the dimensions of the output
 		dimensions=$(hadoop jar ${TOOLS_JAR}  seqInfo  $tfidf_dir/dictionary.file-0 | grep Lenght: | awk '{ print $2 }')
 		echo $dimensions features, $((time/1000)) sec
-		sqlite3 results.db "INSERT INTO mahout_tfidf(documents, minDF, terms, time, date )
+		sqlite3 results.db "INSERT INTO mahout_tfidf(documents, minDF, dimensions, time, date )
 		                    VALUES( $docs, $minDF, $dimensions, $time, CURRENT_TIMESTAMP);"
 	
 		for((k=min_k; k<=max_k; k+=k_step)); do

@@ -3,7 +3,7 @@ runs=1 			#how many runs per experiment
 
 ### KMEANS  ###
 min_k=1		#min num of clusters
-max_k=21		#max num of clusters
+max_k=16		#max num of clusters
 k_step=5		#step of increasing the clusters	
 max_iterations=50
 
