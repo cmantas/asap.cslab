@@ -15,7 +15,8 @@ import org.apache.hadoop.io.SequenceFile;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
-;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.IntWritable;
 
 public class CSVLoader {
 

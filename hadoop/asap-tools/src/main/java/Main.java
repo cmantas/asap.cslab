@@ -20,6 +20,9 @@ public class Main {
             case "loadCSV":
                 CSVLoader.main(newArgs);
                 break;
+            case "Arff2Mahout":
+                MoverTFIDFArff2Mahout.main(newArgs);
+                break;
             default:
                 System.err.println("ERROR: I do not know command: "+command);
         }
