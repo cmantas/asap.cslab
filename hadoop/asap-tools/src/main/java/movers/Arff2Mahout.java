@@ -1,3 +1,5 @@
+package movers;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -17,7 +19,7 @@ import org.apache.mahout.math.VectorWritable;
  *
  * @author cmantas
  */
-public class MoverTFIDFArff2Mahout {
+public class Arff2Mahout {
     
     final static int maxFeatures = 1000000;
     static Configuration conf=new Configuration();;

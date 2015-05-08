@@ -54,7 +54,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 			echo -n "[EXPERIMENT] weka_kmeans_text for k=$k, $docs documents: "
 			#kmeans
 			tstart
-			$(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh $k $max_iterations &>>$operator_out
+			$(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh /tmp/kmeans_text_weka/tf_idf_data.arff $k $max_iterations &>>$operator_out
 			check $operator_out
 	        	time=$(ttime)
 			echo $((time/1000)) secs
