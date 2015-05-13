@@ -1,7 +1,7 @@
 DIRS = hadoop/asap-tools weka/kmeans_weka
 
 
-home:=$(shell pwd | sed -e 's/\//\\\//g')
+home:=$(shell pwd)
 
 default: build install_scripts 
 
@@ -10,7 +10,11 @@ build:
 	@for d in $(DIRS); do (cd $$d; $(MAKE) ); done
 
 install_scripts:
-	#Copying script(s)
-	@cp scripts/asap.sh ~/bin/asap
-	@echo Setting ASAP_HOME to asap script in '$(home)'
-	@sed -i "s/.*ASAP_HOME=.*/ASAP_HOME='${home}'/g" ~/bin/asap
+	#Linking script(s)
+	@ln -f scripts/asap.sh ~/bin/asap
+	@echo Setting ASAP_HOME of .bashrc  in '$(home)'
+	@# delete previous entry and put the new one
+	@sed -i "/export ASAP_HOME=.*/d" ~/.bashrc
+	@echo "export ASAP_HOME=$(home)" >> ~/.bashrc
+	@sed -i "/export ASAP_HOME=.*/d" ~/.zshrc
+	@echo "export ASAP_HOME=$(home)" >> ~/.zshrc

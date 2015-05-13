@@ -1,7 +1,13 @@
 source $(dirname $0)/common.sh
-min_frequency=$2
 
-max_features=$1
+if [ "$#" -ne 3 ]; then
+    echo "TFIDF needs 3 args: input, output, minDF, got: $#"
+    exit
+fi
+input=$1
+output=$2
+min_frequency=$3
+max_features=999999
 
 
 echo "STEP 2/3: TF/IDF"
@@ -13,12 +19,7 @@ java -Xmx15g -cp ${WEKA} weka.filters.unsupervised.attribute.StringToWordVector 
 	     -M ${min_frequency} \
              -tokenizer "weka.core.tokenizers.WordTokenizer \
 	                  -delimiters \" \\r\\n\\t.,;:\\\'\\\"()?\!\$#-0123456789/*%<>@[]+\`~_=&^   \"" \
-	     -i ${WD}/data.arff \
+	     -i $input \
 	     -L -S -I -C \
-	     -o ${WD}/tf_idf_data.arff
+	     -o $output
 
-fvl=$(cat ${WD}/tf_idf_data.arff | grep @attribute | wc -l)
-(( fvl=fvl-1 ))
-
-echo Number of features:
-echo $fvl

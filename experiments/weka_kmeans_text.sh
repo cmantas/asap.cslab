@@ -6,8 +6,9 @@ rm $operator_out &>/dev/null
 
 
 input_dir=~/Data/ElasticSearch_text_docs
-virtual_dir=~/Data/docs_virt_dir
 mkdir -p $virtual_dir/text &>/dev/null
+
+tmp_dir=/tmp/kmeans_weka
 
 
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS weka_tfidf 
@@ -18,34 +19,21 @@ sqlite3 results.db "CREATE TABLE IF NOT EXISTS weka_kmeans_text
 
 
 for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
-		############### creating virt dir  ###################
-		rm $virtual_dir/text/*
-		echo -n  "[PREP] linking $docs documents: "
-		doc_count=0
-		for f in $input_dir/*; do
-			bn=$(basename $f)
-			ln -s $f $virtual_dir/text/$bn
-			((doc_count+=1))
-			if ((doc_count>=docs)); then break;fi
-		
-		done
-		echo "OK ($doc_count) "
-		if ((doc_count<docs)); then
-			echo could not find enough docs \(found $doc_count of $docs\). exiting
-			exit
-		fi
+
 		echo "[PREP]: Converting to arff"
 		#convert to arff
-		$(dirname $0)/../weka/kmeans_text_weka/convert_text_weka.sh $virtual_dir &>$operator_out
+		asap move dir2arff $input_dir $tmp_dir/data.arff $docs &>$operator_out
 		check $operator_out
 	
 	for (( minDF=max_minDF; minDF>=min_minDF; minDF-=minDF_step)); do
 		echo -n "[EXPERIMENT] weka tf-idf for $docs documents, minDF=$minDF:  "
 		#tfidf
 		tstart
-		$(dirname $0)/../weka/kmeans_text_weka/tfidf_text_weka.sh  9999999 $minDF &>>weka_tfidf.out
-		features_no=$(tail weka_tfidf.out -n 1)
+		asap tfidf weka $tmp_dir/data.arff $tmp_dir/tfidf.arff $minDF &>$operator_out
 		time=$(ttime)
+		features_no=$(cat $tmp_dir/tfidf.arff | grep @attribute | wc -l)
+		(( features_no=features_no-1 ))
+
 		echo $features_no features, $(($time/1000)) secs
 	       	sqlite3 results.db "INSERT INTO weka_tfidf(documents,dimensions, minDF, time, date )
 	            VALUES( $docs,  $features_no,  $minDF, $time, CURRENT_TIMESTAMP);"
@@ -54,7 +42,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 			echo -n "[EXPERIMENT] weka_kmeans_text for k=$k, $docs documents: "
 			#kmeans
 			tstart
-			$(dirname $0)/../weka/kmeans_text_weka/kmeans_text_weka.sh /tmp/kmeans_text_weka/tf_idf_data.arff $k $max_iterations &>>$operator_out
+			asap kmeans weka $tmp_dir/tfidf.arff $k $max_iterations &>>$operator_out
 			check $operator_out
 	        	time=$(ttime)
 			echo $((time/1000)) secs

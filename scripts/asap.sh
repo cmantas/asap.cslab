@@ -1,18 +1,62 @@
 #!/bin/bash 
 
-ASAP_HOME="dummy"
 # libraries, etc
-asap_tools="/home/cmantas/bin/lib/asapTools.jar"
+tools="/home/cmantas/bin/lib/asapTools.jar"
 
-function weka_kmeans_text 
+export CHUNK=30
+
+
+function kmeans #ENGINE K MAX_ITERATIONS 
 {
- echo "my function";
- ${ASAP_HOME}/weka/kmeans_text_weka/kmeans_text_weka.sh
+engine=$1
+shift
+case "$engine" in
+ 	spark)
+		echo hello spark
+		;;
+	weka)
+		${ASAP_HOME}/weka/kmeans_text_weka/kmeans_text_weka.sh $@ ;;
+	mahout)
+		echo kmeans in  mahout
+		${ASAP_HOME}/hadoop/mahout-kmeans/mahout_kmeans_text.sh $@ ;;
+esac
+
 }
 
-function ata # hello
+function tfidf #ENGINE INPUT OUTPUT MIN_DOCS  
 {
-	echo ata function
+	engine=$1
+	shift
+	case "$engine" in
+	 	spark)
+			echo hello spark
+			;;
+		weka)
+			echo tfidf in weka
+			${ASAP_HOME}/weka/kmeans_text_weka/tfidf_weka.sh $@
+			;;
+		mahout)
+			echo kmeans in  mahout
+			${ASAP_HOME}/hadoop/mahout-kmeans/mahout_kmeans_text.sh 
+			;;
+	esac
+
+}
+
+function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
+{
+	operation=$1
+	shift
+	case "$operation" in
+		dir2arff)
+			${ASAP_HOME}//weka/kmeans_text_weka/convert_text_weka.sh $@ ;;
+		dir2sequence)
+			#c
+			hadoop jar $tools loadDir $@ $CHUNK ;;
+		*)
+			echo No such mover ;;
+	esac
+
 }
 
 function help  # Show a list of available opperations
