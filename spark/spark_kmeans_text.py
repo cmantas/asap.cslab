@@ -1,51 +1,47 @@
-
 import argparse
-from getpass import getuser
 
 parser = argparse.ArgumentParser(description='runs kmeans on spark for .csv files')
 
 parser.add_argument("-k","--K", help="the K parameter of K-means", type=int, required=True)
 parser.add_argument("-i","--max_iterations", help="the max iterations of the algorithm", type=int, required=True)
-parser.add_argument("--file", '-f', help="the input file (local)", )
+parser.add_argument("-input", help="the input dir (RDD)", required=True)
 parser.add_argument("--distributed_file", '-df', help="the input file in HDFS", )
 parser.add_argument('-d', action='store_true', default=False)
 args = parser.parse_args()
 
-if args.distributed_file is not None:
-    dfs = True
-    in_fname =  args.distributed_file
-    if not in_fname.startswith("/"):
-        in_fname = "/user/"+getuser()+"/"+in_fname
-    fname = "hdfs://localhost:9000/"+ in_fname
-elif args.file is not None:
-    dfs = False
-    fname = args.file
+
 
 k = args.K
 max_iter = args.max_iterations
-
+fname = args.input
 dfs = args.d
 
 from pyspark import SparkContext
 from pyspark.mllib.clustering import KMeans
 from numpy import array
 from math import sqrt
-
+from pyspark.mllib.linalg import SparseVector
 
 ####### RUNS ???? #######
-runs = 10 #how many parallel runs
-threads = 8
+runs = 2 #how many parallel runs
+threads = 4
 
 
 sc = SparkContext("local[%d]" % threads, "kmeans")
 
+def myVec(line):
+	from pyspark.mllib.linalg import SparseVector
+	return  eval("SparseVector"+line)
+
+
 
 # Load and parse the data
-data = sc.textFile(fname)
-parsedData = data.map(lambda line: array([float(x) for x in line.split(',')]))
+data = sc.textFile(fname).map(myVec)
+parsedData = data.map(lambda line: ast.litteral_eval() )
 
 # Build the model (cluster the data)
-clusters = KMeans.train(parsedData, k, maxIterations=max_iter, runs=runs, initializationMode="random")
+clusters = KMeans.train(data, k, maxIterations=max_iter, runs=runs, initializationMode="random")
+
 
 # # Evaluate clustering by computing Within Set Sum of Squared Errors
 # def error(point):

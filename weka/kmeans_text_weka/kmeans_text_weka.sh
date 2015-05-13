@@ -1,5 +1,5 @@
 source $(dirname $0)/common.sh
-
+echo "----------$ASAP_HOME-------"
 input=$1
 iterations=$3
 clusters=$2

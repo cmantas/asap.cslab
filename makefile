@@ -1,10 +1,16 @@
-DIRS =weka/kmeans_weka/ hadoop/CSV2Seq/
+DIRS = hadoop/asap-tools weka/kmeans_weka
 
-all:
-	-for d in $(DIRS); do (cd $$d; $(MAKE) ); done
 
-sync:
-	git commit -am "sync"; git push; ssh imr_master "cd asap.cslab; git pull"
-	sync -r --delete /home/cmantas/bin/lib/* imr_master:/home/asap/bin/lib/
+home:=$(shell pwd | sed -e 's/\//\\\//g')
 
-	
+default: build install_scripts 
+
+build:
+	# Building things
+	@for d in $(DIRS); do (cd $$d; $(MAKE) ); done
+
+install_scripts:
+	#Copying script(s)
+	@cp scripts/asap.sh ~/bin/asap
+	@echo Setting ASAP_HOME to asap script in '$(home)'
+	@sed -i "s/.*ASAP_HOME=.*/ASAP_HOME='${home}'/g" ~/bin/asap

@@ -19,6 +19,9 @@ log/
 *.class
 *.jar
 
+# Python
+*.pyc
+
 # Data
 *.tar.gz
 *.tbl
