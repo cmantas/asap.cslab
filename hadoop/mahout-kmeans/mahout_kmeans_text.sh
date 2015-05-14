@@ -7,7 +7,7 @@ input=$1
 raw_output=/tmp/clustering_raw_output
 
 #remove anything in output
-hdfs dfs -rm -r $raw_output/*
+hdfs dfs -rm -r $raw_output/* 2>/dev/null
 
 
 mahout kmeans \

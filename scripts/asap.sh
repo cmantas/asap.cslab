@@ -12,8 +12,7 @@ engine=$1
 shift
 case "$engine" in
  	spark)
-		echo hello spark
-		;;
+		echo hello spark;;
 	weka)
 		${ASAP_HOME}/weka/kmeans_text_weka/kmeans_text_weka.sh $@ ;;
 	mahout)
@@ -29,16 +28,13 @@ function tfidf #ENGINE INPUT OUTPUT MIN_DOCS
 	shift
 	case "$engine" in
 	 	spark)
-			echo hello spark
-			;;
+			echo hello spark ;;
 		weka)
 			echo tfidf in weka
-			${ASAP_HOME}/weka/kmeans_text_weka/tfidf_weka.sh $@
-			;;
+			${ASAP_HOME}/weka/kmeans_text_weka/tfidf_weka.sh $@ ;;
 		mahout)
 			echo kmeans in  mahout
-			${ASAP_HOME}/hadoop/mahout-kmeans/mahout_kmeans_text.sh 
-			;;
+			${ASAP_HOME}/hadoop/mahout-kmeans/mahout_tfidf.sh	$@ ;;
 	esac
 
 }
@@ -49,10 +45,13 @@ function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 	shift
 	case "$operation" in
 		dir2arff)
-			${ASAP_HOME}//weka/kmeans_text_weka/convert_text_weka.sh $@ ;;
+			${ASAP_HOME}/weka/kmeans_text_weka/convert_text_weka.sh $@ ;;
 		dir2sequence)
-			#c
 			hadoop jar $tools loadDir $@ $CHUNK ;;
+		arff2mahout)
+			hadoop jar $tools arff2mahout $@ ;;
+		mahout2arff)
+			hadoop jar $tools mahout2arff $@ ;;
 		*)
 			echo No such mover ;;
 	esac

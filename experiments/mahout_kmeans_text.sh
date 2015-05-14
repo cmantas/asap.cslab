@@ -27,27 +27,28 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 	source  $(dirname $0)/config.info 	#loads the parameters
 
 	echo "[PREP] Loading $docs text files"
-	$(dirname $0)/../hadoop/mahout-kmeans/myText2seq.sh $input_dir $hadoop_input $docs >/dev/null
+	asap move dir2sequence $input_dir $hadoop_input $docs &>> $operator_out
 	
 	for (( minDF=max_minDF; minDF>=min_minDF; minDF-=minDF_step)); do
 
 		# TF/IDF
 		echo -n "[EXPERIMENT] TF-IDF on $docs documents, minDF=$minDF: "
 		tstart
-		$(dirname $0)/../hadoop/mahout-kmeans/mahout_tfidf.sh $hadoop_input $tfidf_dir $minDF &>> $operator_out
+		asap tfidf mahout $hadoop_input $tfidf_dir $minDF &>> $operator_out
 		time=$(ttime)
 		check $operator_out
 		
 		# find the dimensions of the output
 		dimensions=$(hadoop jar ${TOOLS_JAR}  seqInfo  $tfidf_dir/dictionary.file-0 | grep Lenght: | awk '{ print $2 }')
 		echo $dimensions features, $((time/1000)) sec
+		#save in db
 		sqlite3 results.db "INSERT INTO mahout_tfidf(documents, minDF, dimensions, time, date )
 		                    VALUES( $docs, $minDF, $dimensions, $time, CURRENT_TIMESTAMP);"
 	
 		for((k=min_k; k<=max_k; k+=k_step)); do
 			echo -n "[EXPERIMENT] mahout K-means with K=$k: "
 			tstart
-			$(dirname $0)/../hadoop/mahout-kmeans/mahout_kmeans_text.sh $tfidf_dir $k $max_iterations &>> $operator_out
+			asap kmeans mahout $tfidf_dir $k $max_iterations &>> $operator_out
 			time=$(ttime)
 			check $operator_out
 			echo $((time/1000)) sec
