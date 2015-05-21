@@ -17,7 +17,7 @@ if not fname.startswith('/'):
     exit()
 
 fname = "hdfs://master:9000/"+fname
-runs = 10 #???
+runs = 4 #???
 
 from pyspark import SparkContext
 from pyspark.mllib.clustering import KMeans
