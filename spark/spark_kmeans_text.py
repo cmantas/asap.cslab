@@ -37,7 +37,7 @@ def myVec(line):
 
 # Load and parse the data
 data = sc.textFile(fname).map(myVec)
-parsedData = data.map(lambda line: ast.litteral_eval() )
+
 
 # Build the model (cluster the data)
 clusters = KMeans.train(data, k, maxIterations=max_iter, runs=runs, initializationMode="random")

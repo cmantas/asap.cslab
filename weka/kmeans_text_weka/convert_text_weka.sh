@@ -7,7 +7,7 @@ dir=$(dirname $output)
 #create output dir
 mkdir -p $dir
 
-virtual_dir="~/Data/docs_virt_dir"
+virtual_dir="$HOME/Data/docs_virt_dir"
 
 ############### creating virt dir  ###################
 rm -r $virtual_dir 

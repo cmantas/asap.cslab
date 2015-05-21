@@ -1,45 +1,42 @@
-from math import sqrt
 import argparse
-from getpass import getuser
+from os import system
 
 ### args parsing
 parser = argparse.ArgumentParser(description='runs TF/IDF on a directory of text docs')
-parser.add_argument("-i","--input", help="the input directory",  required=True)
-
-parser.add_argument("-lo", '--local_output', help="the output file (local)", )
-parser.add_argument("-do", "--distributed_output",  help="the output file in HDFS", )
-
+parser.add_argument("-i","--input", help="the input in HDFS",  required=True)
+parser.add_argument("-o", '--output', help="the output in  HDFS", required=True )
+parser.add_argument("-mdf", '--min_document_frequency', default=1 )
 args = parser.parse_args()
 
-d_out = args.distributed_output
-l_out = args.local_output
 docs_dir = args.input
+if not docs_dir.startswith('/'):
+    print "Please specify an absolute path for the input"
+    exit()
+docs_dir = "hdfs://master:9000/" + docs_dir
+d_out = "hdfs://master:9000/" + args.output
+min_df = args.min_document_frequency
 
-if d_out is None and l_out is None:
-    print "Please specify a local or distributed output"
-    exit(-1)
+# remove any previous output (is there a way to it from spark?)
+system("hdfs dfs -rm -r %s" % d_out)
 
-
-# import spark things
+# import spark-realated stuff
 from pyspark import SparkContext
 from pyspark.mllib.feature import HashingTF
 from pyspark.mllib.feature import IDF
-sc = SparkContext()
 
-min_df = 1
-
+sc = SparkContext(appName="TF-IDF")
 
 # Load documents (one per line).
-documents = sc.textFile(docs_dir).map(lambda line: line.split(" "))
+documents = sc.sequenceFile(docs_dir).map(lambda title_text: title_text[1].split(" "))
+
 
 hashingTF = HashingTF()
 tf = hashingTF.transform(documents)
 
 
 # IDF
-tf.cache()
-idf = IDF(minDocFreq=2).fit(tf)
+idf = IDF(minDocFreq=min_df).fit(tf)
 tfidf = idf.transform(tf)
 
 #save
-tfidf.saveAsTextFile(l_out)
+tfidf.saveAsTextFile(d_out)

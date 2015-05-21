@@ -12,11 +12,12 @@ engine=$1
 shift
 case "$engine" in
  	spark)
-		echo hello spark;;
+		echo "TODO"
+		exit
+		${ASAP_HOME}/spark/spark_kmeans_text.py	;;
 	weka)
 		${ASAP_HOME}/weka/kmeans_text_weka/kmeans_text_weka.sh $@ ;;
 	mahout)
-		echo kmeans in  mahout
 		${ASAP_HOME}/hadoop/mahout-kmeans/mahout_kmeans_text.sh $@ ;;
 esac
 
@@ -28,12 +29,13 @@ function tfidf #ENGINE INPUT OUTPUT MIN_DOCS
 	shift
 	case "$engine" in
 	 	spark)
-			echo hello spark ;;
+			echo hello spark
+			${ASAP_HOME}/spark/spark_tfidf.py -i $1 -do $2 ;;
 		weka)
 			echo tfidf in weka
 			${ASAP_HOME}/weka/kmeans_text_weka/tfidf_weka.sh $@ ;;
 		mahout)
-			echo kmeans in  mahout
+			echo tfidf in  mahout
 			${ASAP_HOME}/hadoop/mahout-kmeans/mahout_tfidf.sh	$@ ;;
 	esac
 
