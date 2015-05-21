@@ -3,10 +3,8 @@ import argparse
 parser = argparse.ArgumentParser(description='runs kmeans on spark for .csv files')
 
 parser.add_argument("-k","--K", help="the K parameter of K-means", type=int, required=True)
-parser.add_argument("-i","--max_iterations", help="the max iterations of the algorithm", type=int, required=True)
-parser.add_argument("-input", help="the input dir (RDD)", required=True)
-parser.add_argument("--distributed_file", '-df', help="the input file in HDFS", )
-parser.add_argument('-d', action='store_true', default=False)
+parser.add_argument("-mi","--max_iterations", help="the max iterations of the algorithm", type=int, required=True)
+parser.add_argument("-i", "--input",  help="the input dir (RDD)", required=True)
 args = parser.parse_args()
 
 
@@ -14,7 +12,12 @@ args = parser.parse_args()
 k = args.K
 max_iter = args.max_iterations
 fname = args.input
-dfs = args.d
+if not fname.startswith('/'):
+    print "Please specify an absolute path for the input"
+    exit()
+
+fname = "hdfs://master:9000/"+fname
+runs = 10 #???
 
 from pyspark import SparkContext
 from pyspark.mllib.clustering import KMeans
@@ -22,12 +25,8 @@ from numpy import array
 from math import sqrt
 from pyspark.mllib.linalg import SparseVector
 
-####### RUNS ???? #######
-runs = 2 #how many parallel runs
-threads = 4
 
-
-sc = SparkContext("local[%d]" % threads, "kmeans")
+sc = SparkContext( appName="kmeans")
 
 def myVec(line):
 	from pyspark.mllib.linalg import SparseVector

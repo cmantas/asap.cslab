@@ -7,15 +7,16 @@ export CHUNK=30
 SPARK_MASTER=$(cat /etc/hosts | grep master | awk '{print $1}')
 SPARK_PORT=7077
 
+#--executor-memory 6g
+spark_command="spark-submit --master spark://$SPARK_MASTER:$SPARK_PORT "
+
 function kmeans #ENGINE K MAX_ITERATIONS 
 {
 engine=$1
 shift
 case "$engine" in
  	spark)
-		echo "TODO"
-		exit
-		${ASAP_HOME}/spark/spark_kmeans_text.py	;;
+		spark-submit ${ASAP_HOME}/spark/spark_kmeans_text.py -i $1 -k $2 -mi $3;;
 	weka)
 		${ASAP_HOME}/weka/kmeans_text_weka/kmeans_text_weka.sh $@ ;;
 	mahout)
