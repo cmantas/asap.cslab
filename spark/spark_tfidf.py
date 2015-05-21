@@ -14,7 +14,7 @@ if not docs_dir.startswith('/'):
     exit()
 docs_dir = "hdfs://master:9000/" + docs_dir
 d_out = "hdfs://master:9000/" + args.output
-min_df = args.min_document_frequency
+min_df = int(args.min_document_frequency)
 
 # remove any previous output (is there a way to it from spark?)
 system("hdfs dfs -rm -r %s" % d_out)
