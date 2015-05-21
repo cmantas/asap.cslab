@@ -35,7 +35,7 @@ tf = hashingTF.transform(documents)
 
 
 # IDF
-idf = IDF(minDocFreq=min_df).fit(tf)
+idf = IDF().fit(tf)
 tfidf = idf.transform(tf)
 
 #save

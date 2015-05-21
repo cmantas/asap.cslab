@@ -1,10 +1,11 @@
 #!/bin/bash 
 
 # libraries, etc
-tools="/home/cmantas/bin/lib/asapTools.jar"
+tools="$HOME/bin/lib/asapTools.jar"
 
 export CHUNK=30
-
+SPARK_MASTER=$(cat /etc/hosts | grep master | awk '{print $1}')
+SPARK_PORT=7077
 
 function kmeans #ENGINE K MAX_ITERATIONS 
 {
@@ -29,8 +30,8 @@ function tfidf #ENGINE INPUT OUTPUT MIN_DOCS
 	shift
 	case "$engine" in
 	 	spark)
-			echo hello spark
-			${ASAP_HOME}/spark/spark_tfidf.py -i $1 -do $2 ;;
+			echo tfidf in spark
+			spark-submit --master spark://$SPARK_MASTER:$SPARK_PORT ${ASAP_HOME}/spark/spark_tfidf.py -i $1 -o $2 -mdf $3;;
 		weka)
 			echo tfidf in weka
 			${ASAP_HOME}/weka/kmeans_text_weka/tfidf_weka.sh $@ ;;
@@ -50,6 +51,8 @@ function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 			${ASAP_HOME}/weka/kmeans_text_weka/convert_text_weka.sh $@ ;;
 		dir2sequence)
 			hadoop jar $tools loadDir $@ $CHUNK ;;
+		dir2spark)
+			pyspark ${ASAP_HOME}/spark/text_loader.py -i $1 -do $2 ;;
 		arff2mahout)
 			hadoop jar $tools arff2mahout $@ ;;
 		mahout2arff)
