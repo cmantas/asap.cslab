@@ -17,7 +17,7 @@ d_out = "hdfs://master:9000/" + args.output
 min_df = int(args.min_document_frequency)
 
 # remove any previous output (is there a way to it from spark?)
-system("hdfs dfs -rm -r %s" % d_out)
+#system("hdfs dfs -rm -r %s" % d_out)
 
 # import spark-realated stuff
 from pyspark import SparkContext
