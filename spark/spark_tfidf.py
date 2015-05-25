@@ -40,3 +40,7 @@ tfidf = idf.transform(tf)
 
 #save
 tfidf.saveAsTextFile(d_out)
+
+# free space?
+tfidf.unpersist()
+documents.unpersist()

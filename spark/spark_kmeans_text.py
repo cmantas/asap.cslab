@@ -41,6 +41,9 @@ data = sc.textFile(fname).map(myVec)
 # Build the model (cluster the data)
 clusters = KMeans.train(data, k, maxIterations=max_iter, runs=runs, initializationMode="random")
 
+#free space??
+data.unpersist()
+
 
 # # Evaluate clustering by computing Within Set Sum of Squared Errors
 # def error(point):
@@ -53,5 +56,6 @@ clusters = KMeans.train(data, k, maxIterations=max_iter, runs=runs, initializati
 f = open("spark_kmeans_centroids.out", "w+")
 for c in clusters.clusterCenters:
     f.write(str(c))
+
 
 f.close()
