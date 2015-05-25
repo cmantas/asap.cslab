@@ -1,6 +1,7 @@
 import movers.Arff2Mahout;
 import static java.util.Arrays.copyOfRange;
 import movers.Mahout2Arff;
+import movers.Mahout2Spark;
 
 /**
  *
@@ -12,6 +13,7 @@ public class Main {
         String command = args[0];
         String [] newArgs =copyOfRange(args, 1, args.length);
         command = command.toLowerCase();
+        
         switch (command){
             case "loaddir":
                 LocalSeqDirectory.main(newArgs);
@@ -27,6 +29,9 @@ public class Main {
                 break;
             case "mahout2arff":
                 Mahout2Arff.main(newArgs);
+                break;
+            case "mahout2spark":
+                Mahout2Spark.main(newArgs);
                 break;
             default:
                 System.err.println("ERROR: I do not know command: "+command);

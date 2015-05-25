@@ -3,16 +3,20 @@ package movers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import static java.lang.Integer.valueOf;
+import static java.lang.Double.valueOf;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedList;
+import java.util.List;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import org.apache.mahout.math.NamedVector;
 import org.apache.mahout.math.RandomAccessSparseVector;
 
-import sun.org.mozilla.javascript.internal.NativeArray;
+//import sun.org.mozilla.javascript.internal.NativeArray;
 
 /**
  *
@@ -20,6 +24,7 @@ import sun.org.mozilla.javascript.internal.NativeArray;
  */
 public class SparkVecs2Mahout {
     
+
     public static RandomAccessSparseVector string2Vector(String s) throws ScriptException{
 
         
@@ -34,20 +39,36 @@ public class SparkVecs2Mahout {
         
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName("js");
-        Double[] indexes=null, values=null;
-        //eval indexes
-        NativeArray nr = (NativeArray) engine.eval(s.substring(startOfIndexes, endOfIndexes+1));
-        indexes =(Double[]) nr.toArray(new Double[nr.size()]);
-        //eval values
-        nr = (NativeArray)engine.eval(s.substring(startOfValues, endOfValues+1));
-        values =(Double[]) nr.toArray(new Double[nr.size()]);
+        LinkedList<Integer> indexes=new LinkedList();
+        LinkedList<Double> values =new LinkedList();
+        
+        //read indexes
+        String toConsume = s.substring(startOfIndexes+1, endOfIndexes);
+        int prevDelim = -1, nextDelim=toConsume.indexOf(',');
+        do{
+            String sValue = toConsume.substring(prevDelim+1, nextDelim);
+            indexes.add( Integer.valueOf(sValue));
+            prevDelim = nextDelim; 
+            nextDelim = toConsume.indexOf(',', prevDelim+1);               
+        }while(nextDelim !=-1);
+
+        //read values
+        toConsume = s.substring(startOfValues+1, endOfValues);
+        prevDelim = -1; nextDelim=toConsume.indexOf(',');
+        do{
+            String sValue = toConsume.substring(prevDelim+1, nextDelim);
+            values.add( Double.valueOf(sValue));
+            prevDelim = nextDelim; 
+            nextDelim = toConsume.indexOf(',', prevDelim+1);                        
+        }while(nextDelim !=-1);
+
         
         //create an empty Mahout sparse vector with the size we know it has
-        RandomAccessSparseVector vector = new RandomAccessSparseVector(indexes.length);
+        RandomAccessSparseVector vector = new RandomAccessSparseVector(indexes.size());
         
         //iterate indexes/values arrays and assign the nalues in the Mahout vector
-        for(int i=0; i<indexes.length; i++)
-            vector.setQuick(indexes[i].intValue(), values[i]);
+        for(int i=0; i<indexes.size(); i++)
+            vector.setQuick(indexes.get(i), values.get(i));
 
         return vector;
     }

@@ -1,8 +1,8 @@
 package movers;
 
 import java.io.IOException;
-import static movers.Arff2Mahout.fs;
-import static movers.Mahout2Arff.conf;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.SequenceFile.Writer;
@@ -19,7 +19,7 @@ import org.apache.mahout.math.VectorWritable;
 
 
 public class Mahout2Spark {
-    
+    static Configuration conf = new Configuration();;
     public static final int size = 1048576;
     
     public static String Vector2SparkString(Vector v) {
@@ -54,17 +54,21 @@ public class Mahout2Spark {
     
     public static void main(String args[]) throws IOException{
         
-        String input=null, output=null;
+        if(args.length<2){
+            System.err.println("Please specify input, output");
+            System.exit(-1);
+        }
         
-        double[] dv = {1,0,0,3,0,0,10};
-        RandomAccessSparseVector dummy= new RandomAccessSparseVector(dv.length);
-        dummy.assign(dv );
-        System.out.println(Vector2SparkString(dummy));
         
+        FileSystem fs = FileSystem.get(conf);
+        
+        String input=args[0], output=args[1];
+                
         //init the writer for the vectors file
         Writer tfidfWriter = new SequenceFile.Writer(fs, conf,
                 new Path(output), Text.class, Text.class);
         
-        readVectors(input, tfidfWriter);
+        int vecCount = readVectors(input, tfidfWriter);
+        System.out.println("Read "+ vecCount+" vectors");
     }
 }
