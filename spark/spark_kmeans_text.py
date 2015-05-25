@@ -17,7 +17,7 @@ if not fname.startswith('/'):
     exit()
 
 fname = "hdfs://master:9000/"+fname
-runs = 4 #???
+runs = 1 #???
 
 from pyspark import SparkContext
 from pyspark.mllib.clustering import KMeans
@@ -55,7 +55,12 @@ data.unpersist()
 
 f = open("spark_kmeans_centroids.out", "w+")
 for c in clusters.clusterCenters:
-    f.write(str(c))
+    nzl = []
+    for i in range(len(c)):
+        if not c[i]==0:
+            nzl.append((i, c[i]))
+    f.write(str(nzl))
+    f.write("\n\n")
 
 
 f.close()

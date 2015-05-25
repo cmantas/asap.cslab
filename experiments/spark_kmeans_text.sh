@@ -26,17 +26,19 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 	#re-load the parameters on each iteration for live re-configuration
 	source  $(dirname $0)/config.info 	#loads the parameters
 
+	hdfs dfs -rm -r $hadoop_input &>/dev/null
 	echo "[PREP] Loading $docs text files"
 	asap move dir2sequence $input_dir $hadoop_input $docs &>> $operator_out
 	
 	for (( minDF=max_minDF; minDF>=min_minDF; minDF-=minDF_step)); do
 
 		# TF/IDF
+		hdfs dfs -rm -r $tfidf_dir &>/dev/null
 		echo -n "[EXPERIMENT] TF-IDF on $docs documents, minDF=$minDF: "
 		tstart
 		asap tfidf spark $hadoop_input $tfidf_dir $minDF &>> $operator_out
 		time=$(ttime)
-		check $operator_out
+		cat $operator_out | grep Exception
 		
 		# find the dimensions of the output
 		#dimensions=$(hadoop jar ${TOOLS_JAR}  seqInfo  $tfidf_dir/dictionary.file-0 | grep Lenght: | awk '{ print $2 }')
@@ -52,7 +54,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 			tstart
 			asap kmeans spark $tfidf_dir $k $max_iterations &>> $operator_out
 			time=$(ttime)
-			check $operator_out
+			cat $operator_out | grep Exception
 			echo $((time/1000)) sec
 			sqlite3 results.db "INSERT INTO spark_kmeans_text(documents, k, dimensions, time, date )
 			                    VALUES( $docs,  $k, $dimensions,  $time, CURRENT_TIMESTAMP);"
