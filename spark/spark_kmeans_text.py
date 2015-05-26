@@ -16,8 +16,8 @@ if not fname.startswith('/'):
     print "Please specify an absolute path for the input"
     exit()
 
-fname = "hdfs://master:9000/"+fname
-runs = 1 #???
+from common import hdfs_master
+fname = "hdfs://%s:9000/" % hdfs_master + fname
 
 from pyspark import SparkContext
 from pyspark.mllib.clustering import KMeans
@@ -32,7 +32,7 @@ if "sc" not in globals():
 
 def myVec(line):
 	from pyspark.mllib.linalg import SparseVector
-	return  eval("SparseVector"+line)
+	return  eval("SparseVector"+line.strip())
 
 
 
@@ -41,7 +41,7 @@ data = sc.textFile(fname).map(myVec)
 
 
 # Build the model (cluster the data)
-clusters = KMeans.train(data, k, maxIterations=max_iter, runs=runs, initializationMode="random")
+clusters = KMeans.train(data, k, maxIterations=max_iter, runs=1, initializationMode="random")
 
 #free space??
 data.unpersist()
@@ -59,7 +59,7 @@ f = open("spark_kmeans_centroids.out", "w+")
 for c in clusters.clusterCenters:
     nzl = []
     for i in range(len(c)):
-        if not c[i]>=0.1:
+        if c[i]>=0.1:
             nzl.append((i, c[i]))
     f.write(str(nzl))
     f.write("\n\n")

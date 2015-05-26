@@ -1,11 +1,15 @@
 package movers;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.SequenceFile;
-import org.apache.hadoop.io.SequenceFile.Writer;
+//import org.apache.hadoop.io.SequenceFile.Writer;
 import org.apache.hadoop.io.Text;
 import org.apache.mahout.common.Pair;
 import static org.apache.mahout.common.iterator.sequencefile.PathFilters.logsCRCFilter;
@@ -46,7 +50,7 @@ public class Mahout2Spark {
             vectorCount++;
             Vector nv = o.getSecond().get();
             String vectorString = Vector2SparkString(nv);            
-            writer.append(o.getFirst(), new Text(vectorString));
+            writer.append(vectorString + "\n");
         }
         
         return vectorCount;
@@ -63,12 +67,19 @@ public class Mahout2Spark {
         FileSystem fs = FileSystem.get(conf);
         
         String input=args[0], output=args[1];
-                
-        //init the writer for the vectors file
-        Writer tfidfWriter = new SequenceFile.Writer(fs, conf,
-                new Path(output), Text.class, Text.class);
+        
+        input = input+"/tfidf-vectors";
+        
+        Path file = new Path(output);
+        if ( fs.exists( file )) fs.delete( file, true ); 
+        OutputStream os = fs.create(file);
+        BufferedWriter tfidfWriter = new BufferedWriter( new OutputStreamWriter( os, "UTF-8" ) );
+//        
+//        Writer tfidfWriter = new SequenceFile.Writer(fs, conf,
+//                new Path(output), Text.class, Text.class);
         
         int vecCount = readVectors(input, tfidfWriter);
-        System.out.println("Read "+ vecCount+" vectors");
+        tfidfWriter.close();
+        System.out.println("Converted "+ vecCount+" vectors from Mahout 2 Spark");
     }
 }

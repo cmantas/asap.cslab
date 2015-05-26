@@ -12,8 +12,11 @@ docs_dir = args.input
 if not docs_dir.startswith('/'):
     print "Please specify an absolute path for the input"
     exit()
-docs_dir = "hdfs://master:9000/" + docs_dir
-d_out = "hdfs://master:9000/" + args.output
+
+# create hdfs paths
+from common import hdfs_master
+docs_dir = "hdfs://{0}:9000/".format(hdfs_master) + docs_dir
+d_out = "hdfs://{0}:9000/".format(hdfs_master) + args.output
 min_df = int(args.min_document_frequency)
 
 # remove any previous output (is there a way to it from spark?)

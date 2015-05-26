@@ -32,7 +32,7 @@ function tfidf #ENGINE INPUT OUTPUT MIN_DOCS
 	case "$engine" in
 	 	spark)
 			echo tfidf in spark
-			spark-submit --master spark://$SPARK_MASTER:$SPARK_PORT ${ASAP_HOME}/spark/spark_tfidf.py -i $1 -o $2 -mdf $3;;
+			spark-submit ${ASAP_HOME}/spark/spark_tfidf.py -i $1 -o $2 -mdf $3;;
 		weka)
 			echo tfidf in weka
 			${ASAP_HOME}/weka/kmeans_text_weka/tfidf_weka.sh $@ ;;
@@ -58,6 +58,8 @@ function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 			hadoop jar $tools arff2mahout $@ ;;
 		mahout2arff)
 			hadoop jar $tools mahout2arff $@ ;;
+		mahout2spark)
+			hadoop jar $tools mahout2spark $@ ;;
 		*)
 			echo No such mover ;;
 	esac

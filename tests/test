@@ -1,0 +1,54 @@
+#!/bin/bash
+source  $(dirname $0)/config.info 
+
+docs_sequence=$hdfs_test_dir/docs_sequence
+mahout_vecs=$hdfs_test_dir/mahout_vectors
+spark_vecs=$hdfs_test_dir/spark_vectors
+
+spark_from_mahout=$hdfs_test_dir/spark_vectors_from_mahout
+
+function dir2sequence
+{
+	asap move dir2sequence $docs_dir $docs_sequence 5
+}
+
+function mahout2spark
+{
+	asap move mahout2spark $mahout_vecs $spark_from_mahout
+	hdfs dfs -cat  $spark_from_mahout
+}
+
+function spark_kmeans_imported
+{	echo Output in spark_kmeans_imported.out
+	sap kmeans spark $spark_from_mahout 2 10 &>spark_kmeans_imported.out
+	cat spark_kmeans_centroids.out
+	grep -E 'Exception|ERROR' spark_kmeans_imported.out
+}
+
+function mahout_tfidf
+{	rm step2.out
+	asap tfidf mahout  $docs_sequence $mahout_vecs 1
+	mahout seqdumper -i $mahout_vecs/tfidf-vectors 2>/dev/null
+}
+
+function spark_tfidf
+{
+	echo Running. output on : spark_tfidf.out
+	asap tfidf spark  $docs_sequence $spark_vecs 1 &> spark_tfidf.out
+	grep -E 'Exception|ERROR' spark_tfidf.out
+	mahout seqdumper -i $spark_vecs 2>/dev/null
+}
+
+function help  # Show a list of available opperations
+{
+
+	        echo ======--- Available Commands ---======
+			        grep "^function" $0 | sed "s/function/➜/g"
+}
+
+if [ "_$1" = "_" ]; then
+    help
+else
+    "$@"
+fi
+
