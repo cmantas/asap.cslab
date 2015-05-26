@@ -26,7 +26,9 @@ from math import sqrt
 from pyspark.mllib.linalg import SparseVector
 
 
-sc = SparkContext( appName="kmeans")
+# init the spark context
+if "sc" not in globals():
+    sc = SparkContext( appName="K-Means")
 
 def myVec(line):
 	from pyspark.mllib.linalg import SparseVector

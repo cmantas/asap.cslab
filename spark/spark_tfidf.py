@@ -24,7 +24,9 @@ from pyspark import SparkContext
 from pyspark.mllib.feature import HashingTF
 from pyspark.mllib.feature import IDF
 
-sc = SparkContext(appName="TF-IDF")
+# init the spark context
+if "sc" not in globals():
+    sc = SparkContext( appName="TF-IDF")
 
 # Load documents (one per line).
 documents = sc.sequenceFile(docs_dir).map(lambda title_text: title_text[1].split(" "))
