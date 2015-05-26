@@ -57,7 +57,7 @@ f = open("spark_kmeans_centroids.out", "w+")
 for c in clusters.clusterCenters:
     nzl = []
     for i in range(len(c)):
-        if not c[i]==0:
+        if not c[i]>=0.1:
             nzl.append((i, c[i]))
     f.write(str(nzl))
     f.write("\n\n")
