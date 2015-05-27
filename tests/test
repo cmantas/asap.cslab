@@ -34,9 +34,9 @@ function mahout_tfidf
 function spark_tfidf
 {
 	echo Running. output on : spark_tfidf.out
-	asap tfidf spark  $docs_sequence $spark_vecs 1 &> spark_tfidf.out
+	asap tfidf spark  $docs_sequence $spark_vecs 1 &>spark_tfidf.out
 	grep -E 'Exception|ERROR' spark_tfidf.out
-	mahout seqdumper -i $spark_vecs 2>/dev/null
+	hdfs dfs -cat  $spark_vecs/* 
 }
 
 function help  # Show a list of available opperations
