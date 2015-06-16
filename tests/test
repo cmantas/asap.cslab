@@ -58,7 +58,7 @@ function spark_tfidf
 	hdfs dfs -rm -r  $spark_vecs 2>/dev/null
 	asap tfidf spark  $docs_sequence $spark_vecs 1 &> spark_tfidf.out
 	grep -E 'Exception|ERROR' spark_tfidf.out
-	hdfs dfs -cat "/test/spark_vectors/part-*"
+	hdfs dfs -cat "$spark_vecs/part-*"
 }
 
 function weka_tfidf

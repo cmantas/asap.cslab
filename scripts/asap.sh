@@ -8,7 +8,8 @@ SPARK_MASTER=$(cat /etc/hosts | grep master | awk '{print $1}')
 SPARK_PORT=7077
 
 #--executor-memory 6g
-spark_command="spark-submit --master spark://$SPARK_MASTER:$SPARK_PORT "
+spark="spark-submit --master spark://$SPARK_MASTER:$SPARK_PORT "
+echo hello
 
 function kmeans #ENGINE K MAX_ITERATIONS 
 {
@@ -16,7 +17,7 @@ engine=$1
 shift
 case "$engine" in
  	spark)
-		spark-submit ${ASAP_HOME}/spark/spark_kmeans_text.py -i $1 -k $2 -mi $3;;
+		$spark ${ASAP_HOME}/spark/spark_kmeans_text.py -i $1 -k $2 -mi $3;;
 	weka)
 		${ASAP_HOME}/weka/kmeans_text_weka/kmeans_text_weka.sh $@ ;;
 	mahout)
@@ -32,7 +33,7 @@ function tfidf #ENGINE INPUT OUTPUT MIN_DOCS
 	case "$engine" in
 	 	spark)
 			echo tfidf in spark
-			spark-submit ${ASAP_HOME}/spark/spark_tfidf.py -i $1 -o $2 -mdf $3;;
+			$spark ${ASAP_HOME}/spark/spark_tfidf.py -i $1 -o $2 -mdf $3;;
 		weka)
 			echo tfidf in weka
 			${ASAP_HOME}/weka/kmeans_text_weka/tfidf_weka.sh $@ ;;
