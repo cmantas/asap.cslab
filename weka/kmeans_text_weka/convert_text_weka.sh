@@ -16,7 +16,12 @@ mkdir -p $virtual_dir/text/
 echo -n  "[PREP] linking $docs documents: "
 doc_count=0
 for f in $input_dir/*; do
-        bn=$(basename $f)
+        
+	# keep the basename of file
+	bn=$(basename $f)
+
+	# if relative path, convert to absolute
+	f=$(readlink -f $f)
         ln -s $f $virtual_dir/text/$bn
         ((doc_count+=1))
         if ((doc_count>=docs)); then break;fi

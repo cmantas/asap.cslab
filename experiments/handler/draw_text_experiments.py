@@ -43,82 +43,142 @@ from tools import *
 # show()
 
 
-
-############ weka vs mahout #############
-figure()
+#
+# ############ weka vs mahout #############
+# figure()
 k=11; minDF=10
 query="select k.documents, k.time from \n" \
            " {2}_kmeans_text as k inner join {2}_tfidf as i \n" \
            " on k.dimensions=i.dimensions \n" \
-           " where i.minDF={0} and k.k={1} and k.documents<=12000 group by k.documents;"
+           " where i.minDF={0} and k.k={1} group by k.documents;"
+
+# # query_weka = query.format(minDF,k,"weka")
+# # docs, times = query2lists(query_weka)
+# # times = [ float(t)/1000 for t in times]
+# # myplot(docs, times, 'o-', label="weka k=%d"%k, title="Weka vs Mahout (minDF={0}".format(minDF), xlabel="#docs", ylabel="time(sec)")
+# # query_mahout = query.format(minDF,k,"mahout")
+# # docs, times = query2lists(query_mahout)
+# # times = [ float(t)/1000 for t in times]
+# # myplot(docs, times, 's-', label="mahout k=%d"%k)
+#
+# k=16
 # query_weka = query.format(minDF,k,"weka")
 # docs, times = query2lists(query_weka)
 # times = [ float(t)/1000 for t in times]
-# myplot(docs, times, 'o-', label="weka k=%d"%k, title="Weka vs Mahout (minDF={0}".format(minDF), xlabel="#docs", ylabel="time(sec)")
+# myplot(docs, times, 'o-', label="weka k=%d"%k,  title="Weka vs Mahout (minDF={0})".format(minDF), xlabel="#docs", ylabel="time(sec)")
+#
 # query_mahout = query.format(minDF,k,"mahout")
 # docs, times = query2lists(query_mahout)
 # times = [ float(t)/1000 for t in times]
 # myplot(docs, times, 's-', label="mahout k=%d"%k)
+# show()
+#
+#
+# ### mahout multi K ###
+# k=1;
+# figure()
+# query_mahout = query.format(minDF,k,"mahout")
+# docs, times = query2lists(query_mahout)
+# times = [ float(t)/1000 for t in times]
+# myplot(docs, times,'o-', label="k=1", title="Mahout K-Means", xlabel="#docs", ylabel="time(sec)")
+# k=6; minDF=10
+# docs, times = query2lists(query.format(minDF,k,"mahout"))
+# times = [ float(t)/1000 for t in times]
+# myplot(docs, times,'o-', label="mahout k=6")
+# k=11; minDF=10
+# docs, times = query2lists(query.format(minDF,k,"mahout"))
+# times = [ float(t)/1000 for t in times]
+# myplot(docs, times,'o-', label="mahout k=11")
+# k=16; minDF=10
+# docs, times = query2lists(query.format(minDF,k,"mahout"))
+# times = [ float(t)/1000 for t in times]
+# myplot(docs, times,'o-', label="mahout k=16")
+# show()
+#
+# ### weka multi K
+#
+# k=1;
+# figure()
+# query_mahout = query.format(minDF,k,"weka")
+# docs, times = query2lists(query_mahout)
+# times = [ float(t)/1000 for t in times]
+# myplot(docs, times,'o-', label="k=1", title="Weka K-Means", xlabel="#docs", ylabel="time(sec)")
+# k=6; minDF=10
+# docs, times = query2lists(query.format(minDF,k,"weka"))
+# times = [ float(t)/1000 for t in times]
+# myplot(docs, times,'o-', label="weka k=6")
+# k=11; minDF=10
+# docs, times = query2lists(query.format(minDF,k,"weka"))
+# times = [ float(t)/1000 for t in times]
+# myplot(docs, times,'o-', label="weka k=11")
+# k=16; minDF=10
+# docs, times = query2lists(query.format(minDF,k,"weka"))
+# times = [ float(t)/1000 for t in times]
+# myplot(docs, times,'o-', label="weka k=16")
+# k=21; minDF=10
+# docs, times = query2lists(query.format(minDF,k,"weka"))
+# times = [ float(t)/1000 for t in times]
+# myplot(docs, times,'o-', label="weka k=%d"%k)
+# show()
 
-k=16
-query_weka = query.format(minDF,k,"weka")
-docs, times = query2lists(query_weka)
+
+# ############ spark vs mahout #############
+figure()
+k=15; minDF=10
+query="select k.documents, k.time from \n" \
+           " {2}_kmeans_text as k inner join {2}_tfidf as i \n" \
+           " on k.dimensions=i.dimensions \n" \
+           " where i.minDF={0} and k.k={1} group by k.documents;"
+
+query_spark = query.format(minDF,k,"spark")
+docs, times = query2lists(query_spark)
 times = [ float(t)/1000 for t in times]
-myplot(docs, times, 'o-', label="weka k=%d"%k,  title="Weka vs Mahout (minDF={0})".format(minDF), xlabel="#docs", ylabel="time(sec)")
-
+myplot(docs, times, 'o-', label="spark k=%d"%k, title="Spark vs Mahout (minDF={0}".format(minDF), xlabel="#docs", ylabel="time(sec)")
 query_mahout = query.format(minDF,k,"mahout")
 docs, times = query2lists(query_mahout)
 times = [ float(t)/1000 for t in times]
 myplot(docs, times, 's-', label="mahout k=%d"%k)
 show()
 
+################ spark ##########################
+k=5;minDF=10
+figure()
+query_spark = query.format(minDF,k,"spark")
+docs, times = query2lists(query_spark)
+times = [ float(t)/1000 for t in times]
+myplot(docs, times,'o-', label="k=5", title="spark K-Means", xlabel="#docs", ylabel="time(sec)")
+k=10;
+docs, times = query2lists(query.format(minDF,k,"spark"))
+times = [ float(t)/1000 for t in times]
+myplot(docs, times,'o-', label="spark k=10")
+k=15;
+docs, times = query2lists(query.format(minDF,k,"spark"))
+times = [ float(t)/1000 for t in times]
+myplot(docs, times,'o-', label="spark k=15")
+k=20;
+docs, times = query2lists(query.format(minDF,k,"spark"))
+times = [ float(t)/1000 for t in times]
+myplot(docs, times,'o-', label="spark k=20")
+show()
 
-### mahout multi K ###
-k=1;
+
+################ mahout ##########################
+k=5;minDF=10
 figure()
 query_mahout = query.format(minDF,k,"mahout")
 docs, times = query2lists(query_mahout)
 times = [ float(t)/1000 for t in times]
-myplot(docs, times,'o-', label="k=1", title="Mahout K-Means", xlabel="#docs", ylabel="time(sec)")
-k=6; minDF=10
+myplot(docs, times,'o-', label="k=5", title="mahout K-Means", xlabel="#docs", ylabel="time(sec)")
+k=10;
 docs, times = query2lists(query.format(minDF,k,"mahout"))
 times = [ float(t)/1000 for t in times]
-myplot(docs, times,'o-', label="mahout k=6")
-k=11; minDF=10
+myplot(docs, times,'o-', label="mahout k=10")
+k=15;
 docs, times = query2lists(query.format(minDF,k,"mahout"))
 times = [ float(t)/1000 for t in times]
-myplot(docs, times,'o-', label="mahout k=11")
-k=16; minDF=10
+myplot(docs, times,'o-', label="mahout k=15")
+k=20;
 docs, times = query2lists(query.format(minDF,k,"mahout"))
 times = [ float(t)/1000 for t in times]
-myplot(docs, times,'o-', label="mahout k=16")
+myplot(docs, times,'o-', label="mahout k=20")
 show()
-
-### weka multi K
-
-k=1;
-figure()
-query_mahout = query.format(minDF,k,"weka")
-docs, times = query2lists(query_mahout)
-times = [ float(t)/1000 for t in times]
-myplot(docs, times,'o-', label="k=1", title="Weka K-Means", xlabel="#docs", ylabel="time(sec)")
-k=6; minDF=10
-docs, times = query2lists(query.format(minDF,k,"weka"))
-times = [ float(t)/1000 for t in times]
-myplot(docs, times,'o-', label="weka k=6")
-k=11; minDF=10
-docs, times = query2lists(query.format(minDF,k,"weka"))
-times = [ float(t)/1000 for t in times]
-myplot(docs, times,'o-', label="weka k=11")
-k=16; minDF=10
-docs, times = query2lists(query.format(minDF,k,"weka"))
-times = [ float(t)/1000 for t in times]
-myplot(docs, times,'o-', label="weka k=16")
-k=21; minDF=10
-docs, times = query2lists(query.format(minDF,k,"weka"))
-times = [ float(t)/1000 for t in times]
-myplot(docs, times,'o-', label="weka k=%d"%k)
-show()
-
-
-

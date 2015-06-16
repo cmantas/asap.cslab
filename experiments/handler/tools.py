@@ -18,6 +18,7 @@ c = conn.cursor()
 
 
 def query2lists(query):
+    print query
     rv = []
     query = query.lower()
     fi = query.find("from")

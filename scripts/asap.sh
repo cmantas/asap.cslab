@@ -54,14 +54,9 @@ function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 			hadoop jar $tools loadDir $@ $CHUNK ;;
 		dir2spark)
 			pyspark ${ASAP_HOME}/spark/text_loader.py -i $1 -do $2 ;;
-		arff2mahout)
-			hadoop jar $tools arff2mahout $@ ;;
-		mahout2arff)
-			hadoop jar $tools mahout2arff $@ ;;
-		mahout2spark)
-			hadoop jar $tools mahout2spark $@ ;;
-		*)
-			echo No such mover ;;
+		
+		*) 	# for all other operations assume asap-tools is used
+			hadoop jar $tools $operation $@ ;;
 	esac
 
 }

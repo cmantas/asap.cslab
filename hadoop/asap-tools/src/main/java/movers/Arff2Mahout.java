@@ -118,20 +118,18 @@ public class Arff2Mahout {
     
     public static void main(String args[]) throws FileNotFoundException, IOException {
         
+        System.out.println("Hello papari 2");
+        System.exit(-1); 
+        
         // == read params
-//        String input = "/tmp/kmeans_text_weka/tf_idf_data.arff";
-//        String output = "/tmp/myTestTfidf";
         String input = args[0];
         String output = args[1];
-
-        
         
         //the local file reader
         BufferedReader reader =  new BufferedReader(new FileReader(input));
         
         //init the filesystem
         fs = FileSystem.get(conf);
-        
         //read the dictionary
         int termsCount = readTerms(reader, output+"_dict");        
         System.out.println("Read "+termsCount+" terms.");

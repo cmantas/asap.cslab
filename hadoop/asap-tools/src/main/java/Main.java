@@ -1,5 +1,6 @@
 import movers.Arff2Mahout;
 import static java.util.Arrays.copyOfRange;
+import movers.Arff2Spark;
 import movers.Mahout2Arff;
 import movers.Mahout2Spark;
 
@@ -32,6 +33,9 @@ public class Main {
                 break;
             case "mahout2spark":
                 Mahout2Spark.main(newArgs);
+                break;
+            case "arff2spark":
+                Arff2Spark.main(newArgs);
                 break;
             default:
                 System.err.println("ERROR: I do not know command: "+command);

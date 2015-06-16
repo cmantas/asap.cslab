@@ -14,9 +14,10 @@ if not docs_dir.startswith('/'):
     exit()
 
 # create hdfs paths
-from common import hdfs_master
-docs_dir = "hdfs://{0}:9000/".format(hdfs_master) + docs_dir
-d_out = "hdfs://{0}:9000/".format(hdfs_master) + args.output
+from common import to_hdfs_url
+
+docs_dir = to_hdfs_url(docs_dir)
+d_out = to_hdfs_url(args.output)
 min_df = int(args.min_document_frequency)
 
 # remove any previous output (is there a way to it from spark?)
@@ -32,8 +33,10 @@ if "sc" not in globals():
     sc = SparkContext( appName="TF-IDF")
 
 # Load documents (one per line).
-documents = sc.sequenceFile(docs_dir).map(lambda title_text: title_text[1].split(" "))
+documents = sc.sequenceFile(docs_dir)
 
+#keep only the content
+documents = documents.map(lambda (fname, content): content.split(" "))
 
 hashingTF = HashingTF()
 tf = hashingTF.transform(documents)
