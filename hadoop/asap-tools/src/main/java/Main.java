@@ -1,7 +1,8 @@
-import movers.Arff2Mahout;
+import movers.*;
 import static java.util.Arrays.copyOfRange;
-import movers.Mahout2Arff;
-import movers.Mahout2Spark;
+import static movers.Mover.move;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 
 /**
  *
@@ -11,8 +12,19 @@ public class Main {
     
     public static void main(String args[]) throws Exception{
         String command = args[0];
+        
+        String inputPath = args[1];
+        String outputPath = args[2];
+        
+        
         String [] newArgs =copyOfRange(args, 1, args.length);
         command = command.toLowerCase();
+        
+        Configuration conf = new Configuration();
+        FileSystem fs = FileSystem.get(conf);
+        
+        MyInput input=null;
+        MyOutput output=null;
         
         switch (command){
             case "loaddir":
@@ -25,16 +37,35 @@ public class Main {
                 CSVLoader.main(newArgs);
                 break;
             case "arff2mahout":
-                Arff2Mahout.main(newArgs);
+                input = new ArffInput(inputPath);
+                output = new MahoutOutput(outputPath, fs, conf);
                 break;
             case "mahout2arff":
-                Mahout2Arff.main(newArgs);
+                input = new MahoutInput(inputPath,fs,conf);
+                output = new ArffOutput(outputPath);
                 break;
             case "mahout2spark":
-                Mahout2Spark.main(newArgs);
+                input = new MahoutInput(inputPath,fs,conf);
+                output = new SparkOutput(outputPath,fs,conf);
+                break;
+            case "arff2spark":
+                input = new ArffInput(inputPath);
+                output = new SparkOutput(outputPath,fs,conf);
+                break;
+            case "spark2arff":
+                input = new SparkInput(inputPath, fs, conf);
+                output = new ArffOutput(outputPath);
+                break;
+            case "spark2mahout":
+                input = new SparkInput(inputPath, fs, conf);
+                output = new MahoutOutput(outputPath, fs, conf);
                 break;
             default:
                 System.err.println("ERROR: I do not know command: "+command);
+                System.exit(-1);
         }
+        
+        //perform the move
+        move(input, output);
     }
 }

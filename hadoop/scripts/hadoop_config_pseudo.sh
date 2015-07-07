@@ -2,8 +2,7 @@
 # tested on hadoop version: 2.5.1 
 
 #params
-hadoop_dir=/etc/hadoop
-JAVA_HOME="\/usr\/lib\/jvm\/java-7-oracle\/jre\/" #escaped /
+hadoop_dir=$(which hadoop | sed "s/\/bin.*//")
 heap_size=2000
 replication=1
 zookeeper_dir="/etc/hadoop/data/zookeeper"
@@ -11,11 +10,17 @@ name_dir="$hadoop_dir/data/name_dir"
 data_dir="$hadoop_dir/data/data_dir"
 temp_dir="$hadoop_dir/data/temp_dir"
 
+JAVA_HOME="\$(readlink \$(readlink \$(which java)) | sed \"s/bin\/java.*/bin/\")"
+echo $JAVA_HOME
 ############### hadoop-env.sh #############################
 hadoop_env="$hadoop_dir/etc/hadoop/hadoop-env.sh"
 yarn_env="$hadoop_dir/etc/hadoop/yarn-env.sh"
 #java home ( escaped /)
-sed -i  "s/export JAVA_HOME.*/export JAVA_HOME=$JAVA_HOME/g" $hadoop_env
+sed -i  "/export JAVA_HOME.*/d" $hadoop_env
+sed -i "1s/^/export JAVA_HOME=$JAVA_HOME\n/" $hadoop_env
+cat $hadoop_env | grep JAVA_HOME
+exit
+
 #heap size
 sed -i "s/HADOOP_HEAPSIZE=.*/HADOOP_HEAPSIZE=$heap_size/g" $hadoop_env
 sed -i "s/#.*YARN_HEAPSIZE.*/YARN_HEAPSIZE=${heapsize}/g" $yarn_env

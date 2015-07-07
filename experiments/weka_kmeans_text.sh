@@ -29,7 +29,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		echo -n "[EXPERIMENT] weka tf-idf for $docs documents, minDF=$minDF:  "
 		#tfidf
 		tstart
-		asap tfidf weka $tmp_dir/data.arff $tmp_dir/tfidf.arff $minDF &>$operator_out
+		asap tfidf weka $tmp_dir/data.arff $tmp_dir/tfidf.arff $minDF #&>$operator_out
 		time=$(ttime)
 		features_no=$(cat $tmp_dir/tfidf.arff | grep @attribute | wc -l)
 		(( features_no=features_no-1 ))

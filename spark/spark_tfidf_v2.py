@@ -25,29 +25,51 @@ min_df = int(args.min_document_frequency)
 
 # import spark-realated stuff
 from pyspark import SparkContext
-from pyspark.mllib.feature import HashingTF, IDF
+from pyspark.mllib.feature import HashingTF, IDF, RDD
+
+
+class myHashingTF(HashingTF):
+    def create_dic(self, document_terms):
+        if not isinstance(document_terms, RDD):
+            raise Exception("We need an RDD as input")
+        #create hashes and reduce by key
+        dict = document_terms.flatMap(lambda terms: [(t, self.indexOf(t)) for t in terms]).reduceByKey(lambda a, b: a)
+        return dict
+
+def filter_and_split(text):
+    delims = u"\r\n\t.,;:'\"()?!$#-0123456789/*%<>@[]+`~_=&^ "
+    translate_table = dict((ord(char), u" ") for char in delims)
+    return text.lower().strip().translate(translate_table).split(" ")
+
 
 # init the spark context
 if "sc" not in globals():
     sc = SparkContext( appName="TF-IDF")
 
 # Load documents (one per line).
-documents = sc.sequenceFile(docs_dir)
+documents = sc.sequenceFile(docs_dir).map(lambda (fname, content): filter_and_split(content))
 
-#keep only the content
-documents = documents.map(lambda (fname, content): content.split(" "))
+# # keep only the content (replace, lower, split, etc)
+# documents = documents.
 
-hashingTF = HashingTF()
+hashingTF = myHashingTF()
+
+
+# create the tf vectors
 tf = hashingTF.transform(documents)
-
-
-# IDF
+# create the idf vectors
 idf = IDF().fit(tf)
 tfidf = idf.transform(tf)
-
 #save
 tfidf.saveAsTextFile(d_out)
 
+# create and save the dictionary rdd
+dict = hashingTF.create_dic(documents)
+dict.saveAsSequenceFile(d_out+"/dictionary")
+
+
+
 # free space?
+dict.unpersist()
 tfidf.unpersist()
-documents.unpersist()
+# documents.unpersist()

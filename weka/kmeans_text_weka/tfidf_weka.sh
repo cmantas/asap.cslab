@@ -9,7 +9,7 @@ output=$2
 min_frequency=$3
 max_features=999999
 
-
+echo input $input output $output freq $min_frequency
 echo "STEP 2/3: TF/IDF"
 java -Xmx15g -cp ${WEKA} weka.filters.unsupervised.attribute.StringToWordVector \
 	     -N 0 \
@@ -22,4 +22,3 @@ java -Xmx15g -cp ${WEKA} weka.filters.unsupervised.attribute.StringToWordVector 
 	     -i $input \
 	     -L -S -I -C \
 	     -o $output
-

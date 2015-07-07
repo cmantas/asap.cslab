@@ -15,4 +15,6 @@ select * from mahout_kmeans_synth ;
 select * from mahout_tfidf;
 .output mahout_kmeans_text.csv
 select * from mahout_kmeans_text;
+.output spark_kmeans_text.csv
+select * from spark_kmeans_text;
 !

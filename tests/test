@@ -4,8 +4,12 @@ source  $(dirname $0)/config.info
 docs_sequence=$hdfs_test_dir/docs_sequence
 mahout_vecs=$hdfs_test_dir/mahout_vectors
 spark_vecs=$hdfs_test_dir/spark_vectors
+arff_docs=/tmp/documents.arff
+arff_vecs=/tmp/tfidf_vectors.arff
 
-spark_from_mahout=$hdfs_test_dir/spark_vectors_from_mahout
+spark_imported=$hdfs_test_dir/spark_imported
+mahout_imported=$hdfs_test_dir/mahout_imported
+arff_imported=/tmp/arff_imported.arff
 
 function dir2sequence
 {
@@ -14,15 +18,68 @@ function dir2sequence
 
 function mahout2spark
 {
-	asap move mahout2spark $mahout_vecs $spark_from_mahout
-	hdfs dfs -cat  $spark_from_mahout
+	hdfs dfs -rm -r $spark_imported
+	asap move mahout2spark $mahout_vecs $spark_imported
+	mahout seqdumper -i $spark_imported/dictionary
+	hdfs dfs -cat  $spark_imported/vectors*
+}
+
+function mahout2arff
+{
+	rm $arff_imported
+	asap move mahout2arff $mahout_vecs $arff_imported
+	cat $arff_imported
+}
+
+function arff2spark
+{
+	rm $arff_imported
+	asap move arff2spark $arff_vecs $spark_imported
+	mahout seqdumper -i $spark_imported/dictionary
+	hdfs dfs -cat  $spark_imported/vectors*
+}
+
+function arff2mahout
+{
+	hdfs dfs -rm -r $mahout_imported
+	asap move arff2mahout $arff_vecs $mahout_imported
+	mahout seqdumper -i $mahout_imported/dictionary.file
+	mahout seqdumper -i $mahout_imported/tfidf-vectors
+}
+
+function spark2arff
+{
+	rm $arff_imported
+	asap move spark2arff $spark_vecs $arff_imported
+	cat  $arff_imported
+}
+
+function spark2mahout
+{
+	asap move spark2mahout $spark_vecs $mahout_imported
+	mahout seqdumper -i $mahout_imported
+}
+
+function dir2arff
+{
+        asap move dir2arff $docs_dir $arff_docs 3
 }
 
 function spark_kmeans_imported
 {	echo Output in spark_kmeans_imported.out
-	sap kmeans spark $spark_from_mahout 2 10 &>spark_kmeans_imported.out
+	asap kmeans spark $spark_imported 2 10 &>spark_kmeans_imported.out
 	cat spark_kmeans_centroids.out
 	grep -E 'Exception|ERROR' spark_kmeans_imported.out
+}
+
+function mahout_kmeans_imported
+{	asap kmeans mahout $mahout_imported 2 5
+	
+}
+
+function weka_kmeans_imported
+{
+	asap kmeans weka $arff_imported 2 10
 }
 
 function mahout_tfidf
@@ -31,12 +88,22 @@ function mahout_tfidf
 	mahout seqdumper -i $mahout_vecs/tfidf-vectors 2>/dev/null
 }
 
+
 function spark_tfidf
 {
 	echo Running. output on : spark_tfidf.out
-	asap tfidf spark  $docs_sequence $spark_vecs 1 &>spark_tfidf.out
+#hdfs dfs -rm -r  $spark_vecs 2>/dev/null
+	asap tfidf spark  $docs_sequence $spark_vecs 1 &> spark_tfidf.out
 	grep -E 'Exception|ERROR' spark_tfidf.out
-	hdfs dfs -cat  $spark_vecs/* 
+	hdfs dfs -cat "$spark_vecs/part-*"
+}
+
+
+function weka_tfidf
+{
+	echo $arff_docs $arff_vecs
+	asap tfidf weka  $arff_docs $arff_vecs 1
+	cat $arff_vecs
 }
 
 function help  # Show a list of available opperations
