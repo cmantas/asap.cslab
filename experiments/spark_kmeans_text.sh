@@ -54,6 +54,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 			tstart
 			asap kmeans spark $tfidf_dir $k $max_iterations &>> $operator_out
 			time=$(ttime)
+			rm -r /tmp/spark* 2>/dev/null
 			cat $operator_out | grep Exception
 			echo $((time/1000)) sec
 			sqlite3 results.db "INSERT INTO spark_kmeans_text(documents, k, dimensions, time, date )
