@@ -49,7 +49,7 @@ function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 		dir2arff)
 			${ASAP_HOME}/weka/kmeans_text_weka/convert_text_weka.sh $@ ;;
 		dir2sequence)
-			hadoop jar $tools loadDir $@ $CHUNK ;;
+			hadoop jar $tools dir2sequence $@ $CHUNK ;;
 		dir2spark)
 			pyspark ${ASAP_HOME}/spark/text_loader.py -i $1 -do $2 ;;
 		

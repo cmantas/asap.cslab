@@ -13,6 +13,7 @@ arff_imported=/tmp/arff_imported.arff
 
 function dir2sequence
 {
+	echo running dir2sequence
 	asap move dir2sequence $docs_dir $docs_sequence 5
 }
 

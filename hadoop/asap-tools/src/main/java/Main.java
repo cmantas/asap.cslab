@@ -27,8 +27,9 @@ public class Main {
         MyOutput output=null;
         
         switch (command){
-            case "loaddir":
+            case "dir2sequence":
                 LocalSeqDirectory.main(newArgs);
+                System.exit(0);
                 break;
             case "seqinfo":
                 SequenceInfo.main(newArgs);
