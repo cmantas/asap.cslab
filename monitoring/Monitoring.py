@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import socket
 # from lib.persistance_module import env_vars
 import xml.parsers.expat
