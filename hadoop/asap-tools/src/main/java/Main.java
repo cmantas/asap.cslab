@@ -15,7 +15,8 @@ public class Main {
         
         String inputPath = args[1];
         String outputPath = null;
-        if(args.length>=2) outputPath=args[2];       
+        if(args.length>2)
+            outputPath=args[2];       
         
         String [] newArgs =copyOfRange(args, 1, args.length);
         command = command.toLowerCase();
