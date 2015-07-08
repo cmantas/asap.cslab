@@ -14,8 +14,7 @@ public class Main {
         String command = args[0];
         
         String inputPath = args[1];
-        String outputPath = args[2];
-        
+        String outputPath = args[2];       
         
         String [] newArgs =copyOfRange(args, 1, args.length);
         command = command.toLowerCase();
@@ -33,9 +32,11 @@ public class Main {
                 break;
             case "seqinfo":
                 SequenceInfo.main(newArgs);
+                System.exit(0);
                 break;
             case "loadcsv":
                 CSVLoader.main(newArgs);
+                System.exit(0);
                 break;
             case "arff2mahout":
                 input = new ArffInput(inputPath);
