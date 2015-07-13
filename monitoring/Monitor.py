@@ -44,14 +44,14 @@ def get_summary(endpoint):
     # pprint(allmetrics["master"].keys())
     for k, v in allmetrics.items():
         cpu += 100-float(v["cpu_idle"])
-        mem += 1.0 - float(v["mem_free"])/float(v["mem_total"])
+        total_mem = float(v["mem_free"]) + float(v["mem_buffers"]) +  float(v["mem_cached"])
+        mem += 1.0 - float(v["mem_free"])/total_mem
         net_in += float(v["bytes_in"])
         net_out += float(v["bytes_out"])
         iops_read +=float( v.get("io_read", "-1"))
         iops_write +=float( v.get("io_write", "-1"))
 
     host_count = len(allmetrics.keys())
-    print host_count
     return {
         "cpu": cpu / host_count,
         "mem": 100 * mem / host_count,
