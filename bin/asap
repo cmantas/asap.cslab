@@ -61,7 +61,7 @@ function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 
 function monitor
 {
-	${ASAP_HOME}/monitoring/Monitor.py
+	${ASAP_HOME}/monitoring/Monitor.py $@
 }
 
 function help  # Show a list of available opperations

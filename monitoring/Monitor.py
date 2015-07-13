@@ -8,6 +8,8 @@ from signal import signal, SIGTERM
 import xmltodict
 from json import dumps
 
+
+
 def get_metrics(endpoint):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect(endpoint)
@@ -70,21 +72,33 @@ def get_summary(endpoint):
 # print get_summary(("master", 8649))
 
 if __name__ == "__main__":
+
+    from argparse import  ArgumentParser
+    parser = ArgumentParser(description='runs TF/IDF on a directory of text docs')
+    parser.add_argument("-f", '--file', help="the output file to use")
+    parser.add_argument("-eh", '--endpoint-host', help="the ganglia endpoing hostname or IP", default="master")
+    parser.add_argument("-ep", '--endpoint-port', help="the ganglia endpoing port", type=int, default=8649)
+    args = parser.parse_args()
 ##############################################################
 
-    endpoint = ("master", 8649)
+    args.file
+    endpoint = (args.endpoint_host, args.endpoint_port)
 
     metrics_timeline = []
     interval = 5
 
-    def print_out(*args):
+    def print_out(*sigargs):
         """
         this will be called in case of Ctrl-C or kill signal
         :return:
         """
-        print dumps(metrics_timeline)
-        sys.stdout.flush()
-        sys.exit()
+        if args.file is None:
+            print dumps(metrics_timeline, indent=1)
+            sys.stdout.flush()
+            sys.exit()
+        else:
+            with open(args.file, "w") as f:
+                f.write(dumps(metrics_timeline, indent=1))
 
     #install the signal handler
     signal(SIGTERM, print_out)
