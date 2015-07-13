@@ -10,8 +10,6 @@ build:
 	@for d in $(DIRS); do (cd $$d; $(MAKE) ); done
 
 install_scripts:
-	#Linking script(s)
-	@ln -f scripts/asap.sh ~/bin/asap
 	@echo Setting ASAP_HOME of .bashrc  in '$(home)'
 	@# delete previous entry and put the new one
 	@sed -i "/export ASAP_HOME=.*/d" ~/.bashrc

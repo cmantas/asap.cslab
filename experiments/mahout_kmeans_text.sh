@@ -31,6 +31,9 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 	
 	for (( minDF=max_minDF; minDF>=min_minDF; minDF-=minDF_step)); do
 
+		#start monitoring
+		asap monitor > monitoring_data.txt & mpid=$!
+
 		# TF/IDF
 		echo -n "[EXPERIMENT] TF-IDF on $docs documents, minDF=$minDF: "
 		tstart
@@ -38,6 +41,11 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		time=$(ttime)
 		check $operator_out
 		
+		# retreive the monitoring metrics
+		kill $mpid; metrics=$(cat monitoring_data.txt); rm montoring_data.txt
+		echo $metrics
+		exit
+
 		# find the dimensions of the output
 		dimensions=$(hadoop jar ${TOOLS_JAR}  seqInfo  $tfidf_dir/dictionary.file-0 | grep Lenght: | awk '{ print $2 }')
 		echo $dimensions features, $((time/1000)) sec
