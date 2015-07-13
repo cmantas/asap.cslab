@@ -19,8 +19,8 @@ while true; do
 	rd_rate=$(( rd_delta/interval ))
 	
 	#report to ganglia
-	gmetric --name io_write --value $wd_rate --type int32 --unit "KB/s"
-	gmetric --name io_read --value $rd_rate --type int32 --unit "KB/s"
+	gmetric --name io_write --value $wd_rate --type int32 --unit "KB/s" --group "disk metrics"
+	gmetric --name io_read --value $rd_rate --type int32 --unit "KB/s" --group "disk metrics"
 
 	wd_baseline=$kb_wd
 	rd_baseline=$kb_rd
