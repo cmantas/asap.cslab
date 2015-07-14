@@ -21,7 +21,7 @@ synth_clusters_data_dir=~/Data/synth_clusters
 ### TEXT ###
 #proxy="proxy localhost:1234" #comment out for execution in IMR
 max_documents=200000
-min_documents=5020
+min_documents=1020
 documents_step=5000
 
 min_minDF=10
@@ -33,25 +33,5 @@ window=500
 documents_data_dir=~/Data/ElasticSearch_text_docs
 
 
-rm *.out
-
-####check function####
-function check {
-        e=$( cat $1 | grep -E "Exception|ERROR:" )
-        if [ "$e" != "" ]; then
-	        echo $e
-	        exit
-	fi
-}
-
-### Timer functions ###
-function tstart {
-	        start=$(date +%s%N | cut -b1-13)
-}
-
-
-function ttime  {
-	        now=$(date +%s%N | cut -b1-13)
-			        echo $(( now-start ))
-}
+rm *.out &>/dev/null
 

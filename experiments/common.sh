@@ -1,0 +1,35 @@
+####check function###
+function check {
+        e=$( cat $1 | grep -E "Exception|ERROR:" )
+        if [ "$e" != "" ]; then
+	        echo $e
+	        exit
+	fi
+}
+
+### Timer functions ###
+function tstart {
+	        start=$(date +%s%N | cut -b1-13)
+}
+
+
+function ttime  {
+        now=$(date +%s%N | cut -b1-13)
+        echo $(( now-start ))
+}
+
+## Monitoring Functions
+
+monitor_start(){
+         #start monitoring
+         asap monitor -f monitoring_data.txt &
+         export mpid=$!
+}
+
+monitor_stop(){
+        # retreive the monitoring metrics
+        kill $mpid
+        metrics=$(cat monitoring_data.txt)
+        rm monitoring_data.txt
+        echo "$metrics"
+}

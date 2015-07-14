@@ -99,6 +99,7 @@ if __name__ == "__main__":
         else:
             with open(args.file, "w") as f:
                 f.write(dumps(metrics_timeline, indent=1))
+                exit()
 
     #install the signal handler
     signal(SIGTERM, print_out)

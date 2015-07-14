@@ -33,7 +33,7 @@ echo $final_clusters
 echo "[STEP 4/4] Clusterdump"
   mahout clusterdump \
     -i ${final_clusters} \
-    -o clusterdump_result \
+    -o clusterdump_result.out \
     -d ${input}/dictionary.file-0 \
     -dt sequencefile -b 100 -n 20 --evaluate -dm org.apache.mahout.common.distance.CosineDistanceMeasure -sp 0 \
     --pointsDir ${raw_output}/clusteredPoints &>step4.out
