@@ -7,6 +7,15 @@ function check {
 	fi
 }
 
+check_spark(){
+	ok=$(cat $1|grep "\-\-OK\-\-"|wc -l)
+	if [ $ok -eq 0 ] ;
+	then
+	echo Experiment Failed
+	exit;  fi
+}
+
+
 ### Timer functions ###
 function tstart {
 	        start=$(date +%s%N | cut -b1-13)

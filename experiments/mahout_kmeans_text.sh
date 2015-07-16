@@ -120,6 +120,8 @@ mahout2spark (){
 }
 
 
+###################### Main Profiling Loops #########################
+
 for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 	#re-load the parameters on each iteration for live re-configuration
 	source  $(dirname $0)/config.info 	#loads the parameters

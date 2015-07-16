@@ -1,6 +1,7 @@
 
 import argparse
 from getpass import getuser
+from sys.stdout import flush
 
 parser = argparse.ArgumentParser(description='runs kmeans on spark for .csv files')
 
@@ -57,3 +58,7 @@ clusters = KMeans.train(parsedData, k, maxIterations=max_iter, runs=runs, initia
 
 for c in clusters.clusterCenters:
     print c
+
+
+print "--OK--"
+flush()

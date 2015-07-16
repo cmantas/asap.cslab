@@ -13,6 +13,7 @@ arff_vectors=$tmp_dir/tfidf.arff
 arff_data=$tmp_dir/data.arff
 
 moved_mahout=/tmp/moved_mahout; hdfs dfs -mkdir -p $moved_mahout &>/dev/null
+moved_spark=/tmp/moved_spark; hdfs dfs -mkdir -p $moved_spark &>/dev/null
 
 
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS weka_tfidf 
@@ -33,65 +34,84 @@ tfidf(){
 	monitor_start
 
 	asap tfidf weka $arff_data $arff_vectors $minDF &>weka_tfidf.out
-	time=$(ttime)
-	metrics=$(monitor_stop)
 
-	features_no=$(cat $arff_vectors | grep @attribute | wc -l)
-	(( features_no=features_no-1 ))
+	time=$(ttime); metrics=$(monitor_stop)
+	check weka_tfidf.out
 
-	echo $features_no features, $(($time/1000)) secs
+	dimensions=$(cat $arff_vectors | grep @attribute | wc -l)
+	(( dimensions=dimensions-1 ))
+
+	echo $dimensions features, $(($time/1000)) secs
        	sqlite3 results.db "INSERT INTO weka_tfidf(documents,dimensions, minDF, time, metrics, date )
-            VALUES( $docs,  $features_no,  $minDF, $time, '$metrics', CURRENT_TIMESTAMP);"
+            VALUES( $docs,  $dimensions,  $minDF, $time, '$metrics', CURRENT_TIMESTAMP);"
 		
 }
 
+kmeans(){
+	k=$1
+	max_iterations=$2
+	dimensions=$4
+	docs=$3
+	
+	echo -n "[EXPERIMENT] weka_kmeans_text for k=$k, $docs documents, $dimensions dimensions: "
+	#kmeans
+	monitor_start
+	tstart
+
+	asap kmeans weka $tmp_dir/tfidf.arff $k $max_iterations &>weka_kmeans.out
+	check weka_kmeans.out
+
+	time=$(ttime)
+	echo $((time/1000)) secs
+	metrics=$(monitor_stop)
+
+	sqlite3 results.db "INSERT INTO weka_kmeans_text(documents, k, time, date, metrics, dimensions)
+    		VALUES( $docs,  $k, $time, CURRENT_TIMESTAMP, '$metrics', $dimensions);"
+		exit
+	
+}
 
 
 arff2mahout (){
         docs=$1
         dimensions=$2
 
-        monitor_start
-
         echo -n "[EXPERIMENT] Move arff->Spark on $docs documents, $dimensions "
-        tstart
-        asap move arff2mahout $arff_vectors $moved_mahout &> mahout2arff.out
-        time=$(ttime)
-        check mahout2arff.out
+        monitor_start; tstart
+
+        asap move arff2mahout $arff_vectors $moved_mahout &> arff2mahout.out
+        time=$(ttime);metrics=$(monitor_stop)
+
+        check arff2mahout.out
 
         echo  $((time/1000)) sec
         
-        metrics=$(monitor_stop)
-
         #save in db
         sqlite3 results.db "INSERT INTO mahout2arff(documents, dimensions, time, metrics, date )
                             VALUES( $docs, $dimensions, $time, '$metrics',  CURRENT_TIMESTAMP);"
 }
 
 
-mahout2spark (){
+arff2spark (){
         docs=$1
         dimensions=$2
-        monitor_start
-
-        # Move mahout to spark
-        echo -n "[EXPERIMENT] Move Mahout->Spark on $docs documents"
-        tstart
-        asap move mahout2spark $tfidf_dir $moved_spark &> mahout2spark.out
-        time=$(ttime)
-        check mahout2spark.out
+        
+	# Move mahout to spark
+        monitor_start; tstart
+        echo -n "[EXPERIMENT] Move arff->Spark on $docs documents"
+        asap move arff2spark $arff_vectors $moved_spark &> arff2spark.out
+        time=$(ttime);metrics=$(monitor_stop)
+        check arff2spark.out
 
         echo $dimensions features, $((time/1000)) sec
         
-        metrics=$(monitor_stop)
-
         #save in db
-        sqlite3 results.db "INSERT INTO mahout2spark(documents, dimensions, time, metrics, date )
+        sqlite3 results.db "INSERT INTO arff2spark(documents, dimensions, time, metrics, date )
                             VALUES( $docs, $dimensions, $time, '$metrics',  CURRENT_TIMESTAMP);"
 }
 
 
-
+#################### Main Profiling Loop ####################
 
 for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 
@@ -106,27 +126,23 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		
 		#tfidf
 		tfidf $docs $minDF
-		exit
+
+		#arff2mahout
+		arff2mahout $docs $dimensions
+		
+		#arff2spark
+		arff2spark $docs $dimensions
 																		
 	    	for((k=min_k; k<=max_k; k+=k_step)); do
-			echo -n "[EXPERIMENT] weka_kmeans_text for k=$k, $docs documents: "
-			#kmeans
-			tstart
-			asap kmeans weka $tmp_dir/tfidf.arff $k $max_iterations &>weka_kmeans.out
-			check weka_kmeans.out
-
-	        	time=$(ttime)
-			echo $((time/1000)) secs
-	       		sqlite3 results.db "INSERT INTO weka_kmeans_text(documents, k, time, date, dimensions)
-	            		VALUES( $docs,  $k, $time, CURRENT_TIMESTAMP, $features_no);"
-																			
+			kmeans $k $max_iterations $docs $dimensions
+			exit																		
 		done #K parameter loop
 		
 		# if we got less features than we asked we need not ask for more
-		if ((features_no<asked_features));then
-			echo No need to add more dimensions, continuing
-			break
+		if ((dimensions<asked_features));then
+			echo No need to add more dimensions, continuing;break
 		fi
+
 	done #asked dimensions loop
 done #documents count loop
 

@@ -1,5 +1,6 @@
 import argparse
 from os import system
+from sys.stdout import flush
 
 ### args parsing
 parser = argparse.ArgumentParser(description='runs TF/IDF on a directory of text docs')
@@ -48,6 +49,7 @@ if "sc" not in globals():
 
 # Load documents (one per line).
 documents = sc.sequenceFile(docs_dir).map(lambda (fname, content): filter_and_split(content))
+documents.cache()
 
 # # keep only the content (replace, lower, split, etc)
 # documents = documents.
@@ -72,4 +74,6 @@ dict.saveAsSequenceFile(d_out+"/dictionary")
 # free space?
 dict.unpersist()
 tfidf.unpersist()
-# documents.unpersist()
+#documents.unpersist()
+print "--OK--"
+flush()

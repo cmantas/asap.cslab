@@ -37,7 +37,7 @@ def myVec(line):
 
 
 # Load and parse the data
-data = sc.textFile(fname).map(myVec)
+data = sc.textFile(fname+"/part*").map(myVec)
 
 
 # Build the model (cluster the data)
@@ -66,3 +66,5 @@ for c in clusters.clusterCenters:
 
 
 f.close()
+
+print "--OK--"
