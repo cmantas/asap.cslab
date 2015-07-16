@@ -42,3 +42,11 @@ monitor_stop(){
         rm monitoring_data.txt
         echo "$metrics"
 }
+
+size(){
+	ls -l $1 | awk '{print $5}'
+}
+
+hdfs_size(){
+	hdfs dfs -du -s $1 | awk '{print $1}'
+}

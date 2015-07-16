@@ -17,33 +17,36 @@ moved_spark=/tmp/moved_spark; hdfs dfs -mkdir -p $moved_spark &>/dev/null
 
 
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS weka_tfidf 
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, time INTEGER, minDF INTEGER, dimensions INTEGER, metrics TEXT, date TIMESTAMP);"
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, input_size INTEGER, output_size INTEGER, time INTEGER, minDF INTEGER, dimensions INTEGER, metrics TEXT, date TIMESTAMP);"
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS weka_kmeans_text 
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, dimensions INTEGER, time INTEGER, metrics TEXT, date TIMESTAMP);"
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, dimensions INTEGER,input_size INTEGER, output_size INTEGER, time INTEGER, metrics TEXT, date TIMESTAMP);"
 
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS arff2mahout
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, dimensions INTEGER, time INTEGER, metrics TEXT,  date TIMESTAMP);"
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, dimensions INTEGER, input_size INTEGER, output_size INTEGER, time INTEGER, metrics TEXT,  date TIMESTAMP);"
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS arff2spark
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, dimensions INTEGER, time INTEGER, metrics TEXT,  date TIMESTAMP);"
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, dimensions INTEGER, input_size INTEGER, output_size INTEGER, time INTEGER, metrics TEXT,  date TIMESTAMP);"
 
 
 tfidf(){
 	docs=$1
 	minDF=$2
+	input_size=$(size $arff_data)
+
 	tstart
 	monitor_start
 
 	asap tfidf weka $arff_data $arff_vectors $minDF &>weka_tfidf.out
 
-	time=$(ttime); metrics=$(monitor_stop)
+	time=$(ttime); metrics=$(monitor_stop);
+	output_size=$(size $arff_vectors)
 	check weka_tfidf.out
 
 	dimensions=$(cat $arff_vectors | grep @attribute | wc -l)
 	(( dimensions=dimensions-1 ))
 
 	echo $dimensions features, $(($time/1000)) secs
-       	sqlite3 results.db "INSERT INTO weka_tfidf(documents,dimensions, minDF, time, metrics, date )
-            VALUES( $docs,  $dimensions,  $minDF, $time, '$metrics', CURRENT_TIMESTAMP);"
+       	sqlite3 results.db "INSERT INTO weka_tfidf(documents,dimensions, minDF, time, metrics, date, input_size, output_size )
+            VALUES( $docs,  $dimensions,  $minDF, $time, '$metrics', CURRENT_TIMESTAMP, $input_size, $output_size);"
 		
 }
 
@@ -54,19 +57,20 @@ kmeans(){
 	docs=$3
 	
 	echo -n "[EXPERIMENT] weka_kmeans_text for k=$k, $docs documents, $dimensions dimensions: "
-	#kmeans
-	monitor_start
-	tstart
+	input_size=$(size $arff_vectors)
 
-	asap kmeans weka $tmp_dir/tfidf.arff $k $max_iterations &>weka_kmeans.out
+	monitor_start;tstart
+
+	asap kmeans weka $arff_vectors $k $max_iterations weka_clusters.out &>weka_kmeans.out
 	check weka_kmeans.out
+	output_size=$(size weka_clusters.out)
 
 	time=$(ttime)
 	echo $((time/1000)) secs
 	metrics=$(monitor_stop)
 
-	sqlite3 results.db "INSERT INTO weka_kmeans_text(documents, k, time, date, metrics, dimensions)
-    		VALUES( $docs,  $k, $time, CURRENT_TIMESTAMP, '$metrics', $dimensions);"
+	sqlite3 results.db "INSERT INTO weka_kmeans_text(documents, k, time, date, metrics, dimensions, input_size, output_size)
+    		VALUES( $docs,  $k, $time, CURRENT_TIMESTAMP, '$metrics', $dimensions, $input_size, $output_size);"
 		exit
 	
 }
@@ -76,19 +80,22 @@ arff2mahout (){
         docs=$1
         dimensions=$2
 
-        echo -n "[EXPERIMENT] Move arff->Spark on $docs documents, $dimensions "
+        echo -n "[EXPERIMENT] Move arff->Mahout on $docs documents, $dimensions "
+	input_size=$(size $arff_vectors)
         monitor_start; tstart
 
         asap move arff2mahout $arff_vectors $moved_mahout &> arff2mahout.out
         time=$(ttime);metrics=$(monitor_stop)
 
         check arff2mahout.out
+	output_size=$(hdfs_size $moved_mahout)
 
+	
         echo  $((time/1000)) sec
         
         #save in db
-        sqlite3 results.db "INSERT INTO mahout2arff(documents, dimensions, time, metrics, date )
-                            VALUES( $docs, $dimensions, $time, '$metrics',  CURRENT_TIMESTAMP);"
+        sqlite3 results.db "INSERT INTO arff2mahout(documents, dimensions, time, metrics, input_size, output_size, date )
+                            VALUES( $docs, $dimensions, $time, '$metrics', $input_size, $output_size, CURRENT_TIMESTAMP);"
 }
 
 
@@ -99,15 +106,18 @@ arff2spark (){
 	# Move mahout to spark
         monitor_start; tstart
         echo -n "[EXPERIMENT] Move arff->Spark on $docs documents"
+	input_size=$(size $arff_vectors)
+
         asap move arff2spark $arff_vectors $moved_spark &> arff2spark.out
         time=$(ttime);metrics=$(monitor_stop)
         check arff2spark.out
+	output_size=$(hdfs_size $moved_spark)
 
         echo $dimensions features, $((time/1000)) sec
         
         #save in db
-        sqlite3 results.db "INSERT INTO arff2spark(documents, dimensions, time, metrics, date )
-                            VALUES( $docs, $dimensions, $time, '$metrics',  CURRENT_TIMESTAMP);"
+        sqlite3 results.db "INSERT INTO arff2spark(documents, dimensions, time, metrics, input_size, output_size, date )
+                            VALUES( $docs, $dimensions, $time, '$metrics', $input_size, $output_size, CURRENT_TIMESTAMP);"
 }
 
 
@@ -128,13 +138,13 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		tfidf $docs $minDF
 
 		#arff2mahout
-		arff2mahout $docs $dimensions
+		#arff2mahout $docs $dimensions
 		
 		#arff2spark
-		arff2spark $docs $dimensions
+		#arff2spark $docs $dimensions
 																		
 	    	for((k=min_k; k<=max_k; k+=k_step)); do
-			kmeans $k $max_iterations $docs $dimensions
+		kmeans $k $max_iterations $docs $dimensions
 			exit																		
 		done #K parameter loop
 		
