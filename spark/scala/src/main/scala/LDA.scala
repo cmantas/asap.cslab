@@ -15,7 +15,7 @@ object LDA {
     val conf = new SparkConf().setAppName("CSLab_LDA")
     val sc = new SparkContext(conf)
     
-    val data = loadVectors(sc, args(0))//.map(_.toSparse).map(_.toDense)
+    val data = loadVectors(sc, args(0))
 
     val corpus = data.zipWithIndex.map(_.swap).cache()
     
