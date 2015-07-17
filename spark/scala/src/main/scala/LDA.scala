@@ -3,6 +3,7 @@ import org.apache.spark.rdd._
 import org.apache.spark.SparkContext._
 import org.apache.spark.mllib.clustering.LDA
 import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.util.MLUtils._
 
 /**
  * @author gsvic
@@ -14,8 +15,7 @@ object LDA {
     val conf = new SparkConf().setAppName("CSLab_LDA")
     val sc = new SparkContext(conf)
     
-    val data = sc.textFile(args(0))
-      .map(doc => Vectors.dense(doc.trim.split(' ').map(_.toDouble) ) )
+    val data = loadVectors(sc, args(0))//.map(_.toSparse).map(_.toDense)
 
     val corpus = data.zipWithIndex.map(_.swap).cache()
     
