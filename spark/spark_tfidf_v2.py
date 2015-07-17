@@ -1,6 +1,6 @@
 import argparse
 from os import system
-from sys.stdout import flush
+import sys
 
 ### args parsing
 parser = argparse.ArgumentParser(description='runs TF/IDF on a directory of text docs')
@@ -76,4 +76,4 @@ dict.unpersist()
 tfidf.unpersist()
 #documents.unpersist()
 print "--OK--"
-flush()
+stdout.flush()

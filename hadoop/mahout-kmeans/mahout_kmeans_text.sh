@@ -4,7 +4,7 @@ input=$1
 K=$2
 max_iterations=$3
 input=$1
-raw_output=/tmp/clustering_raw_output
+raw_output=$4
 
 #remove anything in output
 hdfs dfs -rm -r $raw_output/* 2>/dev/null

@@ -19,14 +19,21 @@ moved_mahout=/tmp/moved_mahout; hdfs dfs -mkdir -p $moved_mahout
 moved_arff=/tmp/moved_vectors.arff
 
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS spark_tfidf 
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, time INTEGER, minDF INTEGER, dimensions INTEGER, metrics, date TIMESTAMP);"
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, time INTEGER, minDF INTEGER, dimensions INTEGER, 
+	metrics TEXT, input_size INTEGER, output_size INTEGER, date DATE DEFAULT (datetime('now','localtime')));"
+
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS spark_kmeans_text 
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, dimensions INTEGER, time INTEGER, date TIMESTAMP);"
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, dimensions INTEGER, input_size INTEGER,
+	output_size INTEGER, time INTEGER, metrics TEXT, date DATE DEFAULT (datetime('now','localtime')));"
 
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS spark2mahout
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, dimensions INTEGER, time INTEGER, metrics TEXT,  date TIMESTAMP);"
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, dimensions INTEGER, time INTEGER, input_size INTEGER, 
+	output_size INTEGER, metrics TEXT, date DATE DEFAULT (datetime('now','localtime')));"
+
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS spark2arff
-(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, dimensions INTEGER, time INTEGER, metrics TEXT,  date TIMESTAMP);"
+(id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, dimensions INTEGER, time INTEGER, metrics TEXT, 
+	input_size INTEGER, output_size INTEGER, date DATE DEFAULT (datetime('now','localtime')));"
+
 
 
 spark_tfidf(){
@@ -37,29 +44,34 @@ spark_tfidf(){
 	hdfs dfs -rm -r $spark_vectors &>/dev/null
 	echo -n "[EXPERIMENT] TF-IDF on $docs documents, minDF=$minDF: "
 	
+	input_size=$(hdfs_size $hadoop_input) 
 	tstart; monitor_start
 
 	asap tfidf spark $hadoop_input $spark_vectors $minDF &> spark_tfidf.out
 	time=$(ttime); metrics=$(monitor_stop)
+	output_size=$(hdfs_size $spark_vectors)
 
 	check_spark spark_tfidf.out
 	dimensions=1048576
 
 	echo $dimensions features, $((time/1000)) sec
 	#save in db
-	sqlite3 results.db "INSERT INTO spark_tfidf(documents, minDF, dimensions, time, metrics, date )
-	                    VALUES( $docs, $minDF, $dimensions, $time, '$metrics', CURRENT_TIMESTAMP);"
+	sqlite3 results.db "INSERT INTO spark_tfidf(documents, minDF, dimensions, time, input_size, output_size, metrics)
+	                    VALUES( $docs, $minDF, $dimensions, $time, $input_size, $output_size, '$metrics');"
 
 
 }
 
 spark_kmeans(){
+	input_size=$(hdfs_size $spark_vectors)
+
 	echo -n "[EXPERIMENT] spark K-means with K=$k: "
 	tstart; monitor_start
 	asap kmeans spark $spark_vectors $k $max_iterations &> spark_kmeans.out
 	
 	time=$(ttime); metrics=$(monitor_stop)
-	
+	output_size=0
+
 	#check_spark spark_kmeans.out # IDK why this fails (OK is never printed)
 
 	rm -r /tmp/spark* 2>/dev/null
@@ -68,8 +80,8 @@ spark_kmeans(){
 	#DEBUG show any exceptions but igore them
 	cat spark_kmeans.out | grep Exception\
 	
-	sqlite3 results.db "INSERT INTO spark_kmeans_text(documents, k, dimensions, time, metrics, date )
-			                    VALUES( $docs,  $k, $dimensions,  $time, '$metrics', CURRENT_TIMESTAMP);"
+	sqlite3 results.db "INSERT INTO spark_kmeans_text(documents, k, dimensions, time, input_size, output_size, metrics)
+			                    VALUES( $docs,  $k, $dimensions,  $time, $input_size, $output_size, '$metrics');"
 	
 }
 
@@ -80,18 +92,19 @@ spark2mahout(){
         dimensions=$2
 
         # Move spark to mahout
-
+	input_size=$(hdfs_size $spark_vectors)
 	monitor_start; tstart
-        echo -n "[EXPERIMENT] Move Spark->Mahout on $docs documents"
+        echo -n "[EXPERIMENT] Move Spark->Mahout on $docs documents "
         asap move spark2mahout $spark_vectors $moved_mahout &> spark2mahout.out
         time=$(ttime);metrics=$(monitor_stop)
         check spark2mahout.out
+	output_size=$(hdfs_size $moved_mahout)
 
         echo $((time/1000)) sec
 
         #save in db
-        sqlite3 results.db "INSERT INTO spark2mahout(documents, dimensions, time, metrics, date )
-                            VALUES( $docs, $dimensions, $time, '$metrics',  CURRENT_TIMESTAMP);"
+        sqlite3 results.db "INSERT INTO spark2mahout(documents, dimensions, time, input_size, output_size, metrics)
+                            VALUES( $docs, $dimensions, $time, $input_size, $output_size, '$metrics');"
 }
 
 spark2arff(){
@@ -99,17 +112,19 @@ spark2arff(){
         dimensions=$2
 
         # Move spark to arff
+	input_size=$(hdfs_size $spark_vectors)
         monitor_start; tstart
         echo -n "[EXPERIMENT] Move Spark->arff on $docs documents"
         asap move spark2arff $spark_vectors $moved_arff &> arff2spark.out
         time=$(ttime);metrics=$(monitor_stop)
         check arff2spark.out
+	output_size=$(size $moved_arff)
 
         echo , $((time/1000)) sec
 
         #save in db
-        sqlite3 results.db "INSERT INTO arff2spark(documents, dimensions, time, metrics, date )
-                            VALUES( $docs, $dimensions, $time, '$metrics',  CURRENT_TIMESTAMP);"
+        sqlite3 results.db "INSERT INTO spark2arff(documents, dimensions, time, metrics)
+                            VALUES( $docs, $dimensions, $time, '$metrics');"
 }
 
 
@@ -127,8 +142,8 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 
 		spark_tfidf $docs $minDF
 	
-		#spark2mahout $docs $dimensions
-		#spark2arff $docs  $dimensions
+		spark2mahout $docs $dimensions
+		spark2arff $docs  $dimensions
 
 		for((k=min_k; k<=max_k; k+=k_step)); do
 			spark_kmeans $k $max_iterations $docs $dimensions

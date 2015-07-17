@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 parser = argparse.ArgumentParser(description='runs kmeans on spark for .csv files')
 
@@ -7,7 +8,7 @@ parser.add_argument("-mi","--max_iterations", help="the max iterations of the al
 parser.add_argument("-i", "--input",  help="the input dir (RDD)", required=True)
 args = parser.parse_args()
 
-
+print "HELLO"
 
 k = args.K
 max_iter = args.max_iterations
@@ -43,6 +44,7 @@ data = sc.textFile(fname+"/part*").map(myVec)
 # Build the model (cluster the data)
 clusters = KMeans.train(data, k, maxIterations=max_iter, runs=1, initializationMode="random")
 
+print "--Available clustes count :"+str(len(clusters.clusterCenters)) 
 #free space??
 data.unpersist()
 
@@ -55,11 +57,12 @@ data.unpersist()
 # WSSSE = parsedData.map(lambda point: error(point)).reduce(lambda x, y: x + y)
 # print("Within Set Sum of Squared Error = " + str(WSSSE))
 
+
 f = open("spark_kmeans_centroids.out", "w+")
 for c in clusters.clusterCenters:
     nzl = []
     for i in range(len(c)):
-        if c[i]>=0.1:
+        if c[i]>=0.2:
             nzl.append((i, c[i]))
     f.write(str(nzl))
     f.write("\n\n")
@@ -68,3 +71,4 @@ for c in clusters.clusterCenters:
 f.close()
 
 print "--OK--"
+stdout.flush()
