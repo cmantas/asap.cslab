@@ -41,6 +41,20 @@ function tfidf #ENGINE INPUT OUTPUT MIN_DOCS
 
 }
 
+function word2vec #ENGINE INPUT OUTPUT
+{
+	engine=$1
+	input=$2
+	shift
+	case "$engine" in 
+		pyspark)
+			echo Word2Vec in pyspark 
+			spark-submit ${ASAP_HOME}/spark/spark_word2vec.py $input;;
+		*)
+			echo Engine "$engine" does not exist;;
+	esac
+}
+
 function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 {
 	operation=$1
