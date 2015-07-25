@@ -45,6 +45,8 @@ public class SparkInput implements MyInput{
    FileStatus[] inputVectorFiles;
    int currentFile;
    
+   int tries=0;
+   
    
    public SparkInput(String input, FileSystem fs, Configuration conf) throws IOException{
         this.conf=conf;
@@ -126,11 +128,17 @@ public class SparkInput implements MyInput{
         while((line = br.readLine())==null){
             if(!nextFile()) return null;
         }
+        tries++;
         //read a vector
+        try{
         MySparseVector vec = fromSparkString(line);
         
         //move the vector's indices to consecutive space
         return vec.rebase(indexMap);
+        }catch(Exception e){
+            if(tries<5) return nextVector();
+            else return null;
+        }
     }
 
     

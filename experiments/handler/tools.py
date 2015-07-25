@@ -15,7 +15,8 @@ import numpy as np
 
 conn = sqlite3.connect('../results.db')
 c = conn.cursor()
-
+print plt.style.available
+plt.style.use('fivethirtyeight')
 
 def query2lists(query):
     print query

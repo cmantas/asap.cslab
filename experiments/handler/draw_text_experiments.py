@@ -11,19 +11,70 @@ from matplotlib.pyplot import figure, show
 import numpy as np
 from tools import *
 
+#mahout #terms for varying minDF
 # figure()
 # docs, terms = query2lists("select documents, avg(dimensions) from mahout_tfidf WHERE minDF=10 GROUP by documents;")
-# myplot(docs,terms, label="mahout, minDF=10", title="Documents vs Terms", xlabel="#docs", ylabel="#terms")
-# docs, terms = query2lists("select documents, avg(dimensions) from weka_tfidf WHERE minDF=10 GROUP by documents;")
-# myplot(docs,terms, label="weka, minDF=10")
+# myplot(docs,terms, label="minDF=10", title="Documents vs Terms", xlabel="#docs", ylabel="#terms")
+# docs, terms = query2lists("select documents, avg(dimensions) from mahout_tfidf WHERE minDF=60 GROUP by documents;")
+# myplot(docs,terms, label="minDF=60", title="Documents vs Terms", xlabel="#docs", ylabel="#terms")
+# docs, terms = query2lists("select documents, avg(dimensions) from mahout_tfidf WHERE minDF=110 GROUP by documents;")
+# myplot(docs,terms, label="minDF=110", title="Documents vs Terms", xlabel="#docs", ylabel="#terms")
+# docs, terms = query2lists("select documents, avg(dimensions) from mahout_tfidf WHERE minDF=160 GROUP by documents;")
+# myplot(docs,terms, label="minDF=160", title="Mahout Documents vs Terms", xlabel="#docs", ylabel="#terms")
 # show()
-#
+# exit()
+
+
+# mahout tfidf docs vs time
 # figure()
 # docs, terms = query2lists("select documents, avg(time) from mahout_tfidf WHERE minDF=10 GROUP by documents;")
-# myplot(docs,terms, label="mahout", title="Documents vs time", xlabel="#docs", ylabel="#terms")
-# docs, terms = query2lists("select documents, avg(time) from weka_tfidf WHERE minDF=10 GROUP by documents;")
-# myplot(docs,terms, label="weka")
+# myplot(docs,terms, label="minDF=10", title="Documents vs time", xlabel="#docs", ylabel="#terms")
+# docs, terms = query2lists("select documents, avg(time) from mahout_tfidf WHERE minDF=60 GROUP by documents;")
+# myplot(docs,terms, label="minDF=60", title="Documents vs time", xlabel="#docs", ylabel="#terms")
+# docs, terms = query2lists("select documents, avg(time) from mahout_tfidf WHERE minDF=110 GROUP by documents;")
+# myplot(docs,terms, label="minDF=110", title="Documents vs time", xlabel="#docs", ylabel="#terms")
+# docs, terms = query2lists("select documents, avg(time) from mahout_tfidf WHERE minDF=160 GROUP by documents;")
+# myplot(docs,terms, label="minDF=160", title="Documents vs time", xlabel="#docs", ylabel="#terms")
 # show()
+# exit()
+
+def multi_graph(table, x, y, cond_list, title=None, xlabel=None, ylabel=None, groupBy=""):
+    if title is None:
+        title = x+" vs "+y
+    if xlabel is None:
+        xlabel=x
+    if ylabel is None:
+        ylabel = y
+    if groupBy !="":
+        groupBy = "group by "+groupBy
+
+    figure()
+    for c in cond_list:
+        query = "select {0} from {1} where {2} {3}".format(x+','+y, table, c, groupBy)
+        rx, ry = query2lists(query)
+        myplot(rx,ry, label=c, title=title, xlabel=xlabel, ylabel=ylabel)
+    show()
+
+# multi_graph("mahout_tfidf", "input_size/1048576", "output_size/1048576", ["minDF=10", "minDF=60","minDF=110","minDF=160"], xlabel='input MB', ylabel='output MB', title="Mahout Input vs Output size")
+# exit()
+
+multi_graph("mahout_kmeans_text", "documents/1000", "time/1000", ["k=5", "k=10", "k=15", "k=20"], groupBy="documents", title="Documents vs Time")
+exit()
+
+# multi_graph("mahout_kmeans_text", "input_size/1048576", "time", ["k=5", "k=10", "k=15", "k=20"], groupBy="documents")
+# exit()
+
+
+# dimensions vs time
+figure()
+rx, ry = query2lists("select dimensions/1000 ,time/1000 from mahout_kmeans_text where k=20 and documents=60300 ")
+myplot(rx,ry, title="Dimensions vs time", xlabel="dimensions (x1000)", ylabel="time (sec)")
+rx, ry = query2lists("select dimensions/1000,time/1000 from mahout_kmeans_text where k=20 and documents=70300")
+myplot(rx,ry)
+rx, ry = query2lists("select dimensions/1000,time/1000 from mahout_kmeans_text where k=20 and documents=80300")
+myplot(rx,ry)
+show()
+exit()
 #
 #
 # figure()
