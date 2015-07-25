@@ -71,6 +71,7 @@ kmeans(){
 
 	sqlite3 results.db "INSERT INTO mahout_kmeans_text(documents, k, dimensions, time, metrics, input_size, output_size)
 	                    VALUES( $docs,  $k, $dimensions,  $time, '$metrics', $in_size, $out_size);"
+	hdfs -rm -r $mahout_raw_clusters &> mahout_kmeans.out
 }
 
 mahout2arff (){
@@ -121,8 +122,6 @@ mahout2spark (){
 ###################### Main Profiling Loops #########################
 
 for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
-	#re-load the parameters on each iteration for live re-configuration
-	source  $(dirname $0)/config.info 	#loads the parameters
 
 	echo "[PREP] Loading $docs text files"
 	asap move dir2sequence $input_dir $hadoop_input $docs &> dir2sequence.out
@@ -139,11 +138,12 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 		
 		#Mahout to Spark
 		mahout2spark $docs $dimensions
+
+		hdfs dfs -rm -r "/tmp/moved*" &>/dev/null
 	
 	   	#Loop for the various values of K parameter
 		for((k=min_k; k<=max_k; k+=k_step)); do
 			kmeans $k $max_iterations $dimensions
-			exit
 		done
 	done
 done

@@ -39,6 +39,7 @@ def myVec(line):
 
 # Load and parse the data
 data = sc.textFile(fname+"/part*").map(myVec)
+data.cache()
 
 
 # Build the model (cluster the data)

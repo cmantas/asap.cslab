@@ -3,7 +3,7 @@ runs=1 			#how many runs per experiment
 
 ### KMEANS  ###
 min_k=5		#min num of clusters
-max_k=21	#max num of clusters
+max_k=20	#max num of clusters
 k_step=5		#step of increasing the clusters	
 max_iterations=50
 
@@ -20,13 +20,13 @@ synth_clusters_data_dir=~/Data/synth_clusters
 
 ### TEXT ###
 #proxy="proxy localhost:1234" #comment out for execution in IMR
-max_documents=200000
-min_documents=t=200
-documents_step=5000
+max_documents=199980
+min_documents=t=300
+documents_step=10000
 
 min_minDF=10
-max_minDF=10
-minDF_step=100
+max_minDF=210
+minDF_step=50
 
 
 window=500

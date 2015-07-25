@@ -50,6 +50,9 @@ function word2vec #ENGINE INPUT OUTPUT
 		pyspark)
 			echo Word2Vec in pyspark 
 			spark-submit ${ASAP_HOME}/spark/spark_word2vec.py $input;;
+		spark_scala)
+			echo Word2Vec in Spark Scala
+			spark-submit --class Word2Vec ${ASAP_HOME}/spark/sparkops_2.10-1.0.jar $input;;
 		*)
 			echo Engine "$engine" does not exist;;
 	esac

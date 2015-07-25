@@ -147,7 +147,6 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 																		
 	    	for((k=min_k; k<=max_k; k+=k_step)); do
 			kmeans $k $max_iterations $docs $dimensions
-			exit																		
 		done #K parameter loop
 		
 		# if we got less features than we asked we need not ask for more

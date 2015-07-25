@@ -144,10 +144,10 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 	
 		spark2mahout $docs $dimensions
 		spark2arff $docs  $dimensions
+		hdfs dfs -rm -r "/tmp/moved*" &>/dev/null
 
 		for((k=min_k; k<=max_k; k+=k_step)); do
 			spark_kmeans $k $max_iterations $docs $dimensions
-			exit
 		done
 	done
 done
