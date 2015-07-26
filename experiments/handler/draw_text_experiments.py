@@ -25,18 +25,6 @@ from tools import *
 # exit()
 
 
-# mahout tfidf docs vs time
-# figure()
-# docs, terms = query2lists("select documents, avg(time) from mahout_tfidf WHERE minDF=10 GROUP by documents;")
-# myplot(docs,terms, label="minDF=10", title="Documents vs time", xlabel="#docs", ylabel="#terms")
-# docs, terms = query2lists("select documents, avg(time) from mahout_tfidf WHERE minDF=60 GROUP by documents;")
-# myplot(docs,terms, label="minDF=60", title="Documents vs time", xlabel="#docs", ylabel="#terms")
-# docs, terms = query2lists("select documents, avg(time) from mahout_tfidf WHERE minDF=110 GROUP by documents;")
-# myplot(docs,terms, label="minDF=110", title="Documents vs time", xlabel="#docs", ylabel="#terms")
-# docs, terms = query2lists("select documents, avg(time) from mahout_tfidf WHERE minDF=160 GROUP by documents;")
-# myplot(docs,terms, label="minDF=160", title="Documents vs time", xlabel="#docs", ylabel="#terms")
-# show()
-# exit()
 
 def multi_graph(table, x, y, cond_list, title=None, xlabel=None, ylabel=None, groupBy=""):
     if title is None:
@@ -55,15 +43,41 @@ def multi_graph(table, x, y, cond_list, title=None, xlabel=None, ylabel=None, gr
         myplot(rx,ry, label=c, title=title, xlabel=xlabel, ylabel=ylabel)
     show()
 
+multi_graph("mahout_tfidf", "documents/1000", "dimensions/1000", ["minDF=10", "minDF=60","minDF=110","minDF=160"], title="Mahout Documents vs Terms")
+exit()
+
+# multi_graph("mahout_tfidf", "documents/1000", "time/1000", ["minDF=10", "minDF=60","minDF=110","minDF=160"], ylabel='time (sec)', title="Mahout Documents vs Time")
+# exit()
+
 # multi_graph("mahout_tfidf", "input_size/1048576", "output_size/1048576", ["minDF=10", "minDF=60","minDF=110","minDF=160"], xlabel='input MB', ylabel='output MB', title="Mahout Input vs Output size")
 # exit()
 
-multi_graph("mahout_kmeans_text", "documents/1000", "time/1000", ["k=5", "k=10", "k=15", "k=20"], groupBy="documents", title="Documents vs Time")
-exit()
+# multi_graph("mahout_kmeans_text", "documents/1000", "time/1000", ["k=5", "k=10", "k=15", "k=20"], groupBy="documents", title="Documents vs Time")
+# exit()
+
 
 # multi_graph("mahout_kmeans_text", "input_size/1048576", "time", ["k=5", "k=10", "k=15", "k=20"], groupBy="documents")
 # exit()
 
+# multi_graph("spark_kmeans_text", "input_size/1048576", "time/1000", ["k=5", "k=10", "k=15", "k=20"], groupBy="documents", title="Documents vs Time")
+# exit()
+
+#spark tfidf minDF vs output size
+# multi_graph("spark_tfidf", "documents/1000", "time/1000", ["minDF=10", "minDF=60", "minDF=110", "minDF=160"],  title="Documents vs Time", ylabel="time (sec)")
+# exit()
+#
+# #spark tfidf minDF vs output size
+# multi_graph("spark_tfidf", "documents/1000", "output_size/1048576", ["minDF=10", "minDF=60", "minDF=110", "minDF=160"],  title="Documents vs Time", ylabel="output_size (MB)")
+# exit()
+
+#mahout vs spark tfidf
+figure()
+rx, ry = query2lists("select documents/1000 ,avg(time/1000) from mahout_tfidf group by documents ")
+myplot(rx,ry)
+rx, ry = query2lists("select documents/1000 ,avg(time/1000) from spark_tfidf group by documents ")
+myplot(rx,ry)
+show()
+exit()
 
 # dimensions vs time
 figure()
