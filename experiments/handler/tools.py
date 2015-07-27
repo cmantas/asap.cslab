@@ -15,7 +15,7 @@ import numpy as np
 
 conn = sqlite3.connect('../results.db')
 c = conn.cursor()
-print plt.style.available
+# print plt.style.available
 plt.style.use('fivethirtyeight')
 
 def query2lists(query):
@@ -55,3 +55,32 @@ def myplot(*args, **kwargs):
     # plt.grid(which='minor', alpha=0.2)
     plt.plot(*args, **kwargs)
     plt.legend(loc = 'upper left')
+
+def multi_graph(table, x, y, cond_list, groupBy="", **kwargs):
+    if kwargs['title'] is None:
+        kwargs['title'] = x+" vs "+y
+    if 'xlabel' not in kwargs:
+        kwargs['xlabel'] = x
+    if 'ylabel' not in kwargs:
+        kwargs['ylabel'] = y
+    if groupBy != "":
+        groupBy = "group by "+groupBy
+
+    # for c in cond_list:
+    #     query = "select {0} from {1} where {2} {3}".format(x+','+y, table, c, groupBy)
+    #     rx, ry = query2lists(query)
+    #     myplot(rx,ry, label=c, title=title, xlabel=xlabel, ylabel=ylabel)
+    # show()
+    query = "select {0} from {1} where ".format(x+","+ y, table) + "{0} " + groupBy
+    multi_graph_query(query, cond_list, **kwargs)
+
+def multi_graph_query(query, cond_list, **kwargs):
+    figure()
+    for c in cond_list:
+        queryf = query.format(c)
+        rx, ry = query2lists(queryf)
+        myplot(rx,ry, label=c, **kwargs)
+
+
+def cond_producer(a, list):
+    return [a+"={}".format(i) for i in list]

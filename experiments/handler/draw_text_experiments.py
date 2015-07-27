@@ -26,25 +26,10 @@ from tools import *
 
 
 
-def multi_graph(table, x, y, cond_list, title=None, xlabel=None, ylabel=None, groupBy=""):
-    if title is None:
-        title = x+" vs "+y
-    if xlabel is None:
-        xlabel=x
-    if ylabel is None:
-        ylabel = y
-    if groupBy !="":
-        groupBy = "group by "+groupBy
 
-    figure()
-    for c in cond_list:
-        query = "select {0} from {1} where {2} {3}".format(x+','+y, table, c, groupBy)
-        rx, ry = query2lists(query)
-        myplot(rx,ry, label=c, title=title, xlabel=xlabel, ylabel=ylabel)
-    show()
 
-multi_graph("mahout_tfidf", "documents/1000", "dimensions/1000", ["minDF=10", "minDF=60","minDF=110","minDF=160"], title="Mahout Documents vs Terms")
-exit()
+# multi_graph("mahout_tfidf", "documents/1000", "dimensions/1000", ["minDF=10", "minDF=60","minDF=110","minDF=160"], title="Mahout Documents vs Terms")
+# exit()
 
 # multi_graph("mahout_tfidf", "documents/1000", "time/1000", ["minDF=10", "minDF=60","minDF=110","minDF=160"], ylabel='time (sec)', title="Mahout Documents vs Time")
 # exit()
@@ -52,23 +37,36 @@ exit()
 # multi_graph("mahout_tfidf", "input_size/1048576", "output_size/1048576", ["minDF=10", "minDF=60","minDF=110","minDF=160"], xlabel='input MB', ylabel='output MB', title="Mahout Input vs Output size")
 # exit()
 
-# multi_graph("mahout_kmeans_text", "documents/1000", "time/1000", ["k=5", "k=10", "k=15", "k=20"], groupBy="documents", title="Documents vs Time")
+# multi_graph("mahout_kmeans_text", "documents/1000", "time/1000", ["k=5", "k=15", "k=15", "k=20"], groupBy="documents", title="Documents vs Time")
 # exit()
 
 
-# multi_graph("mahout_kmeans_text", "input_size/1048576", "time", ["k=5", "k=10", "k=15", "k=20"], groupBy="documents")
+# multi_graph("mahout_kmeans_text", "input_size/1048576", "time", ["k=5", "k=15", "k=15", "k=20"], groupBy="documents")
 # exit()
 
-# multi_graph("spark_kmeans_text", "input_size/1048576", "time/1000", ["k=5", "k=10", "k=15", "k=20"], groupBy="documents", title="Documents vs Time")
-# exit()
+multi_graph("spark_kmeans_text", "input_size/1048576", "time/1000", ["k=5 and minDF=10", "k=10 and minDF=10", "k=15 and minDF=10", "k=20 and minDF=10"], groupBy="documents", title="Documents vs Time")
+show()
+exit()
 
 #spark tfidf minDF vs output size
 # multi_graph("spark_tfidf", "documents/1000", "time/1000", ["minDF=10", "minDF=60", "minDF=110", "minDF=160"],  title="Documents vs Time", ylabel="time (sec)")
 # exit()
 #
-# #spark tfidf minDF vs output size
-# multi_graph("spark_tfidf", "documents/1000", "output_size/1048576", ["minDF=10", "minDF=60", "minDF=110", "minDF=160"],  title="Documents vs Time", ylabel="output_size (MB)")
+
+# #spark kmeans impact of minDF on time
+# multi_graph("spark_kmeans_text", "documents/1000", "time/1000", ["minDF=10 and k=15", "minDF=60 and k=15", "minDF=110 and k=15", "minDF=160 and k=15"],  title="Documents vs Time", ylabel="output_size (MB)")
+# show()
 # exit()
+
+# #spark tfidf impact of minDF on output size
+# multi_graph("spark_tfidf", "documents/1000", "output_size/1048576", ["minDF=10 ", "minDF=60 ", "minDF=110", "minDF=160"],  title="Documents vs Time", ylabel="output size (MB)")
+# show()
+# exit()
+
+#mahout tfidf impact of minDF on output size
+multi_graph("mahout_tfidf", "documents/1000", "output_size/1048576", ["minDF=10 ", "minDF=60 ", "minDF=110", "minDF=160"],  title="Documents vs Time", ylabel="output size (MB)")
+show()
+exit()
 
 #mahout vs spark tfidf
 figure()
@@ -212,10 +210,10 @@ query_spark = query.format(minDF,k,"spark")
 docs, times = query2lists(query_spark)
 times = [ float(t)/1000 for t in times]
 myplot(docs, times,'o-', label="k=5", title="spark K-Means", xlabel="#docs", ylabel="time(sec)")
-k=10;
+k=15;
 docs, times = query2lists(query.format(minDF,k,"spark"))
 times = [ float(t)/1000 for t in times]
-myplot(docs, times,'o-', label="spark k=10")
+myplot(docs, times,'o-', label="spark k=15")
 k=15;
 docs, times = query2lists(query.format(minDF,k,"spark"))
 times = [ float(t)/1000 for t in times]
@@ -234,10 +232,10 @@ query_mahout = query.format(minDF,k,"mahout")
 docs, times = query2lists(query_mahout)
 times = [ float(t)/1000 for t in times]
 myplot(docs, times,'o-', label="k=5", title="mahout K-Means", xlabel="#docs", ylabel="time(sec)")
-k=10;
+k=15;
 docs, times = query2lists(query.format(minDF,k,"mahout"))
 times = [ float(t)/1000 for t in times]
-myplot(docs, times,'o-', label="mahout k=10")
+myplot(docs, times,'o-', label="mahout k=15")
 k=15;
 docs, times = query2lists(query.format(minDF,k,"mahout"))
 times = [ float(t)/1000 for t in times]
