@@ -36,6 +36,11 @@ def query2lists(query):
 
     return tuple(rv)
 
+def take_single(query):
+    rows = c.execute(query)
+    for r in rows:
+        return r
+
 
 def myplot(*args, **kwargs):
     if "title" in kwargs:
@@ -55,6 +60,10 @@ def myplot(*args, **kwargs):
     # plt.grid(which='minor', alpha=0.2)
     plt.plot(*args, **kwargs)
     plt.legend(loc = 'upper left')
+
+def plot_from_query(query, **kwargs):
+    x, y = query2lists(query)
+    myplot(x, y, **kwargs)
 
 def multi_graph(table, x, y, cond_list, groupBy="", **kwargs):
     if kwargs['title'] is None:
