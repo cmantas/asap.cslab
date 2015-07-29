@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure, show
 import numpy as np
 
-conn = sqlite3.connect('../results.db')
+conn = sqlite3.connect('../results.db_imr')
 c = conn.cursor()
 # print plt.style.available
 plt.style.use('fivethirtyeight')

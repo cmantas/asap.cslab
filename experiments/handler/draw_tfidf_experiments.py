@@ -6,17 +6,17 @@ from tools import *
 
 mindDF_list = ["minDF=10", "minDF=60","minDF=110","minDF=160"]
 
-multi_graph("mahout_tfidf", "documents/1000", "dimensions/1000", mindDF_list, title="Mahout Documents vs Terms")
-multi_graph("weka_tfidf", "avg(documents/1000)", "dimensions/1000", mindDF_list, title="weka Documents vs Terms", groupBy="documents")
+# multi_graph("mahout_tfidf", "documents/1000", "dimensions/1000", mindDF_list, title="Mahout Documents vs Terms")
+# multi_graph("weka_tfidf", "avg(documents/1000)", "dimensions/1000", mindDF_list, title="weka Documents vs Terms", groupBy="documents")
+# # exit()
+#
+# multi_graph("mahout_tfidf", "documents/1000", "time/1000", mindDF_list, ylabel='time (sec)', title="Mahout Documents vs Time")
+multi_graph("weka_tfidf", "avg(documents/1000)", "time/1000", mindDF_list, ylabel='time (sec)', groupBy="documents",  title="Weka Documents vs Time")
 # exit()
 
-multi_graph("mahout_tfidf", "documents/1000", "time/1000", mindDF_list, ylabel='time (sec)', title="Mahout Documents vs Time")
-multi_graph("weka_tfidf", "documents/1000", "time/1000", mindDF_list, ylabel='time (sec)', title="Weka Documents vs Time")
-# exit()
-
-multi_graph("mahout_tfidf", "input_size/1048576", "output_size/1048576", ["minDF=10", "minDF=60","minDF=110","minDF=160"], xlabel='input MB', ylabel='output MB', title="Mahout Input vs Output size")
+# multi_graph("mahout_tfidf", "input_size/1048576", "output_size/1048576", ["minDF=10", "minDF=60","minDF=110","minDF=160"], xlabel='input MB', ylabel='output MB', title="Mahout Input vs Output size")
 show()
-exit()
+
 
 # Mahout Kmeans
 list_k = cond_producer("minDF=10 and k", [5,10,15,20])
