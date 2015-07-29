@@ -93,3 +93,32 @@ def multi_graph_query(query, cond_list, **kwargs):
 
 def cond_producer(a, list):
     return [a+"={}".format(i) for i in list]
+
+
+def join_minDF_query_docs(table, tfidf_table, k, minDf, where_extra=""):
+    if not where_extra == "":
+        where_extra = " and "+where_extra
+
+    query="""
+select avg({0}.documents/1000), {0}.time/1000 from
+   {0} inner join {1} on
+   {1}.documents={0}.documents and {1}.dimensions={0}.dimensions and k={2} and {1}.minDF={3} {4}
+   GROUP BY {0}.documents"""
+    return query.format(table, tfidf_table, k, minDf, where_extra)
+
+
+def draw_single_kmeans(engine, k, minDF, where_extra="", **kwargs):
+    tfidf_table = engine +"_tfidf"
+    kmeans_table = engine +"_kmeans_text"
+    query = join_minDF_query_docs(kmeans_table, tfidf_table, k, minDF, where_extra=where_extra)
+    kwargs["label"] = "{}, k={}, minDF={}".format(engine, k, minDF)
+    plot_from_query(query, **kwargs)
+
+
+def join_query(**kwargs):
+    query="""
+    select {table}.{x}/1000, {table}.time/1000 from
+       {table} inner join {tfidf_table} on
+       {tfidf_table}.documents={table}.documents and {tfidf_table}.dimensions={table}.dimensions and k={k} and {tfidf_table}.minDF={minDF} {where}
+       """
+    return query.format(**kwargs)
