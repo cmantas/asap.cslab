@@ -5,11 +5,18 @@ from tools import *
 
 
 mindDF_list = ["minDF=10", "minDF=60","minDF=110","minDF=160"]
-#
-# multi_graph("mahout_tfidf", "documents/1000", "dimensions/1000", mindDF_list, title="Mahout Documents vs Terms", where="documents<5500")
+
+# Docs vs Terms
+# multi_graph("mahout_tfidf", "documents/1000", "dimensions/1000", mindDF_list, title="Mahout Documents vs Terms", where="documents<60400")
 # multi_graph("weka_tfidf", "avg(documents/1000)", "dimensions/1000", mindDF_list, title="weka Documents vs Terms", groupBy="documents")
+#
+
+# Stemming vs not: Docs vs terms Mahout and Weka
+# plot_from_query("select documents/1000,dimensions/1000 from mahout_tfidf where documents<60400 and minDF=10",
+#                 label="WEKA (stemmed)", title="Docs vs Terms: Effect of stemming", ylabel="# terms/1000", xlabel="documents/1000")
+# plot_from_query("select avg(documents/1000),dimensions/1000 from weka_tfidf where minDF=10 group by documents", label="Mahout (not stemmed)")
 # show()
-# exit()
+
 # # exit()
 # #
 # # multi_graph("mahout_tfidf", "documents/1000", "time/1000", mindDF_list, ylabel='time (sec)', title="Mahout Documents vs Time")
@@ -20,14 +27,18 @@ mindDF_list = ["minDF=10", "minDF=60","minDF=110","minDF=160"]
 #
 #
 # # Mahout Kmeans
-# list_k = cond_producer("minDF=10 and k", [5,10,15,20])
+list_k = cond_producer("minDF=10 and k", [5,10,15,20])
 
+#mahout tfidf impact of minDF on output size
+multi_graph("mahout_tfidf", "documents/1000", "output_size/1048576", mindDF_list,  title="Mahout TF/IDF Documents vs Time", ylabel="output size (MB)")
 
-multi_graph("mahout_tfidf", "input_size/1048576", "output_size/1048576", mindDF_list, xlabel='input MB', ylabel='output MB', title="Mahout Input vs Output size")
-multi_graph("weka_tfidf", "input_size/1048576", "output_size/1048576", mindDF_list,  groupBy="documents", title="Weka Input vs Output size")
-multi_graph("spark_tfidf", "input_size/1048576", "output_size/1048576", mindDF_list,  groupBy="documents",title="Spark Input vs Output size")
+multi_graph("mahout_tfidf", "input_size/1048576", "output_size/1048576", mindDF_list,  title="Mahout TF/IDF Documents vs Time", ylabel="output size (MB)", xlabel="output size (MB)")
 show()
-exit()
+
+# multi_graph("weka_tfidf", "input_size/1048576", "output_size/1048576", mindDF_list,  groupBy="documents", title="Weka Input vs Output size")
+# multi_graph("spark_tfidf", "input_size/1048576", "output_size/1048576", mindDF_list,  groupBy="documents",title="Spark Input vs Output size")
+show()
+# exit()
 
 
 
@@ -58,15 +69,14 @@ multi_graph("spark_kmeans_text", "documents/1000", "time/1000", ["minDF=10 and k
 # show()
 # exit()
 
-#mahout tfidf impact of minDF on output size
-multi_graph("mahout_tfidf", "documents/1000", "output_size/1048576", list_k,  title="Mahout TF/IDF Documents vs Time", ylabel="output size (MB)")
-show()
-exit()
+
 
 #mahout vs spark tfidf
 figure()
-plot_from_query("select documents/1000 ,avg(time/1000) from mahout_tfidf group by documents ")
-plot_from_query("select documents/1000 ,avg(time/1000) from spark_tfidf group by documents ")
+plot_from_query("select documents/1000 ,avg(time/1000) from weka_tfidf  where minDF=10 group by documents ", label='weka')
+plot_from_query("select documents/1000 ,avg(time/1000) from mahout_tfidf where minDF=10 group by documents ", title="TF/IDF: WEKA, Mahout, Spark (minDF=10)", ylabel='time (sec)', xlabel='documents/1000', label="mahout")
+plot_from_query("select documents/1000 ,avg(time/1000) from spark_tfidf  where minDF=10 group by documents ", label='spark')
+
 
 show()
 exit()

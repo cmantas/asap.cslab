@@ -33,9 +33,8 @@ plot_from_query("select documents/1000, time/1000 from mahout_tfidf WHERE minDF=
 plot_from_query("select documents/1000, time/1000 from weka_tfidf WHERE minDF=10", label="Mahout, minDF=10")
 
 figure()
-plot_from_query("select documents/1000, dimensions/1000 from weka_tfidf where minDF=10", title="doc freq")
-plot_from_query("select documents/1000, dimensions/1000 from mahout_tfidf where minDF=10")
-
+plot_from_query("select documents/1000, dimensions/1000 from weka_tfidf where minDF=10", title="doc freq", label="weka")
+plot_from_query("select documents/1000, dimensions/1000 from mahout_tfidf where minDF=10", label="mahout")
 
 show()
 
