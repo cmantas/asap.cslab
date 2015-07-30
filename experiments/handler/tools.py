@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure, show
 import numpy as np
 
-conn = sqlite3.connect('../results.db_imr')
+conn = sqlite3.connect('../results.db')
 c = conn.cursor()
 # print plt.style.available
 plt.style.use('fivethirtyeight')
@@ -65,8 +65,9 @@ def plot_from_query(query, **kwargs):
     x, y = query2lists(query)
     myplot(x, y, **kwargs)
 
-def multi_graph(table, x, y, cond_list, groupBy="", **kwargs):
-    if kwargs['title'] is None:
+def multi_graph(table, x, y, cond_list, groupBy="", where="", **kwargs):
+
+    if 'title' not in kwargs:
         kwargs['title'] = x+" vs "+y
     if 'xlabel' not in kwargs:
         kwargs['xlabel'] = x
@@ -74,13 +75,17 @@ def multi_graph(table, x, y, cond_list, groupBy="", **kwargs):
         kwargs['ylabel'] = y
     if groupBy != "":
         groupBy = "group by "+groupBy
+    if where !="":
+        where = where+" and "
+
+
 
     # for c in cond_list:
     #     query = "select {0} from {1} where {2} {3}".format(x+','+y, table, c, groupBy)
     #     rx, ry = query2lists(query)
     #     myplot(rx,ry, label=c, title=title, xlabel=xlabel, ylabel=ylabel)
     # show()
-    query = "select {0} from {1} where ".format(x+","+ y, table) + "{0} " + groupBy
+    query = "select {0} from {1} where {2}".format(x+","+ y, table, where) + "{0} " + groupBy
     multi_graph_query(query, cond_list, **kwargs)
 
 def multi_graph_query(query, cond_list, **kwargs):
@@ -107,18 +112,29 @@ select avg({0}.documents/1000), {0}.time/1000 from
     return query.format(table, tfidf_table, k, minDf, where_extra)
 
 
-def draw_single_kmeans(engine, k, minDF, where_extra="", **kwargs):
+def draw_single_kmeans(engine, k, minDF, where_extra="", hide_minDF=False, **kwargs):
     tfidf_table = engine +"_tfidf"
     kmeans_table = engine +"_kmeans_text"
     query = join_minDF_query_docs(kmeans_table, tfidf_table, k, minDF, where_extra=where_extra)
-    kwargs["label"] = "{}, k={}, minDF={}".format(engine, k, minDF)
+    if not hide_minDF:
+        kwargs["label"] = "{}, k={}, minDF={}".format(engine, k, minDF)
+    else:
+         kwargs["label"] = "{}, k={}".format(engine, k)
+    kwargs["xlabel"] = "documents/1000"
+    kwargs["ylabel"] = "time (sec)"
     plot_from_query(query, **kwargs)
 
 
-def join_query(**kwargs):
+def join_query(in_dict, where=""):
     query="""
-    select {table}.{x}/1000, {table}.time/1000 from
+    select {table}.documents/1000, {table}.time/1000 from
        {table} inner join {tfidf_table} on
-       {tfidf_table}.documents={table}.documents and {tfidf_table}.dimensions={table}.dimensions and k={k} and {tfidf_table}.minDF={minDF} {where}
+       {tfidf_table}.documents={table}.documents and {tfidf_table}.dimensions={table}.dimensions and {tfidf_table}.minDF={minDF} {where}
+
        """
-    return query.format(**kwargs)
+    in_dict['where']=where
+    return query.format(**in_dict)
+
+
+
+

@@ -5,24 +5,29 @@ from tools import *
 
 
 mindDF_list = ["minDF=10", "minDF=60","minDF=110","minDF=160"]
-
-# multi_graph("mahout_tfidf", "documents/1000", "dimensions/1000", mindDF_list, title="Mahout Documents vs Terms")
+#
+# multi_graph("mahout_tfidf", "documents/1000", "dimensions/1000", mindDF_list, title="Mahout Documents vs Terms", where="documents<5500")
 # multi_graph("weka_tfidf", "avg(documents/1000)", "dimensions/1000", mindDF_list, title="weka Documents vs Terms", groupBy="documents")
+# show()
+# exit()
+# # exit()
+# #
+# # multi_graph("mahout_tfidf", "documents/1000", "time/1000", mindDF_list, ylabel='time (sec)', title="Mahout Documents vs Time")
+# multi_graph("weka_tfidf", "avg(documents/1000)", "time/1000", mindDF_list, ylabel='time (sec)', groupBy="documents",  title="Weka Documents vs Time")
 # # exit()
 #
-# multi_graph("mahout_tfidf", "documents/1000", "time/1000", mindDF_list, ylabel='time (sec)', title="Mahout Documents vs Time")
-multi_graph("weka_tfidf", "avg(documents/1000)", "time/1000", mindDF_list, ylabel='time (sec)', groupBy="documents",  title="Weka Documents vs Time")
-# exit()
+#
+#
+#
+# # Mahout Kmeans
+# list_k = cond_producer("minDF=10 and k", [5,10,15,20])
 
-# multi_graph("mahout_tfidf", "input_size/1048576", "output_size/1048576", ["minDF=10", "minDF=60","minDF=110","minDF=160"], xlabel='input MB', ylabel='output MB', title="Mahout Input vs Output size")
+
+multi_graph("mahout_tfidf", "input_size/1048576", "output_size/1048576", mindDF_list, xlabel='input MB', ylabel='output MB', title="Mahout Input vs Output size")
+multi_graph("weka_tfidf", "input_size/1048576", "output_size/1048576", mindDF_list,  groupBy="documents", title="Weka Input vs Output size")
+multi_graph("spark_tfidf", "input_size/1048576", "output_size/1048576", mindDF_list,  groupBy="documents",title="Spark Input vs Output size")
 show()
-
-
-# Mahout Kmeans
-list_k = cond_producer("minDF=10 and k", [5,10,15,20])
-
-
-
+exit()
 
 
 
@@ -36,7 +41,7 @@ plot_from_query("select documents/1000,time/1000 from spark_tfidf where minDF=11
 plot_from_query("select documents/1000,time/1000 from spark_tfidf where minDF=160 group by documents", label="minDF=160")
 show()
 
-exit()
+# exit()
 
 
 # #spark kmeans impact of minDF on time
@@ -60,11 +65,14 @@ exit()
 
 #mahout vs spark tfidf
 figure()
-rx, ry = query2lists("select documents/1000 ,avg(time/1000) from mahout_tfidf group by documents ")
-rx, ry = query2lists("select documents/1000 ,avg(time/1000) from spark_tfidf group by documents ")
-myplot(rx,ry)
+plot_from_query("select documents/1000 ,avg(time/1000) from mahout_tfidf group by documents ")
+plot_from_query("select documents/1000 ,avg(time/1000) from spark_tfidf group by documents ")
+
 show()
 exit()
+
+
+## OUTPUT
 
 
 #
