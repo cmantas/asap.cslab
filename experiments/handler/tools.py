@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 __author__ = 'cmantas'
 
-#!/usr/bin/env python
-__author__ = 'cmantas'
+
 import sqlite3
 import matplotlib.pyplot as plt
 import argparse
