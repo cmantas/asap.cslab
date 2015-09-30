@@ -3,6 +3,9 @@ from cement.core import foundation, controller
 
 from lib import get_backend, set_backend
 from monitor import collect_metrics
+from pprint import  PrettyPrinter
+
+pprint = PrettyPrinter(indent=2).pprint
 
 backend = get_backend()
 
@@ -71,7 +74,6 @@ class MyAppBaseController(controller.CementBaseController):
         self.app.log.info("Showing reporting back-end")
         print backend
 
-
     @controller.expose(help="store the required params", aliases=['r'])
     def report(self):
         experiment = self.app.pargs.experiment_name
@@ -83,20 +85,23 @@ class MyAppBaseController(controller.CementBaseController):
             # if collect-metrics has been given, the collect the ganglia metrics
             if self.app.pargs.collect_metrics:
                 ganglia_metrics = collect_metrics()
-                metrics['ganglia_metrics']="\"{0}\"".format(ganglia_metrics)
+                # metrics['ganglia_metrics']=ganglia_metrics
+                metrics.update(ganglia_metrics)
             # report the metrics to the backend
             backend.report_dict(experiment, metrics)
 
     @controller.expose(help="execute a query to the backend and prints the results")
     def query(self):
-
         if self.app.pargs.dict:
-            res = backend.dict_query(self.app.pargs.query)
+            res = backend.dict_query(self.app.pargs.experiment_name, self.app.pargs.query)
+            pprint(res)
         else:
-            res = backend.query(self.app.pargs.query)
-        # print the output
-        for r in  res:
-            print r
+            res = backend.query(self.app.pargs.experiment_name, self.app.pargs.query)
+            for r in res:
+                print r
+
+
+
 
     @controller.expose(help="execute a query to the backend and plot the results")
     def plot_query(self):
@@ -104,7 +109,7 @@ class MyAppBaseController(controller.CementBaseController):
 
         if pparams is not None: pparams = my_split(self.app.pargs.plot_params)
         else: pparams = {}
-        backend.plot_query(self.app.pargs.query, **pparams)
+        backend.plot_query(self.app.pargs.experiment_name, self.app.pargs.query, **pparams)
 
 
 class MyApp(foundation.CementApp):

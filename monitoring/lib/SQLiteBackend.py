@@ -1,28 +1,23 @@
 __author__ = 'cmantas'
 from sqlite3 import connect
-from json import dumps, dump, load
-from os.path import isfile
 from plot_tools import myplot, show
 from ConsoleBackend import ConsoleBackend
-
+import traceback
 
 class SQLiteBackend(ConsoleBackend):
     def __init__(self, sql_file):
         self.file=sql_file
         self.connection = connect(self.file)
         self.cursor = self.connection.cursor()
-
         #aliases
         self.commit= self.connection.commit
         self.execute = self.cursor.execute
 
-    # def analyze_schema(self):
-    #     # for row in sqll.cursor.execute("PRAGMA table_info([test]);"):
-    #     # print row
-    #     return
-
     def report(self, experiment_name, **kwargs):
-        print "reporting to sqlite"
+
+        # make metrics timeline a string
+        if "metrics_timeline" in kwargs:
+            kwargs['metrics_timeline'] = '"' + str(kwargs['metrics_timeline'] )+'"'
         key_string="( "
         value_string="( "
         for k, v in kwargs.iteritems():
@@ -38,11 +33,15 @@ class SQLiteBackend(ConsoleBackend):
         except:
             print "Query failed!"
             print "query was: "+query
+            print(traceback.format_exc())
 
-    def query(self, query, tupples=True):
+
+    def query(self, experiment, query, tuples=True):
+
+        # ignoring experiment name because it is included in the query
         rows = self.execute(query)
         # return rows as tupple(list) rather than
-        if tupples: return tuple(rows)
+        if tuples: return tuple(rows)
         else: return rows
 
 
@@ -54,8 +53,8 @@ class SQLiteBackend(ConsoleBackend):
             d[col[0]] = row[idx]
         return d
 
-    def plot_query(self, query, **kwargs):
-        rows = self.query(query)
+    def plot_query(self, experiment, query, **kwargs):
+        rows = self.query(experiment, query)
 
         # transpose the rows
         rows_transposed = zip(*rows)
@@ -65,9 +64,9 @@ class SQLiteBackend(ConsoleBackend):
         show()
         return rows_transposed
 
-    def dict_query(self, query):
+    def dict_query(self, experiment, query):
         # a factory from rows-->dict
-        rows =tuple(self.query(query))
+        rows =tuple(self.query(experiment, query))
         # r= rows.fetchone()
         # return self.dict_factory(self.cursor, rows[0])
         return map(lambda t:self.dict_factory(self.cursor, t), rows)

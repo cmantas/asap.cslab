@@ -1,7 +1,11 @@
 __author__ = 'cmantas'
-from SQLiteBackend import *
+from ConsoleBackend import ConsoleBackend
+from SQLiteBackend import SQLiteBackend
+from MongoBackend import MongoBackend
 from os.path import abspath
 REPORT_CONFIG_FILE='/tmp/reporter_config.json'
+from os.path import isfile
+from json import dump, load
 
 global reporter_backend
 reporter_backend = None
@@ -47,6 +51,10 @@ def load_backend_conf():
         reporter_backend = SQLiteBackend(file)
     elif backend_name.lower()=='console' or backend_name.lower()=='consolebackend':
         reporter_backend = ConsoleBackend()
+    elif backend_name.lower().startswith("mongo"):
+        port =conf.get('port')
+        host = conf.get('host')
+        reporter_backend = MongoBackend(host, port)
     else:
         print 'shit i could not find backend: '+ backend_name
 

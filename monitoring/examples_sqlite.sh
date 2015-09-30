@@ -1,7 +1,10 @@
+# sudo pip install pymongo xmltodict cement 
+# sudo apt-get install sqlite3 mongodb
+
 # remove previous db file
 rm my_metrics.db &>/dev/null
 
-create=" CREATE TABLE experiment1 (id INTEGER PRIMARY KEY AUTOINCREMENT, m1 INTEGER, m2 INTEGER, date DATE DEFAULT (datetime('now','localtime')), ganglia_metrics TEXT);"
+create=" CREATE TABLE experiment1 (id INTEGER PRIMARY KEY AUTOINCREMENT, time INTEGER, m1 INTEGER, m2 INTEGER, metrics_timeline STRING, date DATE DEFAULT (datetime('now','localtime')));"
 
 # create the database file
 echo $create | sqlite3 my_metrics.db
@@ -39,5 +42,5 @@ echo Reporting with monitoring data
 
 #query for those monitoring metrics
 echo "Query for metrics:"
-./reporter_cli.py query -q  "select ganglia_metrics from experiment1 where m1=0"
+./reporter_cli.py query -q  "select metrics_timeline from experiment1 where m1=0"
 

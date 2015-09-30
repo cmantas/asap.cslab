@@ -92,14 +92,17 @@ def print_out(*sigargs):
     :return:
     """
     global start_time
-    time_delta = time() - start_time
+    end_time = time()
+    time_delta = end_time - start_time
 
-    output = {'metrics_timeline': metrics_timeline, 'time': time_delta}
+    output = {'metrics_timeline': metrics_timeline, 'time':time_delta }
+    # output['start_time']= start_time
+    # output['end_time'] = end_time
 
     if metrics_file is not None:
         with open(metrics_file, "w+") as f:
             f.write(dumps(output, indent=1))
-        print 'written on ', metrics_file, '\n'
+        # print 'written on ', metrics_file, '\n'
     else:
         # console output
         print dumps(output, indent=1)
@@ -161,7 +164,7 @@ if __name__ == "__main__":
         metrics_file = args.file
     elif args.console:
         metrics_file = None
-    print 'Using output file: ', metrics_file
+    # print 'Using output file: ', metrics_file
 
     # the ganglia endpoint
     endpoint = (args.endpoint_host, args.endpoint_port)
