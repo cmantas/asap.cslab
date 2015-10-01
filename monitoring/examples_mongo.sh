@@ -18,16 +18,15 @@ mongo metrics --eval "db.experiment1.drop()" &>/dev/null
 # for mongo be sure to use ' quotes for operators containing $
 # also always use quotes(") for attribute names (here "m1")
 echo === "Querying for m2<4" 
-./reporter_cli.py query -e experiment1 -q  '{"m1":{"$gt":"1"}}, {"_id":0}'
+./reporter_cli.py query -e experiment1 -q  '{"m1":{"$gt":1}}, {"_id":0}'
 
 # Query and get the data as dict
 echo === "Querying for m2<4:"
-./reporter_cli.py query -e experiment1 -q  '{"m1":{"$gt":"1"}}' -dict
+./reporter_cli.py query -e experiment1 -q  '{"m1":{"$gt":1}}' -dict
 
 # Plot the data you stored
 echo === "Plotting \n"
-./reporter_cli.py plot-query -e experiment1 -q  '{}, {"m1":1, "m2":1,"_id":0}' -pp xlabel=bull-x title='my title' ylabel=foos
-
+./reporter_cli.py plot-query -e experiment1 -q  '{}, {"m1":1, "m2":1,"_id":0}' -pp xlabel=bull-x title='my title' ylabel=foos 
 # start the monitoring process
 echo === Starting Monitoring
 ./monitor.py -eh  192.168.5.242 &
@@ -40,5 +39,5 @@ echo === Reporting with monitoring data
 
 #query for those monitoring metrics
 echo === "Query for metrics:"
-./reporter_cli.py query -e experiment1 -q  '{"m1":"0"}, {"_id":0}' -dic
+./reporter_cli.py query -e experiment1 -q  '{"m1":0}, {"_id":0}' -dic
 

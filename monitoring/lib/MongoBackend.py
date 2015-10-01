@@ -3,6 +3,7 @@ import datetime
 from ConsoleBackend import ConsoleBackend
 from lib.plot_tools import myplot, show
 from pymongo import MongoClient
+from cgAutoCast import cast_dict
 
 
 class MongoBackend(ConsoleBackend):
@@ -43,9 +44,11 @@ class MongoBackend(ConsoleBackend):
         return self.find(experiment, selection, projection)
 
     def report(self, experiment_name, **kwargs):
+        # cast the dict values into their respective types
+        casted = cast_dict(kwargs)
         # using the experiment name as a collection
         metrics = eval("self.db.{0}".format(experiment_name))
-        r = metrics.insert_one(kwargs)
+        r = metrics.insert_one(casted)
 
     def find(self, experiment, selection={}, projection=None, tuples=True):
         collection = self._get_collection(experiment)
