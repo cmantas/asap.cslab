@@ -14,7 +14,8 @@ import os, sys, time
 if __name__ == "__main__":
     args = sys.argv
     path = args[1]
-
+    vector_size = int(args[2])
+    min_df = int(args[3])
     docs = []
     files = os.listdir(path)
 
@@ -23,7 +24,7 @@ if __name__ == "__main__":
             docs.append( [ token for token in inDoc.read().split()] )
 
     start = time.time()
-    model = gensim.models.Word2Vec(docs)
+    model = gensim.models.Word2Vec(docs, size=vector_size, min_count=min_df)
 
     execTime = time.time() - start
     operator = "Word2Vec_Gensim"
@@ -31,4 +32,4 @@ if __name__ == "__main__":
 
     output = dict({"operator": operator, "exec_time": execTime, "size": size})
 
-    print output
+    print "\n\nWord2Vec Gensim - Finished\n\n"

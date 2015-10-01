@@ -15,7 +15,7 @@ class ModelTrainer():
     """
     LDA(Latent Dirichlet Allocation) training
     """
-    def train(self, number_of_topics, input_docs=None):
+    def train(self, number_of_topics, iterations, input_docs=None):
         if input_docs:
             data = input_docs
             if not os.path.isfile(data):
@@ -43,7 +43,8 @@ class ModelTrainer():
 
         self.model = models.LdaModel(num_topics=number_of_topics,
                                      corpus=self.corpus,
-                                     id2word=self.dictionary)
+                                     id2word=self.dictionary,
+				     iterations=iterations)
 
     """
     Saves the model and it's
@@ -64,15 +65,16 @@ class ModelTrainer():
 if __name__ == "__main__":
     path = sys.argv[1]
     k = int(sys.argv[2])
+    iterations = int(sys.argv[3])
     model = ModelTrainer(input_documents = path)
     print "Start training..."
     start = time.time()
-    model.train(k)
+    model.train(k, iterations=iterations)
     
     operator = "LDA_Gensim"
     execTime = time.time() - start
     n = len(os.listdir(path))
 
     out = dict({"operator": operator, "exec_time": execTime, "k": k, "size": n})
-
+    print "\n\n LDA Gensim Completed\n\n"
     print out

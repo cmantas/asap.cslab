@@ -24,7 +24,7 @@ sqlite3 results.db "CREATE TABLE IF NOT EXISTS spark_tfidf
 
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS spark_kmeans_text 
 (id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, k INTEGER, dimensions INTEGER, input_size INTEGER,
-	output_size INTEGER, time INTEGER, metrics TEXT, date DATE DEFAULT (datetime('now','localtime')));"
+output_size INTEGER, time INTEGER, metrics TEXT, date DATE DEFAULT (datetime('now','localtime')), minDF INTEGER);"
 
 sqlite3 results.db "CREATE TABLE IF NOT EXISTS spark2mahout
 (id INTEGER PRIMARY KEY AUTOINCREMENT, documents INTEGER, dimensions INTEGER, time INTEGER, input_size INTEGER, 
@@ -80,8 +80,8 @@ spark_kmeans(){
 	#DEBUG show any exceptions but igore them
 	cat spark_kmeans.out | grep Exception\
 	
-	sqlite3 results.db "INSERT INTO spark_kmeans_text(documents, k, dimensions, time, input_size, output_size, metrics)
-			                    VALUES( $docs,  $k, $dimensions,  $time, $input_size, $output_size, '$metrics');"
+	sqlite3 results.db "INSERT INTO spark_kmeans_text(documents, k, dimensions, time, input_size, output_size, metrics, minDF)
+			                    VALUES( $docs,  $k, $dimensions,  $time, $input_size, $output_size, '$metrics', $minDF);"
 	
 }
 
@@ -138,21 +138,16 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 	check dir2sequence.out
 
 	
-	for (( minDF=max_minDF; minDF>=min_minDF; minDF-=minDF_step)); do
-
+	#for (( minDF=max_minDF; minDF>=min_minDF; minDF-=minDF_step)); do
+	minDF=10
 		spark_tfidf $docs $minDF
 	
-		spark2mahout $docs $dimensions
-		spark2arff $docs  $dimensions
+		#spark2mahout $docs $dimensions
+		#spark2arff $docs  $dimensions
 		hdfs dfs -rm -r "/tmp/moved*" &>/dev/null
 
 		for((k=min_k; k<=max_k; k+=k_step)); do
-			spark_kmeans $k $max_iterations $docs $dimensions
+			spark_kmeans 
 		done
-	done
+	#done
 done
-
-exit
-	
-
-rm -rf tmp 2>/dev/null
