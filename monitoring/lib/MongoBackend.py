@@ -3,7 +3,29 @@ import datetime
 from ConsoleBackend import ConsoleBackend
 from lib.plot_tools import myplot, show
 from pymongo import MongoClient
-from cgAutoCast import cast_dict
+from ast import literal_eval
+
+
+def mycast(a):
+    """
+    given a string, it returns its casted value to the correct type or the string itself if it can't be evaluated
+    :param a: the input string
+    :return: the evaluated 'casted' result
+    """
+    try:
+        return literal_eval(a)
+    except:
+        return a
+
+
+def cast_dict(a):
+    """
+    given a dictionary of string-->string, it creates another dictionary with the same keys and the casted values of
+    the original as its values values
+    :param a: a dictionary of string-->string
+    :return:
+    """
+    return dict(map(lambda (k, v): (k,mycast(v)), a.iteritems()))
 
 
 class MongoBackend(ConsoleBackend):
@@ -72,44 +94,3 @@ class MongoBackend(ConsoleBackend):
 
 
 
-
-# post = {"author": "Mike",
-#          "text": "My first blog post!",
-#          "tags": ["mongodb", "python", "pymongo"],
-#          "date": datetime.datetime.utcnow()}
-#
-#
-#
-# mb = MongoBackend()
-#
-# mb.report("experiment1", ass=1, my=2)
-#
-# r = mb.find("experiment1")
-#
-# for i in r:
-#     print i
-#
-# # mb.find("experiment1",  projection={"_id":1, "ass":1})
-#
-# # post_id = posts.insert_one(post).inserted_id
-#
-# # print post_id
-#
-# # collection names
-# # db.collection_names(include_system_collections=False)
-#
-# # docs = posts.find({"author":"Mike" })
-# #
-# # for t in docs:
-# #     print t
-#
-# metric = {"date":datetime.datetime.utcnow(),
-#           "metrics":[{"cpu":1, "mem":2}, {"cpu":2, "mem":4}]}
-#
-# # io = collection.insert_one(metric)
-# #
-# #
-# # agg = db.test_collection.aggregate( [{"$select":{"id":"560942ab865aaa1a26d0bf36"}}, {"$project":{"cpu": '$metrics.cpu'} }])
-# #
-# # for a in  agg:
-# #     print a
