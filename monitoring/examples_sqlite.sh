@@ -1,5 +1,4 @@
-# sudo pip install pymongo xmltodict cement 
-# sudo apt-get install sqlite3 mongodb
+# Be sure to check the requirements
 
 # remove previous db file
 rm my_metrics.db &>/dev/null

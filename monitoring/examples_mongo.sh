@@ -1,5 +1,4 @@
-# sudo pip install pymongo xmltodict cement 
-# sudo apt-get install sqlite3 mongodb
+# Be sure to check the requirements
 
 # drop any previous data
 mongo metrics --eval "db.experiment1.drop()" &>/dev/null
