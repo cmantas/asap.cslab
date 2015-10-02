@@ -120,17 +120,21 @@ def print_out(*sigargs):
 def collect_metrics():
     # read the pid from the pid file
 
-    with open(pid_file) as f: monitor_pid=int(f.read())
+    try:
+        with open(pid_file) as f:
+            monitor_pid=int(f.read())
+            # send the stop signal to the active monitoring process
+            kill(monitor_pid, SIGTERM)
+    except:
+        print "Could not read the pid file"
 
     try:
-        # send the stop signal to the active monitoring process
-        kill(monitor_pid, SIGTERM)
         # sleep to allow flushing data
         sleep(0.5)
         # collect the saved metrics
         with open(metrics_file) as f:
             metrics = load(f)
-        return metrics
+            return metrics
     except:
         print 'Could not collect the metrics'
     finally:

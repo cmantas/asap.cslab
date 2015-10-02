@@ -15,7 +15,7 @@ def my_split(p):
     splits args based on '=' delim
     :return:
     """
-    if p is None: return None
+    if p is None: return {}
     delim = '='
     def mini_split(t):
         splitted = t.split(delim)
