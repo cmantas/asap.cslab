@@ -8,7 +8,10 @@ from signal import signal, SIGTERM, SIGALRM
 import xmltodict
 from json import dumps, load
 from os import getpid, kill, remove
+from shutil import move
 from lib.tools import mycast
+from os.path import isfile
+from pprint import pprint
 
 # default metrics file
 metrics_file = '/tmp/asap_monitoring_metrics.json'
@@ -90,7 +93,6 @@ def get_summary(endpoint):
     }
 
 
-
 def print_out(*sigargs):
     """
     This prints out the
@@ -106,8 +108,18 @@ def print_out(*sigargs):
     # output['end_time'] = end_time
 
     if metrics_file is not None:
-        with open(metrics_file, "w+") as f:
+        # remove the old metrics file immediately
+        try:remove(metrics_file)
+        except: pass
+
+        # open a temp file and write the metrics there
+        tmp_file= '/tmp/asap_metrics_temp'
+        with open(tmp_file, "w+") as f:
             f.write(dumps(output, indent=1))
+
+        # after write is finished move the tmp file to the output file
+        move(tmp_file, metrics_file)
+
         # print 'written on ', metrics_file, '\n'
     else:
         # console output
@@ -116,6 +128,16 @@ def print_out(*sigargs):
     # we are done, exit
     exit()
 
+
+def wait_for_file(filepath, timeout=3):
+    end_time= time() + timeout
+    #wait
+    while not isfile(filepath) and time()<end_time:
+        sleep(0.1)
+    # if after wait no file then trouble
+    if not isfile(filepath):
+        print "ERROR: waited for monitoring data file, but timed out"
+        exit()
 
 def collect_metrics():
     # read the pid from the pid file
@@ -129,9 +151,10 @@ def collect_metrics():
         print "Could not read the pid file"
 
     try:
-        # sleep to allow flushing data
-        sleep(0.5)
-        # collect the saved metrics
+        # wait for the metrics file to be created (3 secs)
+        wait_for_file(metrics_file)
+
+        # collect the saved metrics from metrics file
         with open(metrics_file) as f:
             metrics = load(f)
             return metrics
@@ -163,7 +186,8 @@ if __name__ == "__main__":
     # if we are just collecting metrics, then do that and exit
     if args.collect_metrics:
         m = collect_metrics()
-        print m
+        if args.console:
+            pprint(m)
         exit()
 
     # delete any old metrics files
