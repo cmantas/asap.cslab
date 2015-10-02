@@ -34,6 +34,10 @@ public class ArffInput implements MyInput{
         while (!done) {
             //find the vector index of this value
             spaceIdx = s.indexOf(" ", valueIdx);
+            
+            //corner-case: empty vector
+            if(spaceIdx==-1) break;
+            
             vectorIndex = Integer.parseInt(s.substring(valueIdx, spaceIdx));
 
             //find the value
