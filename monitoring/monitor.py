@@ -148,7 +148,8 @@ def collect_metrics():
             # send the stop signal to the active monitoring process
             kill(monitor_pid, SIGTERM)
     except:
-        print "Could not read the pid file"
+        #print "Could not read the pid file"
+        pass
 
     try:
         # wait for the metrics file to be created (3 secs)

@@ -6,7 +6,8 @@ import  sqlite3
 try:
     plt.style.use('fivethirtyeight')
 except:
-    print "You could get prettier graphs with matplotlib > 1.4"
+    # print "You could get prettier graphs with matplotlib > 1.4"
+    pass
 
 
 from matplotlib.pyplot import figure, show

@@ -99,9 +99,24 @@ function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 
 }
 
-function monitor
+function monitor	
 {
-	exec ${ASAP_HOME}/monitoring/Monitor.py $@
+	operation=$1
+	shift
+	case $operation in
+		start)
+			exec ${ASAP_HOME}/monitoring/monitor.py & ;;
+		stop)
+			exec ${ASAP_HOME}/monitoring/monitor.py -cm ;;
+		*)
+			echo Please specify start or stop;;
+	esac
+
+}
+
+function report
+{
+	exec ${ASAP_HOME}/monitoring/reporter_cli.py report $@
 }
 
 function help  # Show a list of available opperations
