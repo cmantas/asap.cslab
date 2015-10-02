@@ -27,6 +27,10 @@ function ttime  {
         echo $(( now-start ))
 }
 
+function peek_time {
+	cat /tmp/asap_monitoring_metrics.json | grep \"time
+}
+
 ## Monitoring Functions
 
 monitor_start(){
