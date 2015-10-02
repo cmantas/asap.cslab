@@ -15,6 +15,7 @@ def my_split(p):
     splits args based on '=' delim
     :return:
     """
+    if p is None: return None
     delim = '='
     def mini_split(t):
         splitted = t.split(delim)
@@ -78,7 +79,8 @@ class MyAppBaseController(controller.CementBaseController):
     def report(self):
         experiment = self.app.pargs.experiment_name
         if not experiment:
-            raise Exception("No experiment name defined")
+            self.app.log.error("No experiment name provided. Please use the -e/--experiment-name parameter ")
+            exit()
         else:
             metrics = my_split(self.app.pargs.metrics)
 
