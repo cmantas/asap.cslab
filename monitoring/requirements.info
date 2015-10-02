@@ -1,2 +1,2 @@
-sudo apt-get install sqlite3 mongodb libfreetype6-dev libpng12-dev
-sudo pip install pymongo xmltodict cement matplotlib
+sudo apt-get install sqlite3 mongodb libfreetype6-dev libpng12-dev python-matplotlib
+sudo pip install pymongo xmltodict cement

@@ -8,6 +8,7 @@ from signal import signal, SIGTERM, SIGALRM
 import xmltodict
 from json import dumps, load
 from os import getpid, kill, remove
+from lib.tools import mycast
 
 # default metrics file
 metrics_file = '/tmp/asap_monitoring_metrics.json'
@@ -18,7 +19,7 @@ interval = 5
 pid_file = '/tmp/asap_monitoring.pid'
 
 
-def get_metrics(endpoint):
+def get_all_metrics(endpoint, cast=True):
 
     attempts = 0
 
@@ -35,8 +36,8 @@ def get_metrics(endpoint):
             s.close()
 
             parsed = xmltodict.parse(xml)
-            hosts =  parsed["GANGLIA_XML"]["CLUSTER"]["HOST"]
 
+            hosts =  parsed["GANGLIA_XML"]["CLUSTER"]["HOST"]
             allmetrics = {}
             for h in hosts:
                 host = h["@NAME"]
@@ -45,7 +46,11 @@ def get_metrics(endpoint):
                 metrics = dict( (k,v) for k,v in t )
                 allmetrics[host] = metrics
 
-            return allmetrics
+            if cast:
+                return mycast(allmetrics)
+            else:
+                return allmetrics
+
         except:
             sleep(0.5)
     return None
@@ -55,7 +60,7 @@ def get_summary(endpoint):
     """
     From the available ganglia metrics returns only the useful ones
     """
-    allmetrics = get_metrics(endpoint)
+    allmetrics = get_all_metrics(endpoint)
     if allmetrics is None:
         return None
     cpu =0
@@ -83,6 +88,7 @@ def get_summary(endpoint):
         "kbps_read": iops_read / host_count,
         "kbps_write": iops_write / host_count
     }
+
 
 
 def print_out(*sigargs):
@@ -145,6 +151,7 @@ if __name__ == "__main__":
     parser.add_argument("-eh", '--endpoint-host', help="the ganglia endpoing hostname or IP", default="master")
     parser.add_argument("-ep", '--endpoint-port', help="the ganglia endpoing port", type=int, default=8649)
     parser.add_argument("-cm", '--collect-metrics', help="collect the metrics", action='store_true')
+    parser.add_argument('--summary', help="only keep a summary of metrics", action='store_true')
     parser.set_defaults(console=False)
     args = parser.parse_args()
 ##############################################################
@@ -184,7 +191,10 @@ if __name__ == "__main__":
     try:
         iterations = 0
         while True:
-            metric_values = get_summary(endpoint)
+            if args.summary:
+                metric_values = get_summary(endpoint)
+            else:
+                metric_values = get_all_metrics(endpoint)
             if metric_values is None: continue
             metrics_timeline.append((iterations*interval, metric_values))
             iterations += 1

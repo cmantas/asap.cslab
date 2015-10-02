@@ -1,6 +1,6 @@
 __author__ = 'cmantas'
 from sqlite3 import connect
-from plot_tools import myplot, show
+from tools import myplot, show
 from ConsoleBackend import ConsoleBackend
 import traceback
 

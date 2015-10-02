@@ -1,21 +1,11 @@
 __author__ = 'cmantas'
 import datetime
 from ConsoleBackend import ConsoleBackend
-from lib.plot_tools import myplot, show
+from lib.tools import myplot, show, mycast
 from pymongo import MongoClient
-from ast import literal_eval
 
 
-def mycast(a):
-    """
-    given a string, it returns its casted value to the correct type or the string itself if it can't be evaluated
-    :param a: the input string
-    :return: the evaluated 'casted' result
-    """
-    try:
-        return literal_eval(a)
-    except:
-        return a
+
 
 
 def cast_dict(a):

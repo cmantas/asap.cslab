@@ -1,6 +1,6 @@
 __author__ = 'cmantas'
 import matplotlib.pyplot as plt
-
+from ast import literal_eval
 import  sqlite3
 
 try:
@@ -64,4 +64,24 @@ def myplot(*args, **kwargs):
 #         queryf = query.format(c)
 #         rx, ry = query2lists(queryf)
 #         myplot(rx,ry, label=c, **kwargs)
+
+
+
+
+def mycast(a):
+    """
+    given a string, it returns its casted value to the correct type or the string itself if it can't be evaluated
+    if the input is a list or a dict it recursively calls itself on the input collection's (keys and) values
+    :param a: the input string
+    :return: the evaluated 'casted' result
+    """
+    if isinstance(a, dict):
+        return dict(map(lambda (k, v): (mycast(k),mycast(v)), a.iteritems()))
+    elif isinstance(a, list):
+        return map(mycast, a)
+    else:
+        try:
+            return literal_eval(a)
+        except:
+            return a
 

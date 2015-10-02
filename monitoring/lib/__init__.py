@@ -6,6 +6,8 @@ from os.path import abspath
 REPORT_CONFIG_FILE='/tmp/reporter_config.json'
 from os.path import isfile
 from json import dump, load
+from ast import literal_eval
+
 
 global reporter_backend
 reporter_backend = None
