@@ -55,10 +55,6 @@ kmeans(){
 	
 	asap report -e weka_kmeans_text -cm -m documents=$docs k=$k dimensions=$dimensions minDF=$minDF input_size=$input_size output_size=$output_size
 	
-	exit
-	sqlite3 results.db "INSERT INTO weka_kmeans_text(documents, k, time, metrics, dimensions, input_size, output_size)
-    		VALUES( $docs,  $k, $time, '$metrics', $dimensions, $input_size, $output_size);"
-	
 }
 
 
@@ -72,7 +68,7 @@ arff2mahout (){
         asap move arff2mahout $arff_vectors $moved_mahout &> arff2mahout.out
 	asap monitor stop
 
-        check arff2mahout.out
+        #check arff2mahout.out
 	input_size=$(size $arff_vectors)
 	output_size=$(hdfs_size $moved_mahout)
 
