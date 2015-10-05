@@ -72,11 +72,11 @@ public class ArffInput implements MyInput{
             
             //strip the term
             int beginningOfTerm=11; // "@attribute" is 10 chars long, we will strip this and the following whitespace
-            int endOfTerm=line.indexOf("numeric")-1;
+            int endOfTerm=line.lastIndexOf("numeric")-1;
             term = line.substring(beginningOfTerm, endOfTerm);
-            
             //return the new term with its id
-            return new Pair(term, termCount);
+            return new Pair(term, termCount);            
+            
         }
         return null;
     }
