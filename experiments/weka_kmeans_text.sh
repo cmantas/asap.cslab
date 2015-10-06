@@ -21,9 +21,7 @@ tfidf(){
 	minDF=$2
 	input_size=$(size $arff_data)
 
-	asap monitor start
-	asap tfidf weka $arff_data $arff_vectors $minDF &>weka_tfidf.out
-	asap monitor stop
+	asap run tfidf weka $arff_data $arff_vectors $minDF &>weka_tfidf.out
 	
 	output_size=$(size $arff_vectors)
 	check weka_tfidf.out
@@ -46,9 +44,7 @@ kmeans(){
 	echo -n "[EXPERIMENT] weka_kmeans_text for k=$k, $docs documents, $dimensions dimensions: "
 	input_size=$(size $arff_vectors)
 	
-	asap monitor start
-	asap kmeans weka $arff_vectors $k $max_iterations weka_clusters.out &>weka_kmeans.out
-	asap monitor stop
+	asap run kmeans weka $arff_vectors $k $max_iterations weka_clusters.out &>weka_kmeans.out
 	check weka_kmeans.out
 	output_size=$(size weka_clusters.out)
 	echo $(peek_time) secs
@@ -64,9 +60,7 @@ arff2mahout (){
 
         echo -n "[EXPERIMENT] Move arff->Mahout on $docs documents, $dimensions "
 	
-	asap monitor start
-        asap move arff2mahout $arff_vectors $moved_mahout &> arff2mahout.out
-	asap monitor stop
+        asap run move arff2mahout $arff_vectors $moved_mahout &> arff2mahout.out
 
         #check arff2mahout.out
 	input_size=$(size $arff_vectors)
@@ -87,9 +81,7 @@ arff2spark (){
 	# Move mahout to spark
         echo -n "[EXPERIMENT] Move arff->Spark on $docs documents"
 	
-	asap monitor start
-        asap move arff2spark $arff_vectors $moved_spark &> arff2spark.out
-        asap monitor stop
+        asap run move arff2spark $arff_vectors $moved_spark &> arff2spark.out
 
 	check arff2spark.out
 	
@@ -110,7 +102,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 
 	echo "[PREP]: Converting text to arff"
 	#convert to arff
-	asap move dir2arff $input_dir $arff_data $docs &> dir2arff.out
+	asap run move dir2arff $input_dir $arff_data $docs &> dir2arff.out
 	check dir2arff.out
 
 	

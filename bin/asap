@@ -107,7 +107,7 @@ function monitor
 		start)
 			exec ${ASAP_HOME}/monitoring/monitor.py & ;;
 		stop)
-			exec ${ASAP_HOME}/monitoring/monitor.py -cm ;;
+			exec ${ASAP_HOME}/monitoring/monitor.py -cm $@;;
 		*)
 			echo Please specify start or stop;;
 	esac
@@ -124,6 +124,15 @@ function help  # Show a list of available opperations
 
 	echo ======--- Available Commands ---======
 	grep "^function" $0 | sed "s/function/➜/g" 
+}
+
+function run #wrapper that monitors an operator
+{	# start monitoring
+	monitor start
+	# run the experiment
+	$@
+	# stop monitoring
+	monitor stop 
 }
 
 if [ "_$1" = "_" ]; then

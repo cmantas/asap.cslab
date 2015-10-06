@@ -1,5 +1,6 @@
 import argparse
 import sys
+from sys import stdout
 
 parser = argparse.ArgumentParser(description='runs kmeans on spark for .csv files')
 
