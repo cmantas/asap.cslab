@@ -19,6 +19,9 @@ metrics_file = '/tmp/asap_monitoring_metrics.json'
 # default sampling interval
 interval = 5
 
+# absolute max monitoring time
+max_monitoring_time = 3*60*60 # 3 hours
+
 pid_file = '/tmp/asap_monitoring.pid'
 
 
@@ -129,6 +132,18 @@ def print_out(*sigargs):
     exit()
 
 
+def send_kill():
+    # read the pid from the pid file
+    try:
+        with open(pid_file) as f:
+            monitor_pid=int(f.read())
+            # send the stop signal to the active monitoring process
+            kill(monitor_pid, SIGTERM)
+    except:
+        #print "Could not read the pid file"
+        pass
+
+
 def wait_for_file(filepath, timeout=3):
     end_time= time() + timeout
     #wait
@@ -139,17 +154,10 @@ def wait_for_file(filepath, timeout=3):
         print "ERROR: waited for monitoring data file, but timed out"
         exit()
 
-def collect_metrics():
-    # read the pid from the pid file
 
-    try:
-        with open(pid_file) as f:
-            monitor_pid=int(f.read())
-            # send the stop signal to the active monitoring process
-            kill(monitor_pid, SIGTERM)
-    except:
-        #print "Could not read the pid file"
-        pass
+def collect_metrics():
+    # send sigterm in case there is another live monitoring process
+    send_kill()
 
     try:
         # wait for the metrics file to be created (3 secs)
@@ -191,6 +199,9 @@ if __name__ == "__main__":
             pprint(m)
         exit()
 
+    # signal the previous process in case there is one
+    send_kill()
+
     # delete any old metrics files
     try: remove(metrics_file)
     except: pass
@@ -217,9 +228,12 @@ if __name__ == "__main__":
     # start kepping time
     start_time = time()
 
+    # failsafe timeout (in case monitoring is never stopped
+    max_timeout = start_time +max_monitoring_time
+
     try:
         iterations = 0
-        while True:
+        while time()<max_timeout:
             if args.summary:
                 metric_values = get_summary(endpoint)
             else:
