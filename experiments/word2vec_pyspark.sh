@@ -5,16 +5,6 @@ source  $(dirname $0)/common.sh         #loads the common functions
 hadoop_input=hdfs://master:9000/user/root/exp_text
 local_input=/root/Data/ElasticSearch_text_docs
 
-sqlite3 vic_results.db "CREATE TABLE IF NOT EXISTS word2vec_pyspark 
-	(id INTEGER PRIMARY KEY AUTOINCREMENT, 
-	 documents INTEGER, execTime REAL, 
-         input_size INTEGER,
-	 minDf INTEGER,
-	 iterations INTEGER,
-	 vector_size INTEGER,
-	 metrics TEXT, 
-	 date DATE DEFAULT (datetime('now','localtime')));"
-
 for ((docs=2000; docs<=90000; docs+=5000)); do
 
 	hdfs dfs -rm -r $hadoop_input &>/dev/null
@@ -27,12 +17,12 @@ for ((docs=2000; docs<=90000; docs+=5000)); do
 	minDf=5
 	iterations=1
 
-	tstart; monitor_start
 	#echo Running Spark Word2Vec with k $k
-	asap word2vec pyspark $hadoop_input
+	asap run word2vec pyspark $hadoop_input
 	sleep 2
-	execTime=$(ttime); metrics=$(monitor_stop)
-	
-	sqlite3 vic_results.db "INSERT INTO word2vec_pyspark (documents, execTime, input_size, minDf, iterations, vector_size, metrics) 
-			VALUES ('$docs', '$execTime', '$input_size', '$minDf', '$iterations', '$vector_size','$metrics' );"
+	asap report -e word2vec_pyspark -cm -m docs=$docs \
+					       input_size=$input_size \
+					       vector_size=$vector_size \
+				   	       minDf=$minDf \
+					       iterations=$iterations
 done

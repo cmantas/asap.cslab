@@ -5,17 +5,7 @@ source  $(dirname $0)/common.sh         #loads the common functions
 hadoop_input=hdfs://master:9000/user/root/exp_text
 local_input=/root/Data/ElasticSearch_text_docs
 
-sqlite3 vic_results.db "CREATE TABLE IF NOT EXISTS word2vec_scala2 
-	(id INTEGER PRIMARY KEY AUTOINCREMENT, 
-	 documents INTEGER, execTime REAL, 
-         input_size INTEGER,
-	 minDf INTEGER,
-	 iterations INTEGER,
-	 vector_size INTEGER,
-	 metrics TEXT, 
-	 date DATE DEFAULT (datetime('now','localtime')));"
-
-for ((docs=120000; docs<=200000; docs+=20000)); do
+for ((docs=500; docs<=1000; docs+=100)); do
 
 	hdfs dfs -rm -r $hadoop_input &>/dev/null
 	printf "\n\nMoving data to hdfs...\n\n"
@@ -27,12 +17,13 @@ for ((docs=120000; docs<=200000; docs+=20000)); do
 	minDf=5
 	iterations=1
 
-	tstart; monitor_start
 	#echo Running Spark Word2Vec with k $k
-	asap word2vec spark_scala $hadoop_input
-	execTime=$(ttime); metrics=$(monitor_stop)
+	asap run word2vec spark_scala $hadoop_input
+	asap report -e word2vec_spark_scala -cm -m input_size=$input_size \
+						   vector_size=$vector_size \
+						   minDf=$minDf \
+						   iterations=$iterations \
+						   points=$docs
 	sleep 2
 	
-	sqlite3 vic_results.db "INSERT INTO word2vec_scala2 (documents, execTime, input_size, minDf, iterations, vector_size, metrics) 
-			VALUES ('$docs', '$execTime', '$input_size', '$minDf', '$iterations', '$vector_size','$metrics' );"
 done
