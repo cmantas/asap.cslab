@@ -5,16 +5,6 @@ source  $(dirname $0)/common.sh         #loads the common functions
 tmp_input=./tmp_text
 local_input=/root/Data/ElasticSearch_text_docs
 
-sqlite3 vic_results.db "CREATE TABLE IF NOT EXISTS lda_gensim 
-	(id INTEGER PRIMARY KEY AUTOINCREMENT, 
-	 documents INTEGER, 
-	 execTime REAL,
-	 k INTEGER, 
-         input_size INTEGER,
-	 maxIterations INTEGER,
-	 metrics TEXT, 
-	 date DATE DEFAULT (datetime('now','localtime')));"
-
 for ((docs=6000; docs<=50000; docs+=2000)); do
 
 	printf "\n\nMoving $docs documents to $tmp_input...\n\n"
@@ -24,12 +14,9 @@ for ((docs=6000; docs<=50000; docs+=2000)); do
 	k=10
 	iterations=1
 
-	tstart; monitor_start
-	asap lda gensim $tmp_input $k $iterations
+	asap run lda gensim $tmp_input $k $iterations
 	sleep 2
-	execTime=$(ttime); metrics=$(monitor_stop)
 	
-	sqlite3 vic_results.db "INSERT INTO lda_gensim (documents, execTime, input_size, k, maxIterations, metrics) 
-			VALUES ('$docs', '$execTime', '$input_size', '$k', '$iterations','$metrics' );"
+	asap report -e lda_gensim - cm -m input_size=$input_size k=$k iterations=$iterations docs=$docs
 	rm -rf $tmp_input
 done

@@ -5,18 +5,7 @@ source  $(dirname $0)/common.sh         #loads the common functions
 hadoop_input=hdfs://master:9000/user/root/exp_text
 local_input=/root/Data/ElasticSearch_text_docs
 
-sqlite3 vic_results.db "CREATE TABLE IF NOT EXISTS lda_scala2 
-	(id INTEGER PRIMARY KEY AUTOINCREMENT, 
-	 documents INTEGER, 
-	 execTime REAL, 
-         input_size INTEGER,
-	 k INTEGER,
-	 maxIterations INTEGER,
-	 metrics TEXT, 
-	 date DATE DEFAULT (datetime('now','localtime')));"
-
 for ((docs=1000; docs<=20000; docs+=500)); do
-
 	hdfs dfs -rm -r $hadoop_input &>/dev/null
 	printf "\n\nMoving $docs documents to hdfs...\n\n"
 	asap move dir2sequence $local_input $hadoop_input $docs &> dir2sequence.out
@@ -28,12 +17,8 @@ for ((docs=1000; docs<=20000; docs+=500)); do
 	iterations=1
 	k=10
 
-	tstart; monitor_start
 	#echo Running Spark Word2Vec with k $k
-	asap lda scala "$hadoop_input/tfidf/part*"
+	asap run lda scala "$hadoop_input/tfidf/part*"
+	asap report -e lda_spark_scala -cm -m input_size=$input_size iterations=$iterations k=$k docs=$docs
 	sleep 2
-	execTime=$(ttime); metrics=$(monitor_stop)
-	
-	sqlite3 vic_results.db "INSERT INTO lda_scala2 (documents, execTime, input_size, maxIterations, k, metrics) 
-			VALUES ('$docs', '$execTime', '$input_size', '$iterations','$k','$metrics' );"
 done
