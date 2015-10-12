@@ -17,7 +17,7 @@ import org.apache.mahout.common.Pair;
  *
  * @author cmantas
  */
-public class SparkOutput implements MyOutput{
+public class SparkOutput implements MyVectorOutput{
     
     private BufferedWriter tfidfWriter; //the writer for the tfidf vectors
     private SequenceFile.Writer dictWriter; //the writer for the dictionary

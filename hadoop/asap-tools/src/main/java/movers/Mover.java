@@ -15,7 +15,7 @@ import org.apache.mahout.common.Pair;
 public final class Mover {
     
     
-    public static void move(MyInput input, MyOutput output) throws IOException{
+    public static void move(MyVectorInput input, MyVectorOutput output) throws IOException{
         
         //move the dictionary
         Pair<String,Integer> dictEntry;

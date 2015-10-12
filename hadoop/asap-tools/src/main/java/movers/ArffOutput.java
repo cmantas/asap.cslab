@@ -12,7 +12,7 @@ import org.apache.mahout.common.Pair;
  *
  * @author cmantas
  */
-public class ArffOutput implements MyOutput{
+public class ArffOutput implements MyVectorOutput{
     
     Writer writer;
     boolean writenDataTag=false;

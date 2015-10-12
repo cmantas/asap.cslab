@@ -20,7 +20,6 @@ public class LocalSeqDirectory {
         //default values
         int maxCount=0, chunkSize =1984;
         
-        
         //args parsing
         String localDirPath = args[0];
         String distrSeqDirPath = args[1];

@@ -12,7 +12,7 @@ import org.apache.mahout.common.Pair;
  *
  * @author cmantas
  */
-public class ArffInput implements MyInput{
+public class ArffInput implements MyVectorInput{
 
     BufferedReader reader;
     int termCount=0, vectorCount=0;

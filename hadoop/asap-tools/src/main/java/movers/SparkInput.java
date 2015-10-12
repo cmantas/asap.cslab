@@ -27,7 +27,7 @@ import org.apache.mahout.common.iterator.sequencefile.SequenceFileDirIterable;
  *
  * @author cmantas
  */
-public class SparkInput implements MyInput{
+public class SparkInput implements MyVectorInput{
     
     Configuration conf;
     

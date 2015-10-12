@@ -18,7 +18,7 @@ import org.apache.mahout.math.VectorWritable;
  *
  * @author cmantas
  */
-public class MahoutOutput implements MyOutput {
+public class MahoutOutput implements MyVectorOutput {
 
     //writer for the term dictionary
 

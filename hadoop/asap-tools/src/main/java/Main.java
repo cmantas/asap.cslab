@@ -24,12 +24,16 @@ public class Main {
         Configuration conf = new Configuration();
         FileSystem fs = FileSystem.get(conf);
         
-        MyInput input=null;
-        MyOutput output=null;
+        MyVectorInput input=null;
+        MyVectorOutput output=null;
         
         switch (command){
             case "dir2sequence":
                 LocalSeqDirectory.main(newArgs);
+                System.exit(0);
+                break;
+            case "reuters2sequence":
+                Reuters2Sequence.main(newArgs);
                 System.exit(0);
                 break;
             case "seqinfo":

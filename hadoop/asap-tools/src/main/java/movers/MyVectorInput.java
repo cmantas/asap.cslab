@@ -12,7 +12,7 @@ import org.apache.mahout.common.Pair;
  *
  * @author cmantas
  */
-public interface MyInput {
+public interface MyVectorInput {
     public Pair<String, Integer> nextDictEntry() throws IOException;    
     public MySparseVector nextVector() throws IOException;
 }

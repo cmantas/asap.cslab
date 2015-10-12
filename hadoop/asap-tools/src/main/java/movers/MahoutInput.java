@@ -21,7 +21,7 @@ import org.apache.mahout.math.VectorWritable;
  *
  * @author cmantas
  */
-public class MahoutInput implements MyInput {
+public class MahoutInput implements MyVectorInput {
     
      Iterator<Pair<Text, VectorWritable>> vecIterator;
      Reader dirReader;

@@ -7,7 +7,7 @@ import org.apache.mahout.common.Pair;
  *
  * @author cmantas
  */
-public class DummyOutput implements MyOutput{
+public class DummyOutput implements MyVectorOutput{
 
     @Override
     public void writeDictEntry(Pair<String, Integer> entry) throws IOException {
