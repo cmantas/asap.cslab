@@ -11,9 +11,7 @@ args = parser.parse_args()
 from pyspark import SparkContext, SparkConf
 from pyspark.mllib.classification import SVMWithSGD, SVMModel
 from pyspark.mllib.regression import LabeledPoint
-
-
-
+from common import *
 
 
 
@@ -61,12 +59,12 @@ def classify_with_model(input_data_path, model_file_path):
 
 if __name__ == "__main__":
 
-    model_file_path = args.model_file
+    model_file_path = to_hdfs_url(args.model_file)
     operation = args.operation
 
     # choose the operation
     if operation.lower() == "train":
-        training_data = args.input
+        training_data = to_hdfs_url(args.input)
         iterations = args.iterations
         # init the spark context
         if "sc" not in globals():
@@ -76,7 +74,7 @@ if __name__ == "__main__":
             sc = SparkContext( appName="SVM Train", conf=conf)
             train_model(training_data, iterations, model_file_path)
     elif args.operation.lower() == "classify":
-        input_file_path = args.input
+        input_file_path = to_hdfs_url(args.input)
         # init the spark context
         if "sc" not in globals():
             conf = SparkConf()
