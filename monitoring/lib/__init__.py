@@ -3,7 +3,7 @@ from ConsoleBackend import ConsoleBackend
 from SQLiteBackend import SQLiteBackend
 from MongoBackend import MongoBackend
 from os.path import abspath
-REPORT_CONFIG_FILE='/tmp/reporter_config.json'
+REPORT_CONFIG_FILE='/etc/reporter_config.json'
 from os.path import isfile
 from json import dump, load
 from ast import literal_eval
