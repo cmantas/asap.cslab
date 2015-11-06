@@ -38,8 +38,8 @@ class MongoBackend(ConsoleBackend):
     def _get_collection(self, collection):
         return eval("self.db.{0}".format(collection))
 
-    def query(self, experiment, query, tupples=True):
-        dict_result = self.dict_query(experiment, query)
+    def query(self, experiment, query, sort, tupples=True):
+        dict_result = self.dict_query(experiment, query, sort)
         return map(lambda d:d.values(), dict_result)
 
     @staticmethod
@@ -58,9 +58,9 @@ class MongoBackend(ConsoleBackend):
             raise Exception("I cannot handle that kind of query: "+str(type(q)))
         return  selection,projection
 
-    def dict_query(self, experiment, query):
+    def dict_query(self, experiment, query, sort):
         selection, projection = self.parse_query(query)
-        return self.find(experiment, selection, projection)
+        return self.find(experiment, selection, projection, sort=sort)
 
     def report(self, experiment_name, **kwargs):
         # cast the dict values into their respective types
@@ -69,9 +69,12 @@ class MongoBackend(ConsoleBackend):
         metrics = eval("self.db.{0}".format(experiment_name))
         r = metrics.insert_one(casted)
 
-    def find(self, experiment, selection={}, projection=None, tuples=True):
+    def find(self, experiment, selection={}, projection=None, tuples=True, sort=None):
         collection = self._get_collection(experiment)
-        rows = collection.find(selection, projection)
+        if sort is None:
+            rows = collection.find(selection, projection)
+        else:
+            rows = collection.find(selection, projection).sort(sort)
         if tuples: return tuple(rows)
         else: return rows
 
@@ -86,12 +89,11 @@ class MongoBackend(ConsoleBackend):
     def __str__(self):
         return "MongoBackend({0},{1})".format(self.host, self.port)
 
-    def plot_query(self, experiment, query, show_plot=True, **kwargs):
+    def plot_query(self, experiment, query, sort=None, show_plot=True, **kwargs):
         # make sure that _id column is not returned
         selection, projection = self.parse_query(query)
         projection['_id'] = 0
-
-        rows = self.query(experiment, (selection,projection))
+        rows = self.query(experiment, (selection,projection), sort)
 
         # transpose the rows
         rows_transposed = zip(*rows)
