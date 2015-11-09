@@ -8,8 +8,9 @@ parser.add_argument("-i", "--input",  help="the input data path", required=True)
 parser.add_argument("-mf", "--model-file",  help="path of the model file", required=True)
 args = parser.parse_args()
 
+from re import split
 from pyspark import SparkContext, SparkConf
-from pyspark.mllib.classification import SVMWithSGD, SVMModel
+from pyspark.mllib.classification import
 from pyspark.mllib.regression import LabeledPoint
 from common import *
 
@@ -21,7 +22,7 @@ def parse_point(line):
     :param line:
     :return:
     """
-    values = [float(x) for x in line.split(' ')]
+    values = [float(x) for x in split(' |,|;', line)]
     return LabeledPoint(values[0], values[1:])
 
 
@@ -72,7 +73,9 @@ if __name__ == "__main__":
             conf = SparkConf()
             conf.set("spark.hadoop.validateOutputSpecs", "false")
             sc = SparkContext( appName="SVM Train", conf=conf)
+            print "=== TRAINING"
             train_model(training_data, iterations, model_file_path)
+            print "=== TRAINED"
     elif args.operation.lower() == "classify":
         input_file_path = to_hdfs_url(args.input)
         # init the spark context

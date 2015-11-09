@@ -1,6 +1,6 @@
 import argparse
 from os import system
-import sys
+from sys import stdout
 
 ### args parsing
 parser = argparse.ArgumentParser(description='runs TF/IDF on a directory of text docs')

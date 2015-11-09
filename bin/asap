@@ -92,7 +92,10 @@ function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 	shift
 	case "$operation" in
 		dir2arff)
-			${ASAP_HOME}/weka/kmeans_text_weka/convert_text_weka.sh $@ ;;
+			#${ASAP_HOME}/weka/kmeans_text_weka/convert_text_weka.sh $@ ;;
+			count_arg=""
+			if [ ! -z "$3" ]; then count_arg="-count $3"; fi
+			java -jar $tools dir2arff -dir $1 $count_arg >$2;;
 		dir2sequence)
 			hadoop jar $tools dir2sequence $@ $CHUNK ;;
 		reuters2sequence)
