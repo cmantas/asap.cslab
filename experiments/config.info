@@ -5,7 +5,8 @@ runs=1 			#how many runs per experiment
 min_k=5		#min num of clusters
 max_k=20	#max num of clusters
 k_step=5		#step of increasing the clusters	
-max_iterations=50
+echo TEMP: max iterations: 11
+max_iterations=11 # USE 50
 
 ### SYNTHETIC ###
 min_points=100 	#min number of data points
@@ -22,7 +23,7 @@ synth_clusters_data_dir=~/Data/synth_clusters
 #proxy="proxy localhost:1234" #comment out for execution in IMR
 max_documents=150000
 min_documents=200
-documents_step=20000
+documents_step=10000
 
 min_minDF=10
 max_minDF=160

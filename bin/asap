@@ -17,6 +17,11 @@ case "$engine" in
 		${ASAP_HOME}/weka/kmeans_text_weka/kmeans_text_weka.sh $@ ;;
 	mahout)
 		${ASAP_HOME}/hadoop/mahout-kmeans/mahout_kmeans_text.sh $@ ;;
+	cilk)
+		iterations=$3
+		echo max iters \($iterations\) ignored
+		${ASAP_HOME}/centralized/hans_kmeans/kmeans/kmeans_arff -i $1 -c $2 &>$4
+		#${ASAP_HOME}/hadoop/mahout-kmeans/mahout_kmeans_text.sh $@ ;;
 esac
 
 }
@@ -90,6 +95,8 @@ function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 			${ASAP_HOME}/weka/kmeans_text_weka/convert_text_weka.sh $@ ;;
 		dir2sequence)
 			hadoop jar $tools dir2sequence $@ $CHUNK ;;
+		reuters2sequence)
+			hadoop jar $tools reuters2sequence $@ $CHUNK ;;
 		dir2spark)
 			pyspark ${ASAP_HOME}/spark/text_loader.py -i $1 -do $2 ;;
 		

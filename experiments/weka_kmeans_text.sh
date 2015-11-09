@@ -54,6 +54,25 @@ kmeans(){
 }
 
 
+kmeans_cilk(){
+	k=$1
+	max_iterations=$2
+	dimensions=$4
+	docs=$3
+	
+	echo -n "[EXPERIMENT] cilk_kmeans_text for k=$k, $docs documents, $dimensions dimensions: "
+	input_size=$(size $arff_vectors)
+	
+	asap run kmeans cilk $arff_vectors $k $max_iterations cilk_kmeans.out
+	check cilk_kmeans.out #untested, probably does not work
+	output_size=0
+	echo $(peek_time) secs
+	
+	asap report -e cilk_kmeans_text -cm -m documents=$docs k=$k dimensions=$dimensions minDF=$minDF input_size=$input_size output_size=$output_size
+	
+}
+
+
 arff2mahout (){
         docs=$1
         dimensions=$2
@@ -120,6 +139,7 @@ for ((docs=min_documents; docs<=max_documents; docs+=documents_step)); do
 																		
 	    	for((k=min_k; k<=max_k; k+=k_step)); do
 			kmeans $k $max_iterations $docs $dimensions
+			kmeans_cilk $k $max_iterations $docs $dimensions
 		done #K parameter loop
 		
 		# if we got less features than we asked we need not ask for more

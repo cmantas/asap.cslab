@@ -5,7 +5,7 @@ source  $(dirname $0)/common.sh         #loads the common functions
 hadoop_input=hdfs://master:9000/user/root/exp_text
 local_input=/root/Data/ElasticSearch_text_docs
 
-for ((docs=2000; docs<=90000; docs+=5000)); do
+for ((docs=5000; docs<=100000; docs+=5000)); do
 
 	hdfs dfs -rm -r $hadoop_input &>/dev/null
 	printf "\n\nMoving data to hdfs...\n\n"
