@@ -32,6 +32,10 @@ public class Main {
                 LocalSeqDirectory.main(newArgs);
                 System.exit(0);
                 break;
+            case "dir2arff":
+                MyDir2Arff.main(newArgs);
+                System.exit(0);
+                break;
             case "reuters2sequence":
                 Reuters2Sequence.main(newArgs);
                 System.exit(0);

@@ -38,7 +38,7 @@ class MongoBackend(ConsoleBackend):
     def _get_collection(self, collection):
         return eval("self.db.{0}".format(collection))
 
-    def query(self, experiment, query, sort, tupples=True):
+    def query(self, experiment, query, sort=None, tupples=True):
         dict_result = self.dict_query(experiment, query, sort)
         return map(lambda d:d.values(), dict_result)
 
@@ -58,7 +58,7 @@ class MongoBackend(ConsoleBackend):
             raise Exception("I cannot handle that kind of query: "+str(type(q)))
         return  selection,projection
 
-    def dict_query(self, experiment, query, sort):
+    def dict_query(self, experiment, query, sort=None):
         selection, projection = self.parse_query(query)
         return self.find(experiment, selection, projection, sort=sort)
 
