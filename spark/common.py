@@ -25,7 +25,6 @@ line = line[host_start:]
 host_end = line.index(":")
 hdfs_master= line[:host_end]
 
-
 def to_hdfs_url(fname):
     fname = "hdfs://%s:9000/" % hdfs_master + fname
     return fname
