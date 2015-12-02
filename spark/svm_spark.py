@@ -10,7 +10,7 @@ args = parser.parse_args()
 
 from re import split
 from pyspark import SparkContext, SparkConf
-from pyspark.mllib.classification import
+from pyspark.mllib.classification import SVMWithSGD, SVMModel
 from pyspark.mllib.regression import LabeledPoint
 from common import *
 

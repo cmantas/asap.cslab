@@ -1,7 +1,0 @@
-docs_dir=$(dirname $0)/test_data
-docs_count=$(ls $docs_dir | wc -l)
-echo I have $docs_count documents
-
-hdfs_test_dir=/test
-
-
