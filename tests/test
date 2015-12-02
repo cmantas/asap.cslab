@@ -1,6 +1,8 @@
 #!/bin/bash
-source  $(dirname $0)/config.info 
-
+docs_dir=$(dirname $0)/test_data
+docs_count=$(ls $docs_dir | wc -l)
+echo I have $docs_count documents
+hdfs_test_dir=/user/$USER/test
 docs_sequence=$hdfs_test_dir/docs_sequence
 mahout_vecs=$hdfs_test_dir/mahout_vectors
 spark_vecs=$hdfs_test_dir/spark_vectors

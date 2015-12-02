@@ -12,7 +12,7 @@ args = parser.parse_args()
 docs_dir = args.input
 if not docs_dir.startswith('/'):
     print "Please specify an absolute path for the input"
-    exit()
+    exit(-2)
 
 # create hdfs paths
 from common import to_hdfs_url
