@@ -5,20 +5,38 @@ from time import sleep, time
 
 class GMonitor:
 
-    def __init__(self, endpoint, summarized=False, cast=True):
+    def __init__(self, endpoint, summarized=False, cast=True, hosts=None):
 
         self.endpoint = endpoint
 
         # totals
         self.iops_rd_total = self.iops_wt_total = self.net_in_total = self.net_out_total =  0
-        # the timelinse of metric values
+        # the time-lines of metric values
         self.metrics_timeline, self.metrics_summaries_timeline = [], []
         self.summarized = summarized
         self.iterations = 0
         self.cast = cast
         self.start_time = time()
+        self.hosts = hosts
 
-        self.get_all_metrics = lambda : get_all_metrics(endpoint,cast)
+    def get_all_metrics(self):
+        """
+        Wrapper for static method "get_all_metrics" that uses this GMonitors endpoint and keeps only the hosts
+        in filter, if "hosts" is defined
+        :return:
+        """
+        all_metrics =  get_all_metrics(self.endpoint,self.cast)
+
+        # if "hosts" is not defined we are keeping everything
+        if not self.hosts: return all_metrics
+
+        # filter that keeps only the hosts ('h') included in "hosts"
+        # also works if "hosts" is string instead of iterable
+        host_filt = lambda (h,m): h in self.hosts
+        # apply filter
+        key_vals = filter(host_filt, all_metrics.iteritems())
+        # return a dict of the results
+        return dict(key_vals)
 
     def get_all_metrics_and_summary(self):
         """
@@ -28,7 +46,7 @@ class GMonitor:
         :param cast:
         :return:
         """
-        raw_metrics = get_all_metrics(self.endpoint, self.cast)
+        raw_metrics = self.get_all_metrics()
         summary = self.get_summary(raw_metrics=raw_metrics)
 
         return raw_metrics, summary
@@ -56,10 +74,9 @@ class GMonitor:
         From the available ganglia metrics returns only the useful ones
         """
 
-        allmetrics = get_all_metrics(self.endpoint, self.cast) if raw_metrics is None else raw_metrics
+        allmetrics = self.get_all_metrics() if not raw_metrics else raw_metrics
 
-        if allmetrics is None:
-            return None
+        if not allmetrics : return None
 
         cpu = mem = net_in = net_out = iops_read = iops_write = 0
 
@@ -111,7 +128,7 @@ def get_all_metrics(endpoint, cast=True):
                     xml+= data
                 s.close()
 
-                #parse xml file
+                # parse xml to dict
                 parsed = xmltodict.parse(xml)
 
                 hosts = parsed["GANGLIA_XML"]["CLUSTER"]["HOST"]
@@ -138,5 +155,8 @@ def get_all_metrics(endpoint, cast=True):
 
 
 
-
-
+if __name__ == "__main__":
+    # simple debug/testing
+    mon = GMonitor(("master",8649), hosts="master" )
+    from pprint import pprint
+    pprint( mon.get_all_metrics() )

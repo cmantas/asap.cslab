@@ -10,20 +10,18 @@ from os.path import isfile
 from pprint import pprint
 from lib.GMonitor import GMonitor
 
-# default metrics file
-metrics_file = '/tmp/asap_monitoring_metrics.json'
 
-# default sampling interval
-interval = 5
-
-# absolute max monitoring time
+# ---------- some global vars ---------------
+metrics_file = '/tmp/asap_monitoring_metrics.json' # default metrics file
+interval = 5 # default sampling interval
+# absolute max monitoring time (as a fail-safe timeout)
 max_monitoring_time = 3*60*60 # 3 hours
 
 pid_file = '/tmp/asap_monitoring.pid'
 
-
 # the monitor instance
 monitor = None
+
 
 def print_out(*sigargs):
     """
@@ -44,8 +42,6 @@ def print_out(*sigargs):
               "net_out_total": monitor.net_out_total,
               "net_in_total": monitor.net_in_total
               }
-    # output['start_time']= start_time
-    # output['end_time'] = end_time
 
     if metrics_file is not None:
         # remove the old metrics file immediately
@@ -65,11 +61,12 @@ def print_out(*sigargs):
         # console output
         print dumps(output, indent=1)
         sys.stdout.flush()
-    # we are done, exit
+    # we are done, exit the whole script
     exit()
 
 
 def send_kill():
+    """ Send the kill signal to a previously running instance """
     # read the pid from the pid file
     try:
         with open(pid_file) as f:
@@ -82,6 +79,11 @@ def send_kill():
 
 
 def wait_for_file(filepath, timeout=3):
+    """ Keep waiting for a file to appear unless a timeout is reached
+    :param filepath:
+    :param timeout: the time needed to give up (default: 3sec)
+    :return: void
+    """
     end_time= time() + timeout
     #wait
     while not isfile(filepath) and time()<end_time:
@@ -93,6 +95,11 @@ def wait_for_file(filepath, timeout=3):
 
 
 def collect_metrics():
+    """
+    Read metrics from a json metrics file created by another instance
+    :return: a dict of metrics
+    """
+
     # send sigterm in case there is another live monitoring process
     send_kill()
 
@@ -112,7 +119,6 @@ def collect_metrics():
         except: pass
 
 
-# print get_summary(("master", 8649))
 
 if __name__ == "__main__":
 
@@ -121,11 +127,12 @@ if __name__ == "__main__":
     parser = ArgumentParser(description='Monitoring')
     parser.add_argument("-f", '--file', help="the output file to use")
     parser.add_argument("-c", '--console', help="output the metrics in console", dest='console', action='store_true')
+    parser.set_defaults(console=False)
     parser.add_argument("-eh", '--endpoint-host', help="the ganglia endpoing hostname or IP", default="master")
     parser.add_argument("-ep", '--endpoint-port', help="the ganglia endpoing port", type=int, default=8649)
     parser.add_argument("-cm", '--collect-metrics', help="collect the metrics", action='store_true')
     parser.add_argument('--summary', help="only keep a summary of metrics", action='store_true')
-    parser.set_defaults(console=False)
+    parser.add_argument('-mh', '--monitor-hosts', help='The hosts to montitor (if not defined, monitor all', default=None)
     args = parser.parse_args()
 ##############################################################
 
@@ -150,10 +157,13 @@ if __name__ == "__main__":
     # the ganglia endpoint
     endpoint = (args.endpoint_host, args.endpoint_port)
 
-    # create the monitor
-    monitor = GMonitor(endpoint, summarized=args.summary)
+    # the lists of hosts to monitor (or None for all hosts)
+    hosts = args.monitor_hosts.split(',') if args.monitor_hosts else None
 
-    # store the pid in the temp file
+    # create the monitor instance
+    monitor = GMonitor(endpoint, summarized=args.summary, hosts=hosts)
+
+    # store the pid in the pid file
     with open(pid_file, 'w+') as f: f.write(str(getpid()))
 
     #install the signal handler
@@ -162,8 +172,8 @@ if __name__ == "__main__":
     # start kepping time
     start_time = time()
 
-    # failsafe timeout (in case monitoring is never stopped
-    max_timeout = start_time +max_monitoring_time
+    # failsafe timeout (in case monitoring is never stopped)
+    max_timeout = start_time + max_monitoring_time
 
     # until signaled or failsafe timeout expired, keep updating the metrics
     try:
