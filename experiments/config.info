@@ -1,6 +1,11 @@
 ## GENERIC ###
 runs=1 			#how many runs per experiment
 
+## WORKER (SLAVE) NODES ##
+min_slaves=3
+max_slaves=9
+slaves_step=2
+
 ### KMEANS  ###
 min_k=5		#min num of clusters
 max_k=20	#max num of clusters

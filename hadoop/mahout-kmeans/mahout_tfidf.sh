@@ -1,5 +1,7 @@
 #!/bin/bash
-source $(dirname $0)/common.sh
+#source $(dirname $0)/common.sh
+# "." command is like source (I guess)
+. $(dirname $0)/common.sh
 
 minTF=$3
 
@@ -9,13 +11,15 @@ output=$2
 
 
 echo "[STEP 2/4] Sequence to Sparse $input, $output, minTF=$minTF"
- mahout seq2sparse \
-	-Dmapred.child.ulimit=15728640 -Dmapred.child.java.opts=-Xmx5g \
-	-Dmapred.map.tasks=10 \
-    -i $input -ow --chunkSize $chunk\
-    -o $output --maxDFSigma 3.0  --namedVector --minSupport $minTF\
-	&>step2.out
-check step2.out
+mahout seq2sparse $tfidf_env    -i $input -ow --chunkSize $chunk\
+    -o $output --maxDFSigma 3.0  --namedVector --minSupport $minTF
+#	&>step2.out
+
+exit_status=$?
+#check step2.out
+
+
+exit $exit_status
 
 #+UseConcMarkSweepGC
 #       -Dmapred.map.child.java.opts=-Xmxg4g \
