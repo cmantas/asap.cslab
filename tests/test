@@ -103,7 +103,7 @@ function spark_tfidf
 
 
 function weka_tfidf
-{
+{	
 	echo $arff_docs $arff_vecs
 	asap tfidf weka  $arff_docs $arff_vecs 1
 	cat $arff_vecs
