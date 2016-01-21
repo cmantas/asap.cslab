@@ -77,7 +77,7 @@ class stream_reporter(object):
 
             # 4) report deltas
             if self.started :
-                log.debug(str(count) + " entries in " + ("%.1f" % time_delta) + " seconds")
+                log.debug(str(count) + " entries in " + ("%.1f" % time_delta) if time_delta else "None" + " seconds")
 
             # 5) check if stopped and reset
             if self.started and sum(self.records[-self._ERCI:])==0:

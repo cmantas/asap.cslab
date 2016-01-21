@@ -2,7 +2,7 @@
 from cement.core import foundation, controller
 
 from lib import get_backend, set_backend
-from monitor import collect_metrics
+from monitor import collect_metrics, collect_streaming_metrics
 from pprint import  PrettyPrinter
 
 pprint = PrettyPrinter(indent=2).pprint
@@ -41,7 +41,8 @@ class MyAppBaseController(controller.CementBaseController):
             (['-q', '--query'], dict(action='store', help='the query to execute in the backend storage system')),
             (['-pp', '--plot-params'], dict(action='store', help='parameters of the plot', nargs='*')),
             (['-dict',], dict(action='store_true', help='get the query result in a dict')),
-            (['-cm', '--collect-metrics'], dict(action='store_true', help='collect the metrics of an active monitoring process'))
+            (['-cm', '--collect-metrics'], dict(action='store_true', help='collect the metrics of an active monitoring process')),
+            (['-cs', '--collect-streaming-metrics'], dict(action='store_true', help='collect the metrics of an finished streaming experiment'))
             ]
 
     @controller.expose(hide=True, aliases=['run'])
@@ -89,6 +90,9 @@ class MyAppBaseController(controller.CementBaseController):
                 ganglia_metrics = collect_metrics()
                 # metrics['ganglia_metrics']=ganglia_metrics
                 metrics.update(ganglia_metrics)
+            if self.app.pargs.collect_streaming_metrics:
+                streaming_metrics = collect_streaming_metrics()
+                metrics.update(streaming_metrics)
             # report the metrics to the backend
             backend.report_dict(experiment, metrics)
 

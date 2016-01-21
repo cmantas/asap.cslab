@@ -1,6 +1,6 @@
 from __future__ import print_function
 from streaming_reporter_tools import Spark_dstream_reporter
-from imr_tools import parse_imr_w2v_vector
+#from imr_tools import parse_imr_w2v_vector
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
@@ -27,6 +27,15 @@ class WatchedStreamingKMeans(StreamingKMeans):
 
         dstream.foreachRDD(update)
 
+def parse_imr_w2v_vector(v_str):
+    """
+    creates a spark DenseVectorvectors from string lines
+    :param v_str:
+    :return:
+    """
+    from pyspark.mllib.linalg import DenseVector
+    num_vec = map(float, v_str.split(';')[1:])
+    return DenseVector(num_vec)
 
 parser = ArgumentParser("producer for kafka that reads first L lines from file")
 parser.add_argument('-i', "--interval", help="the interval between each batch (secs)", type=int, default=3)

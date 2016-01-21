@@ -49,12 +49,3 @@ def create_labeled_point( labels_and_features, wanted_category):
     
     return LabeledPoint(labels[wanted_category], features)
 
-def parse_imr_w2v_vector(v_str):
-    """
-    creates a spark DenseVectorvectors from string lines
-    :param v_str:
-    :return:
-    """
-    from pyspark.mllib.linalg import DenseVector
-    num_vec = map(float, v_str.split(';')[1:])
-    return DenseVector(num_vec)
