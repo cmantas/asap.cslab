@@ -78,7 +78,7 @@ def send_kill():
         pass
 
 
-def wait_for_file(filepath, timeout=3):
+def wait_for_file(filepath, timeout):
     """ Keep waiting for a file to appear unless a timeout is reached
     :param filepath:
     :param timeout: the time needed to give up (default: 3sec)
@@ -93,19 +93,10 @@ def wait_for_file(filepath, timeout=3):
         print "ERROR: waited for monitoring data file, but timed out"
         exit()
 
-
-def collect_metrics():
-    """
-    Read metrics from a json metrics file created by another instance
-    :return: a dict of metrics
-    """
-
-    # send sigterm in case there is another live monitoring process
-    send_kill()
-
+def _collect_metrics(metrics_file, timeout=3):
     try:
         # wait for the metrics file to be created (3 secs)
-        wait_for_file(metrics_file)
+        wait_for_file(metrics_file, timeout)
 
         # collect the saved metrics from metrics file
         with open(metrics_file) as f:
@@ -117,6 +108,31 @@ def collect_metrics():
         # remove the pid file
         try: remove(pid_file)
         except: pass
+
+
+def collect_metrics():
+    """
+    Read metrics from a json metrics file created by another instance
+    :return: a dict of metrics
+    """
+    # send sigterm in case there is another live monitoring process
+    send_kill()
+    # wait for file and collect the metrics
+    global metrics_file
+    return _collect_metrics(metrics_file)
+
+
+def collect_streaming_metrics():
+    """
+    This will wait for the streaming metrics file to be created and get it
+    Assumes that the streaming metrics file *HAS NOT* yet been created by the time the function is called
+    :return:
+    """
+    _STATS_FILE = "/tmp/spark_streaming_experiment.json"
+    try:remove(_STATS_FILE)
+    except: pass
+
+    return _collect_metrics(_STATS_FILE, timeout=999999)
 
 
 
@@ -131,14 +147,22 @@ if __name__ == "__main__":
     parser.add_argument("-eh", '--endpoint-host', help="the ganglia endpoing hostname or IP", default="master")
     parser.add_argument("-ep", '--endpoint-port', help="the ganglia endpoing port", type=int, default=8649)
     parser.add_argument("-cm", '--collect-metrics', help="collect the metrics", action='store_true')
+    parser.add_argument("-cs", '--collect-streaming-metrics', help="wait and collect the metrics of a streaming experiment", action='store_true')
     parser.add_argument('--summary', help="only keep a summary of metrics", action='store_true')
     parser.add_argument('-mh', '--monitor-hosts', help='The hosts to montitor (if not defined, monitor all', default=None)
     args = parser.parse_args()
 ##############################################################
 
-    # if we are just collecting metrics, then do that and exit
+    # if we are just collecting gagnlia metrics, then do that and exit
     if args.collect_metrics:
         m = collect_metrics()
+        if args.console:
+            pprint(m)
+        exit()
+
+    # if we are just collecting streaming metrics, then do that and exit
+    if args.collect_streaming_metrics:
+        m = collect_streaming_metrics()
         if args.console:
             pprint(m)
         exit()
