@@ -2,7 +2,7 @@
 from cement.core import foundation, controller
 
 from lib import get_backend, set_backend
-from monitor import collect_metrics, collect_streaming_metrics
+from monitor import collect_metrics, collect_streaming_metrics, send_kill as kill_monitoring_process
 from pprint import  PrettyPrinter
 
 pprint = PrettyPrinter(indent=2).pprint
@@ -82,19 +82,20 @@ class MyAppBaseController(controller.CementBaseController):
         if not experiment:
             self.app.log.error("No experiment name provided. Please use the -e/--experiment-name parameter ")
             exit()
-        else:
-            metrics = my_split(self.app.pargs.metrics)
 
-            # if collect-metrics has been given, the collect the ganglia metrics
+        metrics = my_split(self.app.pargs.metrics)
+
+        if self.app.pargs.collect_streaming_metrics:
+            streaming_metrics = collect_streaming_metrics()
+            metrics.update(streaming_metrics)
             if self.app.pargs.collect_metrics:
                 ganglia_metrics = collect_metrics()
-                # metrics['ganglia_metrics']=ganglia_metrics
-                metrics.update(ganglia_metrics)
-            if self.app.pargs.collect_streaming_metrics:
-                streaming_metrics = collect_streaming_metrics()
-                metrics.update(streaming_metrics)
-            # report the metrics to the backend
-            backend.report_dict(experiment, metrics)
+                if ganglia_metrics: metrics.update(ganglia_metrics)
+        elif self.app.pargs.collect_metrics:
+            ganglia_metrics = collect_metrics()
+            metrics.update(ganglia_metrics)
+        # report the metrics to the backend
+        backend.report_dict(experiment, metrics)
 
     @controller.expose(help="execute a query to the backend and prints the results")
     def query(self):

@@ -74,7 +74,7 @@ def send_kill():
             # send the stop signal to the active monitoring process
             kill(monitor_pid, SIGTERM)
     except:
-        #print "Could not read the pid file"
+        print "ERROR: Could not read the monitoring pid file"
         pass
 
 
@@ -104,10 +104,6 @@ def _collect_metrics(metrics_file, timeout=3):
             return metrics
     except:
         print 'Could not collect the metrics'
-    finally:
-        # remove the pid file
-        try: remove(pid_file)
-        except: pass
 
 
 def collect_metrics():
