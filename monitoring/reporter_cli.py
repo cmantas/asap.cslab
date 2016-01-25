@@ -86,11 +86,14 @@ class MyAppBaseController(controller.CementBaseController):
         metrics = my_split(self.app.pargs.metrics)
 
         if self.app.pargs.collect_streaming_metrics:
+            # wait for and collect the streaming metrics (but don't update)
             streaming_metrics = collect_streaming_metrics()
-            metrics.update(streaming_metrics)
+            # if you need to collect monitoring metrics, do so
             if self.app.pargs.collect_metrics:
                 ganglia_metrics = collect_metrics()
                 if ganglia_metrics: metrics.update(ganglia_metrics)
+            # in  the end update metrics with streaming_metrics so that they overwrite common entries
+            metrics.update(streaming_metrics)
         elif self.app.pargs.collect_metrics:
             ganglia_metrics = collect_metrics()
             metrics.update(ganglia_metrics)

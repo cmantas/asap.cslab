@@ -6,7 +6,8 @@ import traceback
 import logging as log
 from log_lib import get_logger
 
-log= get_logger('Ss_REPORT', level='DEBUG', show_level=True)
+log= get_logger('Ss_REPORT', level='INFO', show_level=True)
+
 
 class stream_reporter(object):
 
@@ -41,15 +42,14 @@ class stream_reporter(object):
 
         duration = end_time - self.start_time
 
-        log.info("==== Experiment END =====")
-        log.info("total time: " + str(duration)+" (detected end in: "+ str(time()-self.start_time))
-        log.info("Total records: " +str(sum(self.records)))
+        log.info("---==> Experiment END: "+("%.1f" % duration)++"sec, "+str(sum(self.records))+" records")
+        log.debug(" end (detected end in: "+ str(time()-self.start_time)+")")
 
         # shift times in self.rdd_times so that they start from zero
         self.rdd_times = map(lambda t: t-self.start_time, self.rdd_times)
 
         # output the data in a file
-        stats = {"time":duration, "timestamps:": self.rdd_times, "records": self.records}
+        stats = {"time":duration, "timestamps:": self.rdd_times, "records": self.records, "total_records":sum(self.records)}
 
         with open(self._STATS_FILE, "w+") as f: dump(stats, f, indent=3)
 
@@ -63,7 +63,7 @@ class stream_reporter(object):
                 # add the zero-point in the stats
                 self.records.append(0)
                 self.rdd_times.append(self.start_time)
-                log.info("++++++______ self.started ______++++++")
+                log.info("---==> Experiment START")
 
 
             # 2) Update time delta

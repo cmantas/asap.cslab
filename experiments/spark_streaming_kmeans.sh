@@ -1,4 +1,5 @@
-data_file=~/Data/Result_W2V_IMR_medium.csv
+#!/bin/bash
+data_file=~/Data/ Result_W2V_IMR_New.csv
 
 ss_kmeans=$ASAP_HOME/spark/streaming/streaming_kmeans_kafka.py
 k_producer=$ASAP_HOME/kafka/kafka_file_producer.py
@@ -17,23 +18,31 @@ k_produce(){
 }
 
 interval=3
-k=2
-lines=1000
+k_step=5
+max_k=27
+min_k=2
+min_lines=1000
+max_lines=1001000
+lines_step=100000
 
-# start spark streaming job and keep its id
-spark-submit $ss_kmeans -i $interval -k $k &
-ss_pid=$!; sleep 8 # wait for spark streaming to start
+for (( k=min_k; k<=max_k; k+=k_step )); do
+			
+		# start spark streaming job and keep its id
+		spark-submit $ss_kmeans -i $interval -k $k &
+		ss_pid=$!; sleep 8 # wait for spark streaming to start
 
-asap monitor start # start monitoring
-k_produce # produce the kafka stream
-echo Produced $bytes bytes
+	for (( lines=min_lines; lines<=max_lines; lines+=lines_step )); do
 
-# wait for experiment to end and report streaming and monitoring metrics
-asap report -cm -cs -e streaming_kmeans -m bytes=$bytes k=$k interval=$interval lines=$lines
-
-kill_ss # kill the streaming job
-echo OK DONE
-
+		asap monitor start # start monitoring
+		k_produce # produce the kafka stream
+		echo Produced $lines lines, $bytes bytes
+		
+		# wait for experiment to end and report streaming and monitoring metrics
+		asap report -cm -cs -e streaming_kmeans -m bytes=$bytes k=$k interval=$interval lines=$lines
+	done
+		kill_ss # kill the streaming job
+		echo OK DONE
+done
 
 
 

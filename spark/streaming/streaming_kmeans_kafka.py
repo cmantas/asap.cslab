@@ -57,6 +57,7 @@ lines = KafkaUtils.createStream(ssc, "localhost:2181", "consumer-group", {"test"
 # a D-Stream of (Sparse) Vectors
 vectors = lines.map(parse_imr_w2v_vector)
 
+print("----K="+str(args.clusters))
 
 # the k-means model
 #model = StreamingKMeans(k=2, decayFactor=1.0).setRandomCenters(1048576, 1.0, 0)

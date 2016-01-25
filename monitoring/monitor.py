@@ -74,7 +74,6 @@ def send_kill():
             # send the stop signal to the active monitoring process
             kill(monitor_pid, SIGTERM)
     except:
-        print "ERROR: Could not read the monitoring pid file"
         pass
 
 
