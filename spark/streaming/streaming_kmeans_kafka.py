@@ -51,7 +51,7 @@ ssc = StreamingContext(sc, args.interval)
 
 
 # a D-Stream of input lines from Kafka
-lines = KafkaUtils.createStream(ssc, "localhost:2181", "consumer-group", {"test": 1})\
+lines = KafkaUtils.createStream(ssc, "master:2181", "consumer-group", {"test": 1})\
     .map(lambda t: t[1])
 
 # a D-Stream of (Sparse) Vectors

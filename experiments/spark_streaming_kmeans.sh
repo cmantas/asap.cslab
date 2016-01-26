@@ -1,5 +1,5 @@
 #!/bin/bash
-data_file=~/Data/ Result_W2V_IMR_New.csv
+data_file=~/Data/Result_W2V_IMR_New.csv
 
 ss_kmeans=$ASAP_HOME/spark/streaming/streaming_kmeans_kafka.py
 k_producer=$ASAP_HOME/kafka/kafka_file_producer.py

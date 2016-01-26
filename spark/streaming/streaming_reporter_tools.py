@@ -42,7 +42,7 @@ class stream_reporter(object):
 
         duration = end_time - self.start_time
 
-        log.info("---==> Experiment END: "+("%.1f" % duration)++"sec, "+str(sum(self.records))+" records")
+        log.info("---==> Experiment END: "+("%.1f" % duration)+"sec, "+str(sum(self.records))+" records")
         log.debug(" end (detected end in: "+ str(time()-self.start_time)+")")
 
         # shift times in self.rdd_times so that they start from zero
