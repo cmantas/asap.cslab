@@ -25,6 +25,11 @@ function report
 	exec ${ASAP_HOME}/monitoring/reporter_cli.py report $@
 }
 
+function future-report
+{
+	${ASAP_HOME}/monitoring/reporter_cli.py future-report $@
+}
+
 function help  # Show a list of available opperations
 {
 
