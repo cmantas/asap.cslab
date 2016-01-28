@@ -2,7 +2,7 @@
 from cement.core import foundation, controller
 
 from lib import get_backend, set_backend
-from monitor import collect_metrics, collect_streaming_metrics, send_kill as kill_monitoring_process
+from monitor import *
 from pprint import  PrettyPrinter
 
 pprint = PrettyPrinter(indent=2).pprint
@@ -83,20 +83,28 @@ class MyAppBaseController(controller.CementBaseController):
             self.app.log.error("No experiment name provided. Please use the -e/--experiment-name parameter ")
             exit()
 
-        metrics = my_split(self.app.pargs.metrics)
+        metrics ={}
+
+        cli_metrics = my_split(self.app.pargs.metrics) # metrics from cmd args
+        file_metrics = collect_future_metrics() # metrics stored into a file in the past
+
+        streaming_metrics = ganglia_metrics = {}
 
         if self.app.pargs.collect_streaming_metrics:
-            # wait for and collect the streaming metrics (but don't update)
+            # wait for and collect the streaming metrics if required
             streaming_metrics = collect_streaming_metrics()
-            # if you need to collect monitoring metrics, do so
-            if self.app.pargs.collect_metrics:
-                ganglia_metrics = collect_metrics()
-                if ganglia_metrics: metrics.update(ganglia_metrics)
-            # in  the end update metrics with streaming_metrics so that they overwrite common entries
-            metrics.update(streaming_metrics)
-        elif self.app.pargs.collect_metrics:
-            ganglia_metrics = collect_metrics()
-            metrics.update(ganglia_metrics)
+
+        if self.app.pargs.collect_metrics:
+            # collect ganglia monitoring metrics if required
+            ganglia_metrics = collect_ganglia_metrics()
+
+        # update the metrics variable so that common common entries (if any) follow the priority
+        # 1)cli 2)future file 3)streaming 4)ganglia
+        metrics.update(ganglia_metrics)
+        metrics.update(streaming_metrics)
+        metrics.update(file_metrics)
+        metrics.update(cli_metrics)
+
         # report the metrics to the backend
         backend.report_dict(experiment, metrics)
 
@@ -110,6 +118,11 @@ class MyAppBaseController(controller.CementBaseController):
             for r in res:
                 print r
 
+
+    @controller.expose(help="store some metrics in a local file so that they can be reported later")
+    def future_report(self):
+        metrics = my_split(self.app.pargs.metrics)
+        store_future_metrics(metrics)
 
 
 

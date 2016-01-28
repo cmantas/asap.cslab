@@ -1,7 +1,9 @@
 __author__ = 'cmantas'
 import matplotlib.pyplot as plt
 from ast import literal_eval
-import  sqlite3
+from time import time, sleep
+from json import load, dumps
+from os.path import isfile
 
 try:
     plt.style.use('fivethirtyeight')
@@ -33,42 +35,6 @@ def myplot(*args, **kwargs):
     plt.legend(loc = 'upper left')
 
 
-
-
-# def multi_graph(table, x, y, cond_list, groupBy="", where="", **kwargs):
-#
-#     if 'title' not in kwargs:
-#         kwargs['title'] = x+" vs "+y
-#     if 'xlabel' not in kwargs:
-#         kwargs['xlabel'] = x
-#     if 'ylabel' not in kwargs:
-#         kwargs['ylabel'] = y
-#     if groupBy != "":
-#         groupBy = "group by "+groupBy
-#     if where !="":
-#         where = where+" and "
-#
-#
-#
-#     # for c in cond_list:
-#     #     query = "select {0} from {1} where {2} {3}".format(x+','+y, table, c, groupBy)
-#     #     rx, ry = query2lists(query)
-#     #     myplot(rx,ry, label=c, title=title, xlabel=xlabel, ylabel=ylabel)
-#     # show()
-#     query = "select {0} from {1} where {2}".format(x+","+ y, table, where) + "{0} " + groupBy
-#     multi_graph_query(query, cond_list, **kwargs)
-
-
-# def multi_graph_query(query, cond_list, **kwargs):
-#     figure()
-#     for c in cond_list:
-#         queryf = query.format(c)
-#         rx, ry = query2lists(queryf)
-#         myplot(rx,ry, label=c, **kwargs)
-
-
-
-
 def mycast(a):
     """
     given a string, it returns its casted value to the correct type or the string itself if it can't be evaluated
@@ -86,3 +52,31 @@ def mycast(a):
         except:
             return a
 
+
+def wait_for_file(filepath, timeout):
+    """ Keep waiting for a file to appear unless a timeout is reached
+    :param filepath:
+    :param timeout: the time needed to give up (default: 3sec)
+    :return: void
+    """
+    end_time= time() + timeout
+    #wait
+    while not isfile(filepath) and time()<end_time:
+        sleep(0.1)
+    # if after wait no file then trouble
+    if not isfile(filepath):
+        print "ERROR: waited for monitoring data file, but timed out"
+        exit()
+
+def _collect_json(metrics_file, timeout=3):
+    try:
+        # wait for the metrics file to be created (timeout secs)
+        if timeout: wait_for_file(metrics_file, timeout)
+
+        # collect the saved metrics from metrics file
+        with open(metrics_file) as f:
+            metrics = load(f)
+            return metrics
+    except:
+        #print 'Could not collect the metrics'
+        return {}
