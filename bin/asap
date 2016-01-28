@@ -12,6 +12,8 @@ function monitor
 			${ASAP_HOME}/monitoring/monitor.py $@ & ;;
 		stop)
 			${ASAP_HOME}/monitoring/monitor.py -cm $@;;
+		kill)
+			kill -9 $(ps aux|grep asap|grep monitor.py|awk {'print $2'});;
 		*)
 			echo Please specify start or stop;;
 	esac

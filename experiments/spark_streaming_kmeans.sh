@@ -20,28 +20,39 @@ k_produce(){
 interval=3
 k_step=5
 max_k=27
-min_k=2
+min_k=5
 min_lines=1000
 max_lines=1001000
-lines_step=100000
+lines_step=200000
 
-for (( k=min_k; k<=max_k; k+=k_step )); do
-			
+#ks=(2 5 10 20 40)
+ks=(10)
+#lines_counts=(1000 10000 100000 300000 600000 1000000)
+lines_counts=(1000 10000 50000 100000 300000)
+intervals=(1 2 5 10)
+
+for k in "${ks[@]}"; do
+	for interval in "${intervals[@]}";do
+		echo starting stream for k=$k and interv=$interval
+
 		# start spark streaming job and keep its id
 		spark-submit $ss_kmeans -i $interval -k $k &
-		ss_pid=$!; sleep 8 # wait for spark streaming to start
+		ss_pid=$!; sleep 20
+		# wait for spark streaming to start
+		for lines in "${lines_counts[@]}"; do
 
-	for (( lines=min_lines; lines<=max_lines; lines+=lines_step )); do
-
-		asap monitor start # start monitoring
-		k_produce # produce the kafka stream
-		echo Produced $lines lines, $bytes bytes
-		
-		# wait for experiment to end and report streaming and monitoring metrics
-		asap report -cm -cs -e streaming_kmeans -m bytes=$bytes k=$k interval=$interval lines=$lines
+			asap monitor start # start monitoring
+			echo starting producing $lines lines
+			k_produce # produce the kafka stream
+			echo Produced $lines lines, $bytes bytes
+			
+			# wait for experiment to end and report streaming and monitoring metrics
+			asap report -cm -cs -e streaming_kmeans \
+				-m bytes=$bytes k=$k interval=$interval lines=$lines
+		done
+			kill_ss # kill the streaming job
+			echo OK DONE
 	done
-		kill_ss # kill the streaming job
-		echo OK DONE
 done
 
 
