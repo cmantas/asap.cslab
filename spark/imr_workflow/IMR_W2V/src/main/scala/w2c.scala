@@ -39,5 +39,5 @@ object w2cObj extends App{
     linalg.Vectors.dense(bv.elements)
   }
 
-  println(vectorized.first)
+  vectorized.saveAsTextFile(args(1))
 }
