@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-hdfs_svr=localhost
+hdfs_svr=master
+
 csv_dataset="hdfs://$hdfs_svr:9000/tmp/imr_training_suffled_small.csv"
 
 category=1 # the category to use
@@ -20,21 +21,22 @@ model=/tmp/lr_model.csv # the logistic regression model (csv)
 class_output=$work_dir/classification_output # the output of the classification
 
 
+
+
 # create/clean up dirs, etc
 #rm -r $work_dir &>/dev/null; mkdir -p $work_dir # empty work dir
 hdfs dfs -rm -r $w2v_model # delete previous w2v model
 
 
 ### TRAIN W2V ###
-#spark-submit $w2v_jar_path sm $csv_dataset $w2v_model
+spark-submit $w2v_jar_path sm $csv_dataset $w2v_model
 
 ### Vectorize with W2V ###
-#spark-submit $w2v_jar_path sv $w2v_model $csv_dataset $w2v_output
+spark-submit $w2v_jar_path sv $w2v_model $csv_dataset $w2v_output
 
 ###  TRAIN CLASSIFIER  ###
 # create an initial model 
-spark-submit --py-files imr_tools.py, \
-	imr_classification.py train $w2v_output \
+spark-submit --py-files imr_tools.py, imr_classification.py train $w2v_output \
 	--model  $model \
 	--labels $categories \
 	--category $category \
@@ -42,7 +44,7 @@ spark-submit --py-files imr_tools.py, \
 # --evaluate is a flag for 20% cross-eval with training input
 
 # update a previous model 
-spark-submit --py-files imr_tools.py imr_classification.py train $w2v_output \
+spark-submit --py-files imr_tools.py, imr_classification.py train $w2v_output \
 	--model  $model \
 	--labels $categories \
 	--category $category \

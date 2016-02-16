@@ -98,20 +98,15 @@ def perform_train_job(input_path, l_encoder,
 
     raw_data = sc.textFile(input_path)  # the raw text input RDD
 
-    print raw_data.first()
 
     entry_data = raw_data.map(parse_line)
-    print "Orig label:", entry_data.first()[category]
 
     enc_entries = entry_data.map(
             lambda e: encode_entry_label(e, category, l_encoder)
     )
-    print "Enc label:", enc_entries.first()[category]
 
     # an RDD of Labeled Points
     all_data = enc_entries.map(lambda e: entry_to_labeled_point(e, category))
-
-    print all_data.first()
 
     if evaluate:  # choose the training data
         # split the dataset in training and validation sets
