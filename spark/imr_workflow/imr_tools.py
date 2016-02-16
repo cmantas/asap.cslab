@@ -1,4 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+tools for imr datasets
+@author: Chris Mantas
+@contact: the1pro@gmail.com
+@since: Created on 2016-02-12
+@todo: custom formats, break up big lines
+@license: http://www.apache.org/licenses/LICENSE-2.0 Apache License
+"""
+
 from ast import literal_eval
+from collections import defaultdict
 
 
 def create_label_encoder(labels):
@@ -11,38 +24,6 @@ def create_label_encoder(labels):
     encoder = LabelEncoder()
     encoder.fit(labels)
     return encoder
-
-
-def get_labels_from_label_csv(file_name):
-    """
-    Reads a single-line csv file that contains labels and returns said labels
-    :param file_name: a csv file
-    :return: an iterable of integer labels
-    """
-    line = open(file_name).readlines()[0]
-    labels = literal_eval(line)
-    return labels
-
-
-def create_encoders_from_label_csvs(*csvs):
-    """
-    Creates one or more label encoders from one or more csv filenames
-    :param csvs: files with integer labels in a single line
-    :return:
-    """
-
-    def create_one(csv):
-        """
-        helper function creating label encoder from single csv
-        """
-        labels = get_labels_from_label_csv(csv)
-        l_encoder = create_label_encoder(labels)
-        return l_encoder
-
-    if len(csvs) > 1:
-        return map(create_one, csvs)
-    else:
-        return create_one(csvs[0])
 
 
 def get_features_from_line(line):
@@ -60,6 +41,11 @@ def get_features_from_line(line):
 
 
 def parse_line(line):
+    """
+    Parses a string line to a tuple
+    :param line:
+    :return:
+    """
     from ast import literal_eval
     try:
         entry = literal_eval(line)
@@ -70,55 +56,25 @@ def parse_line(line):
     return entry
 
 
-def encode_entry_label(entry, category, label_encoder):
-    entry = list(entry)
-    tst = (entry[category],)  # workaround: add label into a tuple
-    #  avoids 'int not iterable' exception in
-    #  label_encoder.transform
-    label = label_encoder.transform(tst)[0]
-
-    entry[category] = label
-    return entry
-
-
-def entry_to_labeled_point(entry, category):
+def tuple_to_labeled_point(entry, category, l_encoder=None):
     """
     Creates a label point from a text line that is formated as a tuple
-    :param line: line of format (3, 2, 1, [3,4,4 ..]), where the first entries
-            in the tuple are labels, and the last entry a list of features
+    :param entry: a tuple of format (3, 2, 1, [3,4,4 ..]), where the first
+            entries in the tuple are labels, and the last entry is
+            a list of features
     :param category: which one of the labels in the tuple to keep for the
             labeled point (0 to 2 for imr dataset)
+    :param l_encoder: the label encoder to encode the label (if any)
 
     :return: a LabeledPoint
     """
 
     from pyspark.mllib.classification import LabeledPoint
-
     label = entry[category]
+    if l_encoder:
+        label = l_encoder.transform(label)
     features = entry[-1]
     return LabeledPoint(label, features)  # return a new labelPoint
-
-
-def save_model_weights(weights, filepath):
-    """
-    Saves the 'weights' list in file 'filepath'
-    :param weights:
-    :param filepath:
-    :return:
-    """
-    with open(filepath, 'w+') as f:
-        f.write(str(weights))
-
-
-def load_model_weights(file_path):
-    """
-    Loads the weights of a model from a single-line csv file
-    :param file_path:
-    :return:
-    """
-    with open(file_path) as f:
-        return literal_eval(f.read())
-
 
 def classify_line(features, model, l_encoder=None):
     """
@@ -133,4 +89,80 @@ def classify_line(features, model, l_encoder=None):
     prediction = l_encoder.inverse_transform(encoded_prediction) \
         if l_encoder else encoded_prediction
     return prediction, features
+
+
+def label_encoders_from_json_file(labels_json_file, category=None):
+    """
+    Loads a mapping of categories->available_labels from a json file.
+    If category is specified it returns the LabelEncoder for this category.
+    If not, it returns a dict of category->LabelEncoder
+    :param labels_json_file:
+    :param category:
+    :return:
+    """
+    from json import load
+    from sklearn.preprocessing import LabelEncoder
+    with open(labels_json_file) as infile:
+
+        all_labels = load(infile)
+        label_dict= dict(map(
+                lambda (k, v): (int(k), LabelEncoder().fit(v)),
+                all_labels.iteritems()
+        ))
+
+        return label_dict[category] if category else label_dict
+
+
+def labels_from_csv_file(csv_file, label_range):
+    """
+    Parses a csv dataset and keeps a set of all the labels in 'label_range'
+    :param csv_file:
+    :param label_range:
+    :return:
+    """
+    labels = defaultdict(set)
+    with open(csv_file) as infile:
+        for line in infile:
+            line_tokens = line.split(';')
+            for i in range(label_range[0], label_range[1]+1):
+                label = int(line_tokens[i])
+                labels[i].add(label)
+    # convert to dict of lists
+    tuples = map(lambda (k,v): (k,list(v)),  labels.iteritems())
+    return dict(tuples)
+
+
+# =======================  MAIN ========================= #
+if __name__ == "__main__":
+    from argparse import ArgumentParser
+    from json import dump
+
+    cli_parser = ArgumentParser(description='tools for imr datasets')
+    cli_parser.add_argument("operation",
+                            help="the operation to run: 'train' or 'classify'")
+    cli_parser.add_argument("input",
+                            help="the input dataset (formatted as a csv file"
+                                 "separated with ';' character")
+    cli_parser.add_argument("output", help="the output file")
+    cli_parser.add_argument("-rs", '--range-start', type=int, default=1,
+                            help="the start of the range of labels")
+    cli_parser.add_argument("-re", '--range-end', type=int, default=3,
+                            help="the end of the range of labels (inclusive)")
+
+    args = cli_parser.parse_args()
+
+    if args.operation == "storelabels":
+        from collections import defaultdict
+        # get a dict of labels from a csv dataset
+        labels_dict = labels_from_csv_file(args.input,
+                                           (args.range_start, args.range_end))
+        # dump it to the output file
+        with open(args.output, 'w+') as outfile:
+            dump(labels_dict, outfile)
+
+
+
+    else:
+        print("I do not know operation:", args.operation)
+
 
