@@ -73,8 +73,10 @@ def line_to_labeled_point(line, category, label_encoder=None):
     from pyspark.mllib.classification import LabeledPoint
 
     entry = literal_eval(line)
-    label = label_encoder.transform(entry[category]) if label_encoder \
-        else entry[category]
+    print "???? Transforming:,", entry[category]
+    tst = (entry[category],)
+    label = label_encoder.transform(tst)[0] if label_encoder \
+            else entry[category]
 
     features = entry[-1]  # the last element in tuple is the feature list
 

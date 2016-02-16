@@ -23,26 +23,28 @@ hdfs dfs -rm -r $w2v_model # delete previous w2v model
 
 
 ### TRAIN W2V ###
-spark-submit $w2v_jar_path sm $csv_dataset $w2v_model
+#spark-submit $w2v_jar_path sm $csv_dataset $w2v_model
 
 ### Vectorize with W2V ###
-spark-submit $w2v_jar_path sv $w2v_model $csv_dataset $w2v_output
+#spark-submit $w2v_jar_path sv $w2v_model $csv_dataset $w2v_output
 
 ###  TRAIN CLASSIFIER  ###
 # create an initial model 
-spark-submit imr_classification.py train $w2v_output \
+spark-submit --py-files imr_tools.py, \
+	imr_classification.py train $w2v_output \
 	--model  $model \
 	--labels $categories \
 	--category $category \
-	--evaluate #flag for cross-evaluation on 20% of the data
+	--evaluate \
+# --evaluate is a flag for 20% cross-eval with training input
 
 # update a previous model 
-spark-submit imr_classification.py train $w2v_output \
+spark-submit --py-files imr_tools.py imr_classification.py train $w2v_output \
 	--model  $model \
 	--labels $categories \
 	--category $category \
 	--update # flag for loading an updating a model
-
+exit
 ## create a mock dataset for classificaton, having only the features, not the labels
 mock_count=10
 cat $w2v_output/* | head -n $mock_count | grep -o "\[.*\]" > $work_dir/mock.csv
@@ -54,12 +56,13 @@ rm -r $class_output 2>/dev/null
  spark-submit imr_classification.py classify $work_dir/mock.csv\
         --output $class_output \
         --model  $model \
+	--py-files imr_tools.py
         --labels $categories 
 
 echo "================> Results <====================="
 printf "Original Labels: \n	"
-head -n $mock_count  $csv_dataset  | awk  -F ';'  "{print \$$((category +1))}" | tr '\n' ','
+hdfs dfs -head -n $mock_count  $csv_dataset  | awk  -F ';'  "{print \$$((category +1))}" | tr '\n' ','
 
 printf "\n\nClassified Labels: \n	"
-cat $class_output/* | head -n $mock_count | awk -F '[(,]'   '{print $2}' | tr '\n' ',' 
+hdfs dfs -cat $class_output/* | head -n $mock_count | awk -F '[(,]'   '{print $2}' | tr '\n' ',' 
 
