@@ -59,27 +59,43 @@ def get_features_from_line(line):
     return entry[-1] if isinstance(entry, tuple) else entry
 
 
-def line_to_labeled_point(line, category, label_encoder=None):
+def parse_line(line):
+    from ast import literal_eval
+    try:
+        entry = literal_eval(line)
+        if not isinstance(entry, tuple):
+            raise Exception("Input parsed, but is not a tuple")
+    except:
+        raise Exception("Could not evaluate (parse) input into an object")
+    return entry
+
+
+def encode_entry_label(entry, category, label_encoder):
+    entry = list(entry)
+    tst = (entry[category],)  # workaround: add label into a tuple
+    #  avoids 'int not iterable' exception in
+    #  label_encoder.transform
+    label = label_encoder.transform(tst)[0]
+
+    entry[category] = label
+    return entry
+
+
+def entry_to_labeled_point(entry, category):
     """
     Creates a label point from a text line that is formated as a tuple
     :param line: line of format (3, 2, 1, [3,4,4 ..]), where the first entries
             in the tuple are labels, and the last entry a list of features
     :param category: which one of the labels in the tuple to keep for the
             labeled point (0 to 2 for imr dataset)
-    :param label_encoder: an optional LabelEncoder object for the label value
+
     :return: a LabeledPoint
     """
-    from ast import literal_eval
+
     from pyspark.mllib.classification import LabeledPoint
 
-    entry = literal_eval(line)
-    print "???? Transforming:,", entry[category]
-    tst = (entry[category],)
-    label = label_encoder.transform(tst)[0] if label_encoder \
-            else entry[category]
-
-    features = entry[-1]  # the last element in tuple is the feature list
-
+    label = entry[category]
+    features = entry[-1]
     return LabeledPoint(label, features)  # return a new labelPoint
 
 
@@ -102,19 +118,6 @@ def load_model_weights(file_path):
     """
     with open(file_path) as f:
         return literal_eval(f.read())
-
-
-def get_encoding_parser(category_no, encoder):
-        """
-        Creates a closure that parses lines to LabeledPoints.
-        Uses the category number of 'label' to chose a category label
-        Also the 'encoder' to encode the categories to consecutive integers.
-        :param category_no: the category number to choose
-        :param encoder: a LabeledEncoder for the given label category
-        :return: a function parsing a text line
-        """
-        return lambda line: line_to_labeled_point(line, category_no,
-                                                  label_encoder=encoder)
 
 
 def classify_line(features, model, l_encoder=None):

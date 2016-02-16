@@ -1,3 +1,12 @@
+"""
+Classification in Spark
+@author: Chris Mantas
+@contact: the1pro@gmail.com
+@since: Created on 2016-02-12
+@todo: custom formats, break up big lines
+@license: http://www.apache.org/licenses/LICENSE-2.0 Apache License
+"""
+
 from pyspark.mllib.classification import \
     LogisticRegressionWithLBFGS, LogisticRegressionModel
 from imr_tools import *
@@ -38,7 +47,8 @@ def get_cli_args():
     cli_parser.add_argument("-m", '--model', required=True,
                             help="a csv file holding the model weights")
     cli_parser.add_argument("-o", '--output',
-                            help="the output location (in case of classify op)")
+                            help="the output location "
+                                 "(in case of classify op)")
     cli_parser.add_argument("-l", '--labels', required=True,
                             help="a csv file holding all labels in dataset")
     cli_parser.add_argument("-c", '--category', type=int, default=1,
@@ -68,13 +78,15 @@ def calculate_error(valid_rdd, model):
 
 # ====================  Spark Jobs ====================== #
 
-def perform_train_job(input_path, l_encoder, initial_weights=None, evaluate=False):
+def perform_train_job(input_path, l_encoder,
+                      initial_weights=None, evaluate=False, category=1):
     """
     Trains a Linear Regression model and returns its weights
     :param input_path: the input file-name (local or HDFS)
-    :param parser: The parser function to use for creating the labeled points
+    :param l_encoder: The label encoder
     :param initial_weights: the initial LR model (weights) we will be enhancing
     :param evaluate: Whether or not to cross-evaluate the model on a 20% split
+    :param category: the label category
     :return: a list of model weights for a Logistic Regression Model
     """
 
@@ -86,13 +98,22 @@ def perform_train_job(input_path, l_encoder, initial_weights=None, evaluate=Fals
 
     raw_data = sc.textFile(input_path)  # the raw text input RDD
 
-    # parse the raw data to labeled points
-    # Create a parser function based on the category number
-    # and label encoder. It parses:  text_line --> LabeledPoint
-    parsing_mapper_func = get_encoding_parser(args.category, l_encoder)
-    all_data = raw_data.map(parsing_mapper_func)  # an RDD of labeled Points
+    print raw_data.first()
 
-    if evaluate:
+    entry_data = raw_data.map(parse_line)
+    print "Orig label:", entry_data.first()[category]
+
+    enc_entries = entry_data.map(
+            lambda e: encode_entry_label(e, category, l_encoder)
+    )
+    print "Enc label:", enc_entries.first()[category]
+
+    # an RDD of Labeled Points
+    all_data = enc_entries.map(lambda e: entry_to_labeled_point(e, category))
+
+    print all_data.first()
+
+    if evaluate:  # choose the training data
         # split the dataset in training and validation sets
         (training_data, validation_data) = all_data.randomSplit([0.8, 0.2])
     else:
@@ -105,7 +126,8 @@ def perform_train_job(input_path, l_encoder, initial_weights=None, evaluate=Fals
         print("---> Updating Classification Model")
 
     # ----------------   Do the training ----------------  #
-    model = train_model(training_data, numClasses=len(l_encoder.classes_))
+    model = train_model(training_data, numClasses=len(l_encoder.classes_),
+                        initialWeights=initial_weights)
     print("   > Done")
 
     # calculate training error
@@ -193,7 +215,8 @@ if __name__ == "__main__":
         # do the train job
         model_weights = perform_train_job(args.input, l_encoder,
                                           initial_weights=init_weights,
-                                          evaluate=args.evaluate)
+                                          evaluate=args.evaluate,
+                                          category=args.category)
         # save the model weights as a csv file
         save_model_weights(model_weights, args.model)
 
@@ -201,11 +224,10 @@ if __name__ == "__main__":
         if not args.output:
             raise Exception("for classify operation, an output needs to be"
                             "specified")
-        weights= load_model_weights(args.model)
+        weights = load_model_weights(args.model)
 
         # do the classification job
         perform_classification_job(args.input, l_encoder,
                                    weights, args.output)
     else:
         print("I do not know operation: "+args.operation)
-

@@ -1,24 +1,27 @@
 #!/usr/bin/env bash
 
-csv_dataset=$1 # the input dataset
+hdfs_svr=localhost
+csv_dataset="hdfs://$hdfs_svr:9000/tmp/imr_training_suffled_small.csv"
 
 category=1 # the category to use
 # a csv file with the all thepossible category labels of this categoyr
 categories=labels_$category.csv 
 
-work_dir=hdfs://master:9000/tmp/imr_workflow # dir of intermediate/output data
+work_dir=hdfs://$hdfs_svr:9000/tmp/imr_workflow # dir of intermediate/output data
 
 w2v_jar_path=~/bin/lib/imr_w2v_2.11-1.0.jar # path for the w2v jar file
 
 w2v_model=$work_dir/w2v_model_spark # the dir where the w2v model will be saved
+				    # for now, it is stored in hdfs only
 w2v_output=$work_dir/imr_sample/ # the output vectors of w2v
 
-model=$work_dir/lr_model.csv # the logistic regression model (csv)
+model=/tmp/lr_model.csv # the logistic regression model (csv)
+			# for now, it lives only in the local filesystem
 class_output=$work_dir/classification_output # the output of the classification
 
 
 # create/clean up dirs, etc
-rm -r $work_dir &>/dev/null; mkdir -p $work_dir # empty work dir
+#rm -r $work_dir &>/dev/null; mkdir -p $work_dir # empty work dir
 hdfs dfs -rm -r $w2v_model # delete previous w2v model
 
 
