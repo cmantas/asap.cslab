@@ -105,7 +105,7 @@ def label_encoders_from_json_file(labels_json_file, category=None):
     with open(labels_json_file) as infile:
 
         all_labels = load(infile)
-        label_dict= dict(map(
+        label_dict = dict(map(
                 lambda (k, v): (int(k), LabelEncoder().fit(v)),
                 all_labels.iteritems()
         ))
