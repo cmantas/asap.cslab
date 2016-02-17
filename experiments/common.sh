@@ -28,7 +28,7 @@ function ttime  {
 }
 
 function peek_time {
-	time=$(cat /tmp/asap_monitoring_metrics.json | grep \"time | cut -d':' -f 2)
+	time=$(cat asap_monitoring_metrics.json | grep \"time | cut -d':' -f 2)
 	intt=$(echo $time | cut -d '.' -f 1)
 	dect=$(echo $time | cut -d '.' -f 2)
 	echo $intt.${dect:0:2}

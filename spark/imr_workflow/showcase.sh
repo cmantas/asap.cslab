@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 csv_dataset=$1 # the input csv_dataset (an hdfs url)
-category=2 # the category to use
+category=1 # the category to use
 categories=labels.json  # a json file holding all possible labels for each category
 
 
