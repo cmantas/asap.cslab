@@ -111,7 +111,10 @@ def collect_future_metrics():
     :return:
     """
     rv = _collect_json(_FUTURE_FILE, timeout=None)
-    remove(_FUTURE_FILE)
+    try:
+      remove(_FUTURE_FILE)
+    except:
+        pass
     return rv
 
 

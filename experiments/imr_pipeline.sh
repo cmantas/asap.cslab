@@ -14,7 +14,7 @@ w2v_model=~/Data/word2vectormodel_3108.bin	# W2V model location
 lr_model=$data_dir/log_reg_model	# LogReg model location
 
 # the ammounts of lines to test
-tested_lines=(1001 2000 4000 10000 20000 50000 100000 200000 300000)
+tested_lines=(1000 2000 4000 10000 20000 50000 100000 200000 300000)
 
 # global parameters
 param="{'loss':'log','n_iter':100,'alpha':0.0001}" # no idea about what
@@ -141,14 +141,13 @@ classifier_predict(){
 for lines in ${tested_lines[@] }
 do
 	# remove and recreate work dir
-	#rm -r $data_dir &>/dev/null; mkdir -p $data_dir
+	rm -r $data_dir &>/dev/null; mkdir -p $data_dir
 	
 	# create new file with 'lines' lines
-	#head -n $lines $full_training_data > $training_data
-	#preprocess
-	#w2v_train
-	#w2v_vectorize
+	head -n $lines $full_training_data > $training_data
+	preprocess
+	w2v_train
+	w2v_vectorize
 	classifier_train
 	classifier_predict
-	exit
 done

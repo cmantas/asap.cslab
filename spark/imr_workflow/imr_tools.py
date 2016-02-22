@@ -115,21 +115,21 @@ def label_encoders_from_json_file(labels_json_file, category=None):
 
 def labels_from_csv_file(csv_file, label_range):
     """
-    Parses a csv dataset and keeps a set of all the labels in 'label_range'
+    Parses a csv dataset and keeps a set of all the labels in 'label_range'.
+    Contains duplicates but preserves order.
     :param csv_file:
     :param label_range:
     :return:
     """
-    labels = defaultdict(set)
+    labels = defaultdict(list)
     with open(csv_file) as infile:
         for line in infile:
             line_tokens = line.split(';')
             for i in range(label_range[0], label_range[1]+1):
                 label = int(line_tokens[i])
-                labels[i].add(label)
-    # convert to dict of lists
-    tuples = map(lambda (k,v): (k,list(v)),  labels.iteritems())
-    return dict(tuples)
+                labels[i].append(label)
+    # convert to regular dict of lists
+    return dict(labels.iteritems())
 
 
 # =======================  MAIN ========================= #
