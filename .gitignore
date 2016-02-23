@@ -31,3 +31,5 @@ log/
 experiments/input/*
 experiments/tmp/*
 *.db
+*.log
+*.pid
