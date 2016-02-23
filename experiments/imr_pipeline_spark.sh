@@ -34,6 +34,7 @@ w2v_train(){
 	asap monitor stop
 	in_bytes=$(hdfs_size $hdfs_csv)
 	out_bytes=$(hdfs_size $w2v_model)
+	echo $(peek_time)sec \(in: $in_bytes, out: $out_bytes, lines: $lines\)
         asap report -e imr_w2v_train_spark -cm \
 		-m input_bytes=$in_bytes output_bytes=$out_bytes lines=$lines
 
@@ -50,6 +51,7 @@ w2v_vectorize(){
 	asap monitor stop
 	in_bytes=$(hdfs_size $hdfs_csv)
 	out_bytes=$(hdfs_size $w2v_output)
+	echo $(peek_time)sec \(in: $in_bytes, out: $out_bytes, lines: $lines\)
         asap report -e imr_w2v_vectorize_spark -cm \
 		-m input_bytes=$in_bytes output_bytes=$out_bytes lines=$lines
 
@@ -71,6 +73,7 @@ train(){
 	asap monitor stop
 	in_bytes=$(hdfs_size $w2v_output)
 	out_bytes=$(hdfs_size $lr_model)
+	echo $(peek_time)sec \(in: $in_bytes, out: $out_bytes, lines: $lines\)
         asap report -e imr_lr_train_spark -cm \
 		-m input_bytes=$in_bytes output_bytes=$out_bytes lines=$lines
 
@@ -91,6 +94,7 @@ classify(){
 	asap monitor stop
 	in_bytes=$(hdfs_size $w2v_output)
 	out_bytes=$(hdfs_size $class_ouput)
+	echo $(peek_time)sec \(in: $in_bytes, out: $out_bytes, lines: $lines\)
         asap report -e imr_classify_spark -cm \
 		-m input_bytes=$in_bytes output_bytes=$out_bytes lines=$lines
 
