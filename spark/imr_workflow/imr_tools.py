@@ -116,18 +116,21 @@ def label_encoders_from_json_file(labels_json_file, category=None):
 def labels_from_csv_file(csv_file, label_range):
     """
     Parses a csv dataset and keeps a set of all the labels in 'label_range'.
-    Contains duplicates but preserves order.
+    Preserves the order in which it sees labels - does not contain duplicates.
     :param csv_file:
     :param label_range:
     :return:
     """
     labels = defaultdict(list)
+    label_sets = defaultdict(set)
     with open(csv_file) as infile:
         for line in infile:
             line_tokens = line.split(';')
             for i in range(label_range[0], label_range[1]+1):
                 label = int(line_tokens[i])
-                labels[i].append(label)
+                if label not in label_sets[i]:
+                    label_sets[i].add(label)
+                    labels[i].append(label)
     # convert to regular dict of lists
     return dict(labels.iteritems())
 

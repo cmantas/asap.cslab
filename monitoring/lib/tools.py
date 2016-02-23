@@ -28,6 +28,7 @@ def myplot(*args, **kwargs):
         ylabel = kwargs["ylabel"]
         del(kwargs["ylabel"])
         plt.ylabel(ylabel)
+
     plt.grid(True)
     # plt.grid(which='both')
     # plt.grid(which='minor', alpha=0.2)
