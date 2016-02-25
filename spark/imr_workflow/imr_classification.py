@@ -205,9 +205,9 @@ if __name__ == "__main__":
 
         # do the train job
         model = perform_train_job(sc, args.input, l_encoder,
-                                          initial_model=init_model,
-                                          evaluate=args.evaluate,
-                                          category=args.category)
+                                  initial_model=init_model,
+                                  evaluate=args.evaluate,
+                                  category=args.category)
         # save the model weights as a csv file
         try:
             system("hdfs dfs -rm -r " + args.model)

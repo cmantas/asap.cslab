@@ -63,11 +63,12 @@ def wait_for_file(filepath, timeout):
     end_time= time() + timeout
     #wait
     while not isfile(filepath) and time()<end_time:
-        sleep(0.1)
+        sleep(0.2)
     # if after wait no file then trouble
     if not isfile(filepath):
         print "ERROR: waited for monitoring data file, but timed out"
         exit()
+
 
 def _collect_json(metrics_file, timeout=3):
     try:
