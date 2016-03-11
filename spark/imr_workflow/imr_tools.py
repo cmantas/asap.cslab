@@ -48,7 +48,7 @@ def parse_line(line):
     """
     from ast import literal_eval
     try:
-        entry = literal_eval(line)
+        entry = literal_eval(line)  # line contains 3 labels and a w2v vector
         if not isinstance(entry, tuple):
             raise Exception("Input parsed, but is not a tuple")
     except:
@@ -75,6 +75,7 @@ def tuple_to_labeled_point(entry, category, l_encoder=None):
         label = l_encoder.transform(label)
     features = entry[-1]
     return LabeledPoint(label, features)  # return a new labelPoint
+
 
 def classify_line(features, model, l_encoder=None):
     """

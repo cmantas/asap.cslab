@@ -61,7 +61,6 @@ class MyAppBaseController(controller.CementBaseController):
          ./reporter_cli.py plot-query -q  "select cast(strftime('%s',date) as long) , my_metric from my_table;" -pp xlabel=bull title='my title'
          """
 
-
     @controller.expose(aliases=['set-backend'])
     def set_reporting_backend(self):
         self.app.log.info("Setting reporting back-end")
@@ -86,7 +85,8 @@ class MyAppBaseController(controller.CementBaseController):
         metrics ={}
 
         cli_metrics = my_split(self.app.pargs.metrics) # metrics from cmd args
-        file_metrics = collect_future_metrics() # metrics stored into a file in the past
+         # metrics stored into a file in the past
+        file_metrics = collect_future_metrics()
 
         streaming_metrics = ganglia_metrics = {}
 

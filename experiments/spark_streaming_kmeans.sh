@@ -37,8 +37,10 @@ for k in "${ks[@]}"; do
 
 		# start spark streaming job and keep its id
 		spark-submit $ss_kmeans -i $interval -k $k &
-		ss_pid=$!; sleep 20
-		# wait for spark streaming to start
+		ss_pid=$!
+		# wait for spark streaming to init
+		sleep 20
+
 		for lines in "${lines_counts[@]}"; do
 
 			asap monitor start # start monitoring
