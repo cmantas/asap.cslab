@@ -12,7 +12,7 @@ engine=$1
 shift
 case "$engine" in
  	spark)
-		$SPARK_HOME/bin/spark-submit ${ASAP_HOME}/spark/spark_kmeans_text.py -i $1 -k $2 -mi $3;;
+		spark-submit ${ASAP_HOME}/spark/spark_kmeans_text.py -i $1 -k $2 -mi $3;;
 	weka)
 		${ASAP_HOME}/weka/kmeans_text_weka/kmeans_text_weka.sh $@ ;;
 	mahout)
@@ -33,7 +33,7 @@ function tfidf #ENGINE INPUT OUTPUT MIN_DOCS
 	case "$engine" in
 	 	spark)
 			echo +++++DEBUG+++++
-			$SPARK_HOME/bin/spark-submit ${ASAP_HOME}/spark/spark_tfidf_v2.py -i $1 -o $2 -mdf $3;;
+			spark-submit ${ASAP_HOME}/spark/spark_tfidf_v2.py -i $1 -o $2 -mdf $3;;
 		weka)
 			echo tfidf in weka
 			${ASAP_HOME}/weka/kmeans_text_weka/tfidf_weka.sh $@ ;;
@@ -56,19 +56,17 @@ function word2vec #ENGINE INPUT OUTPUT
 	case "$engine" in 
 		pyspark)
 			echo Word2Vec in pyspark 
-			$SPARK_HOME/bin/spark-submit ${ASAP_HOME}/spark/spark_word2vec.py $input;;
+			spark-submit ${ASAP_HOME}/spark/spark_word2vec.py $input;;
 		spark_scala)
 			echo Word2Vec in Spark Scala
-			$SPARK_HOME/bin/spark-submit --class Word2Vec ${ASAP_HOME}/spark/sparkops_2.10-1.0.jar $input;;
+			spark-submit --class Word2Vec ${ASAP_HOME}/spark/sparkops_2.10-1.0.jar $input;;
 		gensim)
 			echo Word2Vec in Gensim
-			python ${ASAP_HOME}/centralized/Word2Vec/Word2Vec.py $input $vector_size $min_df;;
-
+			python ${ASAP_HOME}/centralized/Word2Vec/Word2Vec.py $input $vector_size $min_df;; 
 		*)
 			echo Engine "$engine" does not exist;;
 	esac
 }
-
 
 function lda
 {
@@ -79,7 +77,7 @@ function lda
 	case "$engine" in
 		scala)
 			echo LDA in Spark_Scala
-			$SPARK_HOME/bin/spark-submit --class LDA ${ASAP_HOME}/spark/sparkops_2.10-1.0.jar $input;;
+			spark-submit --class LDA ${ASAP_HOME}/spark/sparkops_2.10-1.0.jar $input;;
 		gensim)
 			echo LDA in Gensim
 			python ${ASAP_HOME}/centralized/LDA/LDA.py $input $k $iterations;;
@@ -94,14 +92,9 @@ function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 	shift
 	case "$operation" in
 		dir2arff)
-			#${ASAP_HOME}/weka/kmeans_text_weka/convert_text_weka.sh $@ ;;
-			count_arg=""
-			if [ ! -z "$3" ]; then count_arg="-count $3"; fi
-			java -jar $tools "dir2arff" -dir $1 $count_arg >$2;;
+			${ASAP_HOME}/weka/kmeans_text_weka/convert_text_weka.sh $@ ;;
 		dir2sequence)
 			hadoop jar $tools dir2sequence $@ $CHUNK ;;
-		mahout2spark)
-			hadoop jar $tools mahout2spark $@;;
 		reuters2sequence)
 			hadoop jar $tools reuters2sequence $@ $CHUNK ;;
 		dir2spark)
@@ -113,3 +106,43 @@ function move # MOVE_OPERATION INPUT OUTPUT [COUNT]
 
 }
 
+function monitor	
+{	operation=$1
+	shift
+	case $operation in
+		start)
+			exec ${ASAP_HOME}/monitoring/monitor.py & ;;
+		stop)
+			exec ${ASAP_HOME}/monitoring/monitor.py -cm $@;;
+		*)
+			echo Please specify start or stop;;
+	esac
+
+}
+
+function report
+{
+	exec ${ASAP_HOME}/monitoring/reporter_cli.py report $@
+}
+
+function help  # Show a list of available opperations
+{
+
+	echo ======--- Available Commands ---======
+	grep "^function" $0 | sed "s/function/➜/g" 
+}
+
+function run #wrapper that monitors an operator
+{	# start monitoring
+	monitor start
+	# run the experiment
+	$@
+	# stop monitoring
+	monitor stop 
+}
+
+if [ "_$1" = "_" ]; then
+    help
+else
+        "$@"
+fi

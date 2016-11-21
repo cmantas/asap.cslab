@@ -174,11 +174,12 @@ def perform_classification_job(sc, input_path, encoder, model,
         return classify_line(features, model, encoder)
 
     # ---------------- Do the classification ---------------- #
-    print("---> Classifying the Input")
+    print("---> Classifying.... the Input!!")
     labeled_entries = feature_entries.map(classifying_func)
     print("   > Done")
 
     # save the output as a text file
+    print("SAVING!")
     labeled_entries.saveAsTextFile(output_path)
 
 
